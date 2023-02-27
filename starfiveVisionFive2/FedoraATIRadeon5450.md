@@ -303,6 +303,8 @@ $ sudo cp ~/visionfive2/kernel/*dirty ~/visionfive2/boot/boot
 $ sudo nano ~/visionfive2/boot/boot/extlinux/extlinux.conf
 ```
 
+We have to change the kernel from /boot/vmlinuz-5.15.0-starfive to /boot/vmlinuz-5.15.0-dirty
+
 ```ini
 ## /boot/extlinux/extlinux.conf
 ##
@@ -365,6 +367,8 @@ label l0r
 
 #### BOOT/ROOT Fix the fstab of the root partition
 
+We have to change the /boot mount point. The UUID and type are different. We have to findout the new UUID and change the type from ext4 to vfat. (Debian image works with vfat!)
+
 ```bash
 $ blkid /dev/mmcblk0p2
 /dev/mmcblk0p2: SEC_TYPE="msdos" UUID="9936-8B5F" BLOCK_SIZE="512" TYPE="vfat" PARTUUID="9ba5bebd-7dd9-4a43-b352-3b197302ead9"
@@ -388,7 +392,7 @@ UUID=9936-8B5F  /boot vfat    defaults,noatime,x-systemd.device-timeout=30s,x-sy
 
 #### BOOT/ROOT Yum repo's
 
-There is no real release yet of RISC-V in fedora (mainline). So we need to disable alot of repo's
+There is no real release yet of RISC-V of Fedora (mainline). So we need to disable alot of repo's
 
 ```bash
 $ sudo nano ~/visionfive2/root/etc/yum.repos.d/fedora-cisco-openh264.repo 
