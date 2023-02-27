@@ -2,7 +2,7 @@
 
 Here some links to project of my!
 
-- :penguin: [StarFive Vision 2 [RISC-V]](starfiveVision2.md)
+- :penguin: [StarFive VisionFive 2 [RISC-V]](starfiveVisionFive2.md)
 <!--
 **Opvolger/Opvolger** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
