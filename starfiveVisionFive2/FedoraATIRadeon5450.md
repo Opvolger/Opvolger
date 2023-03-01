@@ -618,3 +618,5 @@ Done!
 ## Play Quake2
 
 Login X11 and start ~/yquake2/release/quake2
+
+![img](FedoraATIRadeon5450/quake2Running.jpeg)
