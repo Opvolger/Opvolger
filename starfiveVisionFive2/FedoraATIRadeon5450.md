@@ -170,7 +170,8 @@ remote: Compressing objects: 100% (425/425), done.
 Receiving objects:   1% (160706/9350943), 77.16 MiB | 14.26 MiB/s
 Done
 $ cd linux
-$ git checkout JH7110_VisionFive2_devel
+$ git checkout JH7110_VisionFive2_devel # not working with tag 'VF2_v2.10.4', may in the feature it will (again)
+$ git checkout VF2_v2.8.0
 Updating files: 100% (20490/20490), done.
 Switched to branch 'JH7110_VisionFive2_devel'
 Your branch is up to date with 'origin/JH7110_VisionFive2_devel'.
