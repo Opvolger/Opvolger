@@ -4,12 +4,6 @@ added ssh key, enabled sshd root inlog
 
 `autorized_keys`
 
-## kde install
-
-```bash
-apt install kde-standard
-```
-
 ## Kernel stuuf for snap
 
 Device Drivers -> 
@@ -44,6 +38,12 @@ nano /etc/netplan/01-network-manager-all.yaml
 network:
   version: 2
   renderer: NetworkManager
+```
+
+## kde install and other stuff
+
+```bash
+sudo apt install kde-standard,libsdl2-dev,libxml2,libcurl4-gnutls-dev,libopenal-dev,neofetch,ubuntu-dev-tools
 ```
 
 ## fix snapd
