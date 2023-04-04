@@ -2,7 +2,7 @@
 
 I wanted to compile and test a few programs on a RISC-V. I only ran into the problem of minimal support of the onboard GPU and custom build Debian from the StarFive Team.
 
-So below you can see my "solution".
+So below you can see my "solution". (Part I)
 
 ## Hardware
 
@@ -69,7 +69,9 @@ Audio:
 The longest it take to findout I had to add firmwares to the kernel. I got the error's with:
 
 ```bash
-$ journalctl | grep radeon
+$ journalctl -b | grep radeon
+$ journalctl -b | grep amdgpu
+$ journalctl -b | grep firmware
 ```
 
 After this it was only getting the Fedora root partition on my SD-card. The "Frankenstein" Debian-build-69 is fun if you want to see the board working with the onboard GPU, but those drivers are really unfinished and X11 was as fast as I could see completely custom build for this GPU. (No OpenGL, OpenGL ES 3 only).
@@ -81,7 +83,7 @@ After this it was only getting the Fedora root partition on my SD-card. The "Fra
 My machine has a SD-card reader on `/dev/mmcblk0` this can of course be difference on your machine.
 
 Download the Debian-Image-69 from StarFive VisionFive 2 Support page (I used the torrent in the google drive).
-Download the Fedora RISC-V image `Fedora-Developer-37-20221130.n.0-sda.raw.xz` [link](https://fedoraproject.org/wiki/Architectures/RISC-V/Installing#Download_manually) and extract it to Fedora-Developer-37-20221130.n.0-sda.raw
+Download the Fedora RISC-V image `Fedora-Developer-37-20221130.n.0-nvme.raw.img.xz` [link](https://fedoraproject.org/wiki/Architectures/RISC-V/Installing#Download_manually) and extract it to Fedora-Developer-37-20221130.n.0-nvme.raw.img
 
 ```bash
 # create a loop device of image
@@ -156,7 +158,7 @@ Remove the SD-card and put it back in again.
 
 ### Building the Linux Kernel
 
-I built this on my own machine, otherwise it will take a very long time. so cross compile!
+I build this on my own machine, otherwise it will take a very long time. so cross compile!
 Everything is neatly explained if you click through to the "linux" repo of all (yet) custom code for the SBC. [link](https://github.com/starfive-tech/VisionFive2)
 
 ```bash
@@ -206,7 +208,7 @@ KBUILD_AFLAGS += -march=$(riscv-march-y)
 
 ```bash
 # create the .config with all you need for only the StarFive VisionFive 2
-make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- starfive_visionfive2_defconfig
+make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- starfive_jh7110_defconfig
 
 # open the menu
 make CROSS_COMPILE=riscv64-linux-gnu- ARCH=riscv menuconfig
@@ -214,10 +216,13 @@ make CROSS_COMPILE=riscv64-linux-gnu- ARCH=riscv menuconfig
 
 Now we have to add the ATI video-card and HDMI-audio.
 
+```
 Device Drivers ---> [HIT ENTER]
   Generic Driver Options ---> [HIT ENTER]
     Firmware loader ---> [HIT ENTER]
       () Build named firmware blobs into the kernel binary [HIT ENTER]
+```
+
 enter this in the line:
 
 ```ini
@@ -226,16 +231,22 @@ radeon/CYPRESS_uvd.bin radeon/CEDAR_smc.bin radeon/CEDAR_me.bin radeon/CEDAR_pfp
 
 Select Exit,Exit,Exit
 
+```
 Device Drivers --->
   Graphics support ---> [HIT ENTER]
     <*> ATI Radeon [hit space twice]
+```
+
 Select Exit
 
+```
 Device Drivers --->
   Sound card support ---> [HIT ENTER]
     Advanced Linux Sound Architecture ---> [HIT ENTER]
       HD-Audio --->
         Build HDMI/DisplayPort HD-audio codec support [hit space twice]
+```
+
 Select Exit,Exit,Exit,Exit
 
 Now save your changes! as .config and Exit
