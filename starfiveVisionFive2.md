@@ -9,4 +9,6 @@ On the day I received the Starfive VisionFive 2, this was early in the evening..
 
 - So this [project](starfiveVisionFive2/FedoraATIRadeon5450.md) was born! (Part I)
 
+## Ubuntu with ATI Radeon R9 290
+
 - So this [project](starfiveVisionFive2/UbuntuATIRadeonR9_290.md) was born! (Part II)
