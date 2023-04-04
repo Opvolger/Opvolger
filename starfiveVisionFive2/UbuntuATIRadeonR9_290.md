@@ -4,7 +4,7 @@ I wanted to compile and test a few programs on a RISC-V. I only ran into the pro
 
 So below you can see my "solution". (Part II)
 
-Creating the image was more of the same I did on Part I [link](../FedoraATIRadeon5450.md)
+Creating the image was more of the same I did on Part I [link](FedoraATIRadeon5450.md)
 
 ## Hardware
 
