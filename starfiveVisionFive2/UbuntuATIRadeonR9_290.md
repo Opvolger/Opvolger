@@ -239,16 +239,15 @@ Device Drivers ->
 Select Exit,Exit
 
 ```
-Device Drivers -> 
-  File systems  -> [HIT ENTER]
-    Miscellaneous filesystems -> [HIT ENTER]
-      <*> SquashFS 4.0 - Squased file system support [HIT SPACE 2x]
-      <*> Squashfs XATTR support [HIT SPACE 2x]
-      <*> Include support for ZLIB compressed file systems
-      <*> Include support for LZ4 compressed file systems [HIT SPACE]
-      <*> Include support for LZO compressed file systems [HIT SPACE]
-      <*> Include support for XZ compressed file systems [HIT SPACE]
-      <*> Include support for ZSTD compressed file systems [HIT SPACE]
+File systems  -> [HIT ENTER]
+  Miscellaneous filesystems -> [HIT ENTER]
+    <*> SquashFS 4.0 - Squased file system support [HIT SPACE 2x]
+    <*> Squashfs XATTR support [HIT SPACE 2x]
+    <*> Include support for ZLIB compressed file systems
+    <*> Include support for LZ4 compressed file systems [HIT SPACE]
+    <*> Include support for LZO compressed file systems [HIT SPACE]
+    <*> Include support for XZ compressed file systems [HIT SPACE]
+    <*> Include support for ZSTD compressed file systems [HIT SPACE]
 ```
 
 Select Exit,Exit,Exit
