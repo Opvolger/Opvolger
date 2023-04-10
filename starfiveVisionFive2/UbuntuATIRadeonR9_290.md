@@ -607,6 +607,8 @@ sudo apt upgrade
 
 # install KDE and some build tools
 $ sudo apt install kde-standard build-essential libxml2 libcurl4-gnutls-dev neofetch ubuntu-dev-tools libopenal-dev libpng-dev libjpeg-dev libfreetype6-dev libfontconfig1-dev libcurl4-gnutls-dev libsdl2-dev zlib1g-dev libbz2-dev libedit-dev python-is-python3 m4 clang 
+# ignore kernel error (message)
+$ sudo reboot
 ```
 
 ## Network
@@ -623,6 +625,10 @@ network:
   version: 2
   renderer: NetworkManager
 ```
+
+Need reboot to get it working!
+
+## Screenshot!
 
 ![img](UbuntuATIRadeonR9_290/Screenshot.png)
 
