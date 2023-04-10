@@ -18,22 +18,46 @@ This is about 11 EURO on amazon, so no big deal... [amazon-link](https://www.ama
 ![img](UbuntuATIRadeonR9_290/setup_001.jpeg)
 ![img](UbuntuATIRadeonR9_290/setup_002.jpeg)
 
+## Update firmware VisionFive 2 to 2.11.5
+
+I updated my board to `VisionFive2 Software v2.11.5`
+
+download:
+
+- [visionfive2_fw_payload.img](https://github.com/starfive-tech/VisionFive2/releases/download/VF2_v2.11.5/visionfive2_fw_payload.img)
+- [u-boot-spl.bin.normal.out](https://github.com/starfive-tech/VisionFive2/releases/download/VF2_v2.11.5/u-boot-spl.bin.normal.out)
+- [sdcard.img](https://github.com/starfive-tech/VisionFive2/releases/download/VF2_v2.11.5/sdcard.img)
+
+steps:
+
+- I used `balenaEtcher` to flash a SD-card with sdcard.img.
+- Mounted the root partition and sudo-cp the `visionfive2_fw_payload.img` and `u-boot-spl.bin.normal.out` file to /root
+- Used Serial to connect to VisionFive 2, login with root / starfive
+- Run commands:
+
+```bash
+flashcp -v /root/u-boot-spl.bin.normal.out /dev/mtd0
+flashcp -v /root/visionfive2_fw_payload.img /dev/mtd1
+```
+
+Done!
+
 ## Create SD-card
 
 Download `ubuntu-22.04.2-preinstalled-server-riscv64+visionfive.img.xz` from [ubuntu](https://ubuntu.com/download/risc-v)
 Unzip it to `ubuntu-22.04.2-preinstalled-server-riscv64+visionfive.img`.
 
-Download the Debian-Image-69 from StarFive VisionFive 2 Support page (I used the torrent in the google drive).
+Download the `starfive-jh7110-VF2-SD-wayland.img` (202303) from StarFive VisionFive 2 Support [page](https://debian.starfivetech.com/) (I used google drive).
 
 ```bash
 # create a loop device of image
-$ sudo losetup -f -P ~/Downloads/Image-69/starfive-jh7110-VF2_515_v2.5.0-69.img
+$ sudo losetup -f -P ~/Downloads/visionfive_firmware_2023-04/starfive-jh7110-VF2-SD-wayland.img
 $ sudo losetup -f -P ~/iso/ubuntu-22.04.2-preinstalled-server-riscv64+visionfive.img
 # find your loop device
 $ losetup -l
 NAME       SIZELIMIT OFFSET AUTOCLEAR RO BACK-FILE                                                                    DIO LOG-SEC
 /dev/loop1         0      0         0  0 /home/opvolger/iso/ubuntu-22.04.2-preinstalled-server-riscv64+visionfive.img   0     512
-/dev/loop0         0      0         0  0 /home/opvolger/Downloads/Image-69/starfive-jh7110-VF2_515_v2.5.0-69.img        0     512
+/dev/loop0         0      0         0  0 /home/opvolger/Downloads/visionfive_firmware_2023-04/starfive-jh7110-VF2-SD-wayland.img        0     512
 # in my case it is loop0 and loop1
 
 # insert your SD-card and delete all partitions (I had 3)
@@ -46,41 +70,36 @@ Be careful before using the write command.
 
 
 Command (m for help): d
-Partition number (1-4, default 4): 1
-
-Partition 1 has been deleted.
-
-Command (m for help): d
-Partition number (2-4, default 4): 
+Partition number (1-4, default 4): 
 
 Partition 4 has been deleted.
 
 Command (m for help): d
-Partition number (2,3, default 3): 
+Partition number (1-3, default 3): 
 
 Partition 3 has been deleted.
 
 Command (m for help): d
-Selected partition 2
+Partition number (1,2, default 2): 
+
 Partition 2 has been deleted.
 
 Command (m for help): d
-No partition is defined yet!
+Selected partition 1
+Partition 1 has been deleted.
 
 Command (m for help): w
-
 The partition table has been altered.
 Calling ioctl() to re-read partition table.
 Syncing disks.
 
-# add all 3 partitions (not all data) of the Debain-Image-69 to the SD-card
+# add all 4 partitions (not all data) of the debian-wayland to the SD-card
 $ sudo dd if=/dev/loop0 of=/dev/sdb status=progress
-[sudo] password for opvolger: 
-1242001920 bytes (1,2 GB, 1,2 GiB) copied, 307 s, 4,0 MB/s^C
-2430785+0 records in
-2430785+0 records out
-1244561920 bytes (1,2 GB, 1,2 GiB) copied, 312,402 s, 4,0 MB/s
-# You can hit Ctrl+C after about 1GB (I did!)
+2831151616 bytes (2,8 GB, 2,6 GiB) copied, 635 s, 4,5 MB/s 
+5529600+0 records in
+5529600+0 records out
+2831155200 bytes (2,8 GB, 2,6 GiB) copied, 635,097 s, 4,5 MB/s
+
 $ sudo fdisk -l /dev/loop1
 [sudo] password for opvolger: 
 Disk /dev/loop1: 4,5 GiB, 4831838208 bytes, 9437184 sectors
@@ -98,17 +117,68 @@ Device         Start     End Sectors  Size Type
 
 Partition table entries are not in disk order.
 # So the 1st partition is the rootfs
-# 1ste is the root partition. We need to (re)place the root partition of the Debain-Image-69 (3th partition now on the SD-card)
-$ sudo dd if=/dev/loop1p1 of=/dev/sdb3 status=progress
-9975758848 bytes (10 GB, 9.3 GiB) copied, 319 s, 31.3 MB/s 
-19537853+0 records in
-19537853+0 records out
-10003380736 bytes (10 GB, 9.3 GiB) copied, 384.316 s, 26.0 MB/s
+# 1ste is the root partition. We need to (re)place the root partition of the debian-wayland (4th partition now on the SD-card)
+# the partition is to small, we make the root bigger (first e2fsck then parted)
+$ sudo e2fsck -f /dev/sdb4
+e2fsck 1.47.0 (5-Feb-2023)
+Pass 1: Checking inodes, blocks, and sizes
+Inode 86649 extent tree (at level 2) could be narrower.  Optimize<y>? yes
+Inode 89474 extent tree (at level 1) could be narrower.  Optimize<y>? yes
+Inode 91900 extent tree (at level 1) could be narrower.  Optimize<y>? yes
+Inode 91929 extent tree (at level 1) could be narrower.  Optimize<y>? yes
+Inode 91932 extent tree (at level 1) could be narrower.  Optimize<y>? yes
+Pass 1E: Optimizing extent trees
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+
+root: ***** FILE SYSTEM WAS MODIFIED *****
+root: 93204/165984 files (0.2% non-contiguous), 647953/663291 blocks
+$ sudo parted /dev/sdb
+[sudo] password for opvolger: 
+GNU Parted 3.5
+Using /dev/sdb
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted)  print                                                            
+Warning: Not all of the space available to /dev/sdb appears to be used, you can fix the GPT to use all of the space (an extra 119140352 blocks) or
+continue with the current setting? 
+Fix/Ignore? Fix                                                           
+Model: Generic STORAGE DEVICE (scsi)
+Disk /dev/sdb: 63,8GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags: 
+
+Number  Start   End     Size    File system  Name  Flags
+ 1      2097kB  4194kB  2097kB
+ 2      4194kB  8389kB  4194kB
+ 3      8389kB  113MB   105MB   fat16              boot, esp
+ 4      113MB   2830MB  2717MB  ext4               legacy_boot
+
+(parted) resizepart 4 6GB                                                 
+(parted) print                                                            
+Model: Generic STORAGE DEVICE (scsi)
+Disk /dev/sdb: 63,8GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags: 
+
+Number  Start   End     Size    File system  Name  Flags
+ 1      2097kB  4194kB  2097kB
+ 2      4194kB  8389kB  4194kB
+ 3      8389kB  113MB   105MB   fat16              boot, esp
+ 4      113MB   6000MB  5887MB  ext4               legacy_boot
+
+(parted) quit                                                             
+Information: You may need to update /etc/fstab.
+
+$ sudo dd if=/dev/loop1p1 of=/dev/sdb4 status=progress 
+4714652160 bytes (4,7 GB, 4,4 GiB) copied, 103 s, 45,8 MB/s
+9209789+0 records in
+9209789+0 records out
+4715411968 bytes (4,7 GB, 4,4 GiB) copied, 191,996 s, 24,6 MB/s
 ```
-
-Remove the SD-card and put it back in again.
-
-I started gparted and fixxed the GPT-partition table of the SD card.
 
 ## Building the Linux Kernel
 
@@ -128,7 +198,26 @@ Receiving objects: 100% (9469722/9469722), 2.11 GiB | 14.23 MiB/s, done.
 Resolving deltas: 100% (8042369/8042369), done.
 Updating files: 100% (79598/79598), done.
 $ cd linux
-$ git checkout VF2_v2.8.0 # not working with tag 'VF2_v2.10.4', may in the feature it will (again)
+$ git checkout VF2_v2.11.5
+Updating files: 100% (20490/20490), done.
+Note: switching to 'VF2_v2.11.5'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+HEAD is now at a87c6861c6d9 Merge tag 'JH7110_515_SDK_v4.5.2' into vf2-515-devel
 Updating files: 100% (46210/46210), done.
 Note: switching to 'VF2_v2.8.0'.
 
@@ -148,34 +237,12 @@ Or undo this operation with:
 Turn off this advice by setting config variable advice.detachedHead to false
 
 HEAD is now at 59cf9af678db Merge tag 'JH7110_515_SDK_v4.0.0-rc2' into vf2-515-devel
+
+$ git revert 2757ebeaf3992ee6c5d4842ffbfc1d022e790f9f --no-commit # This commit make the M.2 -> PCI-e not work
 ```
 
 Now we have the configure a new kernel 5.15 that workes with VisionFive 2 and an AMD/ATI Hawaii PRO [Radeon R9 290/390].
 We can use the instructions of the other branch [link](https://github.com/starfive-tech/linux/tree/JH7110_VisionFive2_upstream). Here and there I deviated a little from it.
-
-I am running Manjaro on got an error. I fixxed it in `arch/riscv/Makefile` on line +/- 56 (find this online).
-
-```Makefile
-...
-...
-...
-# ISA string setting
-riscv-march-$(CONFIG_ARCH_RV32I)	:= rv32ima
-riscv-march-$(CONFIG_ARCH_RV64I)	:= rv64ima
-riscv-march-$(CONFIG_FPU)		:= $(riscv-march-y)fd
-riscv-march-$(CONFIG_RISCV_ISA_C)	:= $(riscv-march-y)c
-
-# Newer binutils versions default to ISA spec version 20191213 which moves some
-# instructions from the I extension to the Zicsr and Zifencei extensions.
-toolchain-need-zicsr-zifencei := $(call cc-option-yn, -march=$(riscv-march-y)_zicsr_zifencei)
-riscv-march-$(toolchain-need-zicsr-zifencei) := $(riscv-march-y)_zicsr_zifencei
-
-KBUILD_CFLAGS += -march=$(subst fd,,$(riscv-march-y))
-KBUILD_AFLAGS += -march=$(riscv-march-y)
-...
-...
-...
-```
 
 First I tried to use the ATI (old) kernel drivers, because that was working with the ATI Radion HD 5450. But I did get text, but not a (good) graphical output (and a reset of XOrg). So I got the new amdgpu drivers working (not what I expected)
 
@@ -206,28 +273,6 @@ amdgpu/hawaii_k_smc.bin amdgpu/hawaii_smc.bin amdgpu/hawaii_uvd.bin amdgpu/hawai
 
 Select Exit,Exit
 
-```
-Device Drivers --->
-  Graphics support ---> [HIT ENTER]
-    <*> AMD GPU [HIT SPACE 2x]
-    [*] Enable amdgpu support for SI parts [HIT SPACE]
-    [*] Enable amdgpu support for CIK parts [HIT SPACE]
-    ACP (Audio CoProcessor) Configuration --->
-      [*] Enable AMD Audio CoProcessor IP support [HIT SPACE] (Select Exit)
-```
-
-Select Exit
-
-```
-Device Drivers --->
-  Sound card support ---> [HIT ENTER]
-    Advanced Linux Sound Architecture ---> [HIT ENTER]
-      HD-Audio --->
-        HD Audio PCI [HIT SPACE 2x]
-        Build HDMI/DisplayPort HD-audio codec support [HIT SPACE 2x]
-```
-Select Exit,Exit,Exit
-
 We need some stuff for snapd:
 
 ```
@@ -236,19 +281,43 @@ Device Drivers ->
       <*> RAM block device support [HIT SPACE 2x]
 ```
 
+Select Exit
+
+```
+Device Drivers --->
+  Graphics support ---> [HIT ENTER]
+    <*> AMD GPU [HIT SPACE 2x]
+    [*] Enable amdgpu support for SI parts [HIT SPACE]
+    [*] Enable amdgpu support for CIK parts [HIT SPACE]
+    ACP (Audio CoProcessor) Configuration ---> [HIT ENTER]
+      [*] Enable AMD Audio CoProcessor IP support [HIT SPACE] (Select Exit)
+```
+
 Select Exit,Exit
 
 ```
-Device Drivers -> 
-  File systems  -> [HIT ENTER]
-    Miscellaneous filesystems -> [HIT ENTER]
-      <*> SquashFS 4.0 - Squased file system support [HIT SPACE 2x]
-      <*> Squashfs XATTR support [HIT SPACE 2x]
-      <*> Include support for ZLIB compressed file systems
-      <*> Include support for LZ4 compressed file systems [HIT SPACE]
-      <*> Include support for LZO compressed file systems [HIT SPACE]
-      <*> Include support for XZ compressed file systems [HIT SPACE]
-      <*> Include support for ZSTD compressed file systems [HIT SPACE]
+Device Drivers --->
+  Sound card support ---> [HIT ENTER]
+    Advanced Linux Sound Architecture ---> [HIT ENTER]
+      HD-Audio ---> [HIT ENTER]
+        HD Audio PCI [HIT SPACE 2x]
+        Build HDMI/DisplayPort HD-audio codec support [HIT SPACE 2x]
+```
+
+Select Exit,Exit,Exit,Exit
+
+We need more some stuff for snapd:
+
+```
+File systems  -> [HIT ENTER]
+  Miscellaneous filesystems -> [HIT ENTER]
+    <*> SquashFS 4.0 - Squased file system support [HIT SPACE 2x]
+    <*> Squashfs XATTR support [HIT SPACE 2x]
+    <*> Include support for ZLIB compressed file systems
+    <*> Include support for LZ4 compressed file systems [HIT SPACE]
+    <*> Include support for LZO compressed file systems [HIT SPACE]
+    <*> Include support for XZ compressed file systems [HIT SPACE]
+    <*> Include support for ZSTD compressed file systems [HIT SPACE]
 ```
 
 Select Exit,Exit,Exit
@@ -271,7 +340,7 @@ drivers/gpu/drm/verisilicon/inno_hdmi.c:208:9: warning: ISO C90 forbids mixed de
       |         ^~~~~
 $ mkdir -p ~/visionfive2/kernel
 $ make CROSS_COMPILE=riscv64-linux-gnu- ARCH=riscv INSTALL_PATH=~/visionfive2/kernel zinstall -j 16
-sh ./arch/riscv/boot/install.sh 5.15.0-dirty \
+sh ./arch/riscv/boot/install.sh 5.15.0+ \
 arch/riscv/boot/Image.gz System.map "/home/opvolger/visionfive2/kernel"
 Installing compressed kernel
 ```
@@ -286,22 +355,22 @@ We have the SD-card inserted (again).
 $ mkdir -p ~/visionfive2/boot
 $ mkdir -p ~/visionfive2/root
 # mount boot and root partition
-$ sudo mount /dev/sdb2 ~/visionfive2/boot
-$ sudo mount /dev/sdb3 ~/visionfive2/root
+$ sudo mount /dev/sdb3 ~/visionfive2/boot
+$ sudo mount /dev/sdb4 ~/visionfive2/root
 # copy the kernel
-$ sudo cp ~/visionfive2/kernel/*dirty ~/visionfive2/boot/boot
+$ sudo cp ~/visionfive2/kernel/*+ ~/visionfive2/boot
 ```
 
 ### BOOT/ROOT Add the boot option
 
 ```bash
-$ sudo nano ~/visionfive2/boot/boot/extlinux/extlinux.conf
+$ sudo nano ~/visionfive2/boot/extlinux/extlinux.conf
 ```
 
-We have to change the kernel from /boot/vmlinuz-5.15.0-starfive to /boot/vmlinuz-5.15.0-dirty
+We have to change the kernel from /boot/vmlinuz-5.15.0-starfive to /boot/vmlinuz-5.15.0+
 
 ```ini
-## /boot/extlinux/extlinux.conf
+## /extlinux/extlinux.conf
 ##
 ## IMPORTANT WARNING
 ##
@@ -316,23 +385,26 @@ timeout 50
 
 label l0
         menu label Debian GNU/Linux bookworm/sid 5.15.0-starfive
-        linux /boot/vmlinuz-5.15.0-starfive
-        initrd /boot/initrd.img-5.15.0-starfive
-        fdtdir /boot/dtbs/
-        append  root=/dev/mmcblk1p3 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0
+        linux /vmlinuz-5.15.0-starfive
+        initrd /initrd.img-5.15.0-starfive
+
+
+        fdtdir /dtbs
+        append root=/dev/mmcblk1p4 root=/dev/mmcblk1p4 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0
 
 label l0r
         menu label Debian GNU/Linux bookworm/sid 5.15.0-starfive (rescue target)
-        linux /boot/vmlinuz-5.15.0-starfive
-        initrd /boot/initrd.img-5.15.0-starfive
-        fdtdir /boot/dtbs/
-        append  root=/dev/mmcblk1p3 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0 single
+        linux /vmlinuz-5.15.0-starfive
+        initrd /initrd.img-5.15.0-starfive
+
+        fdtdir /dtbs
+        append root=/dev/mmcblk1p4 root=/dev/mmcblk1p4 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0 single
 ```
 
 to
 
 ```ini
-## /boot/extlinux/extlinux.conf
+## /extlinux/extlinux.conf
 ##
 ## IMPORTANT WARNING
 ##
@@ -345,21 +417,24 @@ prompt 0
 timeout 50
 
 # add ' radeon.cik_support=0 amdgpu.cik_support=1 radeon.si_support=0 amdgpu.si_support=1 amdgpu.dc=1' to append if you have build ATI and AMD drivers in the kernel (amdgpu is not the default, the default is the old ati driver.)
-# we changed the kernel from vmlinuz-5.15.0-starfive to vmlinuz-5.15.0-dirty
+# we changed the kernel from vmlinuz-5.15.0-starfive to vmlinuz-5.15.0+
 
 label l0
-        menu label Ubuntu GNU/Linux bookworm/sid 5.15.0-dirty
-        linux /boot/vmlinuz-5.15.0-dirty
-        initrd /boot/initrd.img-5.15.0-starfive
-        fdtdir /boot/dtbs/
-        append  root=/dev/mmcblk1p3 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0
+        menu label Debian GNU/Linux bookworm/sid 5.15.0-starfive
+        linux /vmlinuz-5.15.0+
+        initrd /initrd.img-5.15.0-starfive
+
+
+        fdtdir /dtbs
+        append root=/dev/mmcblk1p4 root=/dev/mmcblk1p4 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0
 
 label l0r
-        menu label Ubuntu GNU/Linux bookworm/sid 5.15.0-dirty (rescue target)
-        linux /boot/vmlinuz-5.15.0-dirty
-        initrd /boot/initrd.img-5.15.0-starfive
-        fdtdir /boot/dtbs/
-        append  root=/dev/mmcblk1p3 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0 single
+        menu label Debian GNU/Linux bookworm/sid 5.15.0-starfive (rescue target)
+        linux /vmlinuz-5.15.0-starfive
+        initrd /initrd.img-5.15.0-starfive
+
+        fdtdir /dtbs
+        append root=/dev/mmcblk1p4 root=/dev/mmcblk1p4 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0 single
 ```
 
 ### BOOT/ROOT Fix the fstab of the root partition
@@ -367,8 +442,8 @@ label l0r
 We have to change the /boot mount point. The UUID/LABEL are different. We have to findout the new UUID
 
 ```bash
-$ blkid /dev/sdb2
-/dev/sdb2: SEC_TYPE="msdos" UUID="9936-8B5F" BLOCK_SIZE="512" TYPE="vfat" PARTUUID="9ba5bebd-7dd9-4a43-b352-3b197302ead9"
+$ blkid /dev/sdb3
+/dev/sdb3: SEC_TYPE="msdos" UUID="FCD7-CFFB" BLOCK_SIZE="512" TYPE="vfat" PARTUUID="0c10506e-2b34-40b5-9f06-92cf5745e874"
 
 $ sudo nano ~/visionfive2/root/etc/fstab
 ```
@@ -384,7 +459,7 @@ to
 
 ```ini
 LABEL=cloudimg-rootfs   /        ext4   discard,errors=remount-ro       0 1
-UUID=9936-8B5F      /boot       vfat    umask=0077      0 1
+UUID=FCD7-CFFB      /boot       vfat    umask=0077      0 1
 ```
 
 ## BOOT/ROOT fix ubuntu-advantage-tools hang
@@ -496,6 +571,9 @@ ubuntu@ubuntu:~$ journalctl -b | grep firmware
 Now we can install a user interface, I like kde, so I installed KDE (and some other stuff)
 
 ```bash
+# delete Ubuntu image kernels and autoupdate kernel tool
+sudo apt-get purge --auto-remove flash-kernel linux-starfive linux-image-starfive linux-headers-starfive linux-firmware
+Do you want to continue? [Y/n] y
 $ sudo apt update
 $ sudo apt upgrade
 # maybe your update hangs (was on my machine)
@@ -520,15 +598,12 @@ $ sudo dpkg --configure -a
 # It will work again.
 Errors were encountered while processing:
  cloud-init
- flash-kernel
  libpam-systemd:riscv64
- linux-image-5.19.0-1014-starfive
- linux-image-starfive
- linux-starfive
 $ sudo reboot # ignore errors
 
 # disable sleep, less reboots
 sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+sudo apt upgrade
 
 # install KDE and some build tools
 $ sudo apt install kde-standard build-essential libxml2 libcurl4-gnutls-dev neofetch ubuntu-dev-tools libopenal-dev libpng-dev libjpeg-dev libfreetype6-dev libfontconfig1-dev libcurl4-gnutls-dev libsdl2-dev zlib1g-dev libbz2-dev libedit-dev python-is-python3 m4 clang 
