@@ -534,6 +534,13 @@ Removed:
 Complete!
 ```
 
+## Update
+
+```bash
+$ sudo dnf update --exclude=kernel-* --exclude=uboot-* --exclude=opensbi-*
+$ sudo dnf install firefox @gnome-desktop --skip-broken # pptp is not yet there
+```
+
 ## Compile Quake2
 
 ```bash
