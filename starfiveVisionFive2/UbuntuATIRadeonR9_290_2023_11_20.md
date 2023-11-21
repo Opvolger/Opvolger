@@ -44,8 +44,21 @@ $ mkdir -p ~/Downloads/SF2_2023_11_20/ubuntu
 $ cd ~/Downloads/SF2_2023_11_20
 $ wget https://github.com/starfive-tech/VisionFive2/releases/download/VF2_v3.8.2/visionfive2_fw_payload.img
 $ wget https://github.com/starfive-tech/VisionFive2/releases/download/VF2_v3.8.2/u-boot-spl.bin.normal.out
-$ unxz *.xz
+$ bzip2 -d ~/Downloads/SF2_2023_11_20/starfive-jh7110-VF2_515_v3.8.2-66-SD-minimal-desktop-wayland.img.bz2
+```
+
+## Update firmware from the VisionFive 2 to Ubuntu firmware
+
+My first staps are flowing the Ubuntu [wiki](https://wiki.ubuntu.com/RISC-V/StarFive%20VisionFive%202)
+
+We already downloaded `u-boot-starfive_2023.09.22-next-5d2fae79c7d6-0ubuntu1~ppa5_riscv64.deb` and now extract the firmware to `~/Downloads/SF2_2023_11_20/ubuntu`
+
+I used Ark for this
+![img](UbuntuATIRadeonR9_290/unpack_deb_firmware.png)
+
+```bash
 # my download tree is now
+$ cd ~/Downloads/SF2_2023_11_20
 $ tree
 .
 ├── sdcard.img
@@ -57,15 +70,6 @@ $ tree
 │   └── u-boot-spl.bin.normal.out
 └── visionfive2_fw_payload.img
 ```
-
-## Update firmware from the VisionFive 2 to Ubuntu firmware
-
-My first staps are flowing the Ubuntu [wiki](https://wiki.ubuntu.com/RISC-V/StarFive%20VisionFive%202)
-
-We already downloaded `u-boot-starfive_2023.09.22-next-5d2fae79c7d6-0ubuntu1~ppa5_riscv64.deb` and now extract the firmware to `~/Downloads/SF2_2023_11_20/ubuntu`
-
-I used Ark for this
-![img](UbuntuATIRadeonR9_290/unpack_deb_firmware.png)
 
 If you read the documentation of Ubuntu and uses the firmware of Ubuntu. This wil work for their kernels but if you compile the source code of StarFive the USB devices will not work (mouse/keyboard).
 
@@ -383,7 +387,6 @@ The kernel is Done! Now copy it to the boot partition on the SD-card!
 We need the initrd-img of 5.15.0 from VisionFive 2, so we don't have to make it ourselves.
 
 ```bash
-bzip2 -d ~/Downloads/SF2_2023_11_20/starfive-jh7110-VF2_515_v3.8.2-66-SD-minimal-desktop-wayland.img.bz2
 # create a loop device of image
 sudo losetup -f -P ~/Downloads/SF2_2023_11_20/starfive-jh7110-VF2_515_v3.8.2-66-SD-minimal-desktop-wayland.img
 # find your loop device
