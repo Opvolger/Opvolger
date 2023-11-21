@@ -712,4 +712,6 @@ Need reboot to get it working!
 
 ## Screenshot!
 
-![img](UbuntuATIRadeonR9_290/Screenshot.png)
+picture or it didn't happen
+
+![img](UbuntuATIRadeonR9_290/Screenshot_2023_11_20.png)
