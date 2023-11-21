@@ -342,7 +342,16 @@ File systems  -> [HIT ENTER]
     [*] Include support for ZSTD compressed file systems [HIT SPACE]
 ```
 
-Select Exit,Exit,Exit
+Select Exit,Exit
+
+We need CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER for the `epiphany` browser
+
+```
+General architecture-dependent options  ---> [HIT ENTER]
+  [*] Enable seccomp to safely execute untrusted bytecode -> [HIT SPACE]
+```
+
+Select Exit,Exit
 
 Yes You wish to save your new configuration!
 
@@ -692,9 +701,23 @@ ubuntu@ubuntu:~$ sudo apt upgrade
 
 # install KDE and some build tools
 ubuntu@ubuntu:~$ sudo apt install sddm sddm-theme-breeze kde-standard build-essential libxml2 libcurl4-gnutls-dev neofetch ubuntu-dev-tools libopenal-dev libpng-dev libjpeg-dev libfreetype6-dev libfontconfig1-dev libcurl4-gnutls-dev libsdl2-dev zlib1g-dev libbz2-dev libedit-dev python-is-python3 m4 clang sddm-theme-breeze epiphany-browser minetest
-# ignore kernel error (message)
+Service restarts being deferred:                                               
+ /etc/needrestart/restart.d/dbus.service
+ systemctl restart systemd-logind.service
+ systemctl restart unattended-upgrades.service
+ systemctl restart wpa_supplicant.service
+
+No containers need to be restarted.
+
+User sessions running outdated binaries:
+ ubuntu @ user manager service: systemd[882]
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+
 ubuntu@ubuntu:~$ sudo reboot
 ```
+
+Now KDE will startup after booting! Have fun!
 
 ## Network
 
@@ -717,4 +740,10 @@ Need reboot to get it working!
 
 picture or it didn't happen
 
-![img](UbuntuATIRadeonR9_290/Screenshot_2023_11_20.png)
+ATI Radeon 5450:
+
+![img](UbuntuATIRadeonR9_290/Screenshot_2023_11_20_ATI_Radeon_5450.png)
+
+ATI Radeon R9 290:
+
+![img](UbuntuATIRadeonR9_290/Screenshot_2023_11_20_ATI_Radeon_R9_290.png)
