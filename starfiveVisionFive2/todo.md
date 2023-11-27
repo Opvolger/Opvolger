@@ -95,6 +95,7 @@ Welcome to Ubuntu 23.10 (GNU/Linux 6.5.0-9-generic riscv64)
 
 ```bash
 make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- modules -j 16 
+make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- INSTALL_MOD_PATH=/home/opvolger/visionfive2/kernel modules_install -j 16 
 ```
 
 ```bash
@@ -113,3 +114,12 @@ $ mkdir usr/lib/firmware
 $ cp ~/Downloads/SF2_2023_11_20/visionfive2/kernel/lib/modules/6.1.31+ usr/lib/modules -R
 $ cp ~/Downloads/SF2_2023_11_20/visionfive2/linux-firmware/* usr/lib/firmware -R
 $ find . | cpio -o -H newc > /run/media/opvolger/cloudimg-rootfs/boot/initrd.img-6.1.31+
+
+
+
+# copy the kernel to the sd-card
+$ sudo cp arch/riscv/boot/Image.gz /run/media/opvolger/cloudimg-rootfs/boot/vmlinuz-6.1.31+
+# copy the System map
+$ sudo cp arch/riscv/boot/Image.gz /run/media/opvolger/cloudimg-rootfs/boot/System.map-6.1.31+
+# copy the dtb (Device Tree) to the sd-card
+$ sudo cp arch/riscv/boot/dts/starfive/jh7110-visionfive-v2.dtb /run/media/opvolger/cloudimg-rootfs/boot/dtb-6.1.31+
