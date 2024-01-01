@@ -433,7 +433,7 @@ $ cd ~/Downloads/SF2_2023_11_20/visionfive2/linux
 # copy the kernel to the sd-card
 $ sudo cp arch/riscv/boot/Image.gz /run/media/opvolger/cloudimg-rootfs/boot/vmlinuz-5.15.0-dirty
 # copy the System map
-$ sudo cp arch/riscv/boot/Image.gz /run/media/opvolger/cloudimg-rootfs/boot/System.map-5.15.0-dirty
+$ sudo cp System.map /run/media/opvolger/cloudimg-rootfs/boot/System.map-5.15.0-dirty
 # copy the dtb (Device Tree) to the sd-card
 $ sudo cp arch/riscv/boot/dts/starfive/jh7110-visionfive-v2.dtb /run/media/opvolger/cloudimg-rootfs/boot/dtb-5.15.0-dirty
 # copy initrd to the sd-card
