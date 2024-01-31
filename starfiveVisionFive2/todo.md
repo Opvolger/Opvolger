@@ -120,9 +120,41 @@ $ find . | cpio -o -H newc > /run/media/opvolger/cloudimg-rootfs/boot/initrd.img
 # copy the kernel to the sd-card
 $ sudo cp arch/riscv/boot/Image.gz /run/media/opvolger/cloudimg-rootfs/boot/vmlinuz-6.1.31+
 # copy the System map
-$ sudo cp arch/riscv/boot/Image.gz /run/media/opvolger/cloudimg-rootfs/boot/System.map-6.1.31+
+$ sudo cp System.map /run/media/opvolger/cloudimg-rootfs/boot/System.map-6.1.31+
 # copy the dtb (Device Tree) to the sd-card
 $ sudo cp arch/riscv/boot/dts/starfive/jh7110-visionfive-v2.dtb /run/media/opvolger/cloudimg-rootfs/boot/dtb-6.1.31+
 
 
 sudo update-initramfs -u -k version
+
+
+```bash
+$ git clone --branch JH7110_VisionFive2_upstream --depth 1 https://github.com/starfive-tech/linux.git linux2
+# copy .config van 5.15.0 naar hier (linux2)
+$ make CROSS_COMPILE=riscv64-linux-gnu- ARCH=riscv menuconfig
+# exit and save
+
+$ make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- -j16
+$ make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- modules -j 16
+$ make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- INSTALL_MOD_PATH=/home/opvolger/Downloads/SF2_2023_11_20/visionfive2/kernel_modules/ modules_install -j 16 
+
+# copy the kernel to the sd-card
+$ sudo cp arch/riscv/boot/Image.gz /run/media/opvolger/cloudimg-rootfs/boot/vmlinuz-6.6.0+
+# copy the System map
+$ sudo cp System.map /run/media/opvolger/cloudimg-rootfs/boot/System.map-6.6.0+
+# copy the dtb (Device Tree) to the sd-card
+$ sudo cp arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-v1.3b.dtb /run/media/opvolger/cloudimg-rootfs/boot/dtb-6.6.0+
+#
+$ sudo -i
+$ cd /home/opvolger/Downloads/SF2_2023_11_20/visionfive2/initrd
+$ cp /run/media/opvolger/cloudimg-rootfs/boot/initrd.img-5.15.0-dirty .
+$ zstd --decompress initrd.img-5.15.0-dirty -o initrd.img-5.15.0
+$ cpio -i -F initrd.img-5.15.0
+$ rm initrd.img-5.15.0* -f
+$ cp /home/opvolger/Downloads/SF2_2023_11_20/visionfive2/kernel_modules/lib/modules/6.6.0+ usr/lib/modules -R
+$ rm usr/lib/modules/6.6.0+/build
+$ rm usr/lib/modules/5.15.0-starfive -rf
+$ find . | cpio -H newc -o | zstd -19 --ultra -o ../initrd.img-6.6.0+
+$ cp ../initrd.img-6.6.0+ /run/media/opvolger/cloudimg-rootfs/boot/
+$ exit
+```
