@@ -123,3 +123,6 @@ $ sudo cp arch/riscv/boot/Image.gz /run/media/opvolger/cloudimg-rootfs/boot/vmli
 $ sudo cp arch/riscv/boot/Image.gz /run/media/opvolger/cloudimg-rootfs/boot/System.map-6.1.31+
 # copy the dtb (Device Tree) to the sd-card
 $ sudo cp arch/riscv/boot/dts/starfive/jh7110-visionfive-v2.dtb /run/media/opvolger/cloudimg-rootfs/boot/dtb-6.1.31+
+
+
+sudo update-initramfs -u -k version
