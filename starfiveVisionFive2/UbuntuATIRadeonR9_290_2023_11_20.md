@@ -1,8 +1,8 @@
 ---
-title: StarFive VisionFive 2 - Ubuntu 23.10 ATI Radeon R9 290
+date: 2023-11-20
+author: Bas Magré
 ---
-
-# Ubuntu 23.10 on VisionFive 2 with external GPU
+# StarFive VisionFive 2 - Ubuntu 23.10 external GPU ATI Radeon R9 290
 
 I read on the Ubuntu website that there is now external GPU support for Ubuntu 23.10. There is no lie in that, but with the current kernel (6.5.0-9 and 6.5.0-10) it completely crashes.
 
@@ -746,8 +746,8 @@ picture or it didn't happen
 
 ATI Radeon 5450:
 
-![img](UbuntuATIRadeonR9_290/Screenshot_2023_11_20_ATI_Radeon_5450.png)
+![Screenshot with ATI Radeon 5450](UbuntuATIRadeonR9_290/Screenshot_2023_11_20_ATI_Radeon_5450.png)
 
 ATI Radeon R9 290:
 
-![img](UbuntuATIRadeonR9_290/Screenshot_2023_11_20_ATI_Radeon_R9_290.png)
+![Screenshot with ATI Radeon R9 290](UbuntuATIRadeonR9_290/Screenshot_2023_11_20_ATI_Radeon_R9_290.png)

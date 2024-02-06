@@ -5,6 +5,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <meta name="generator" content="pandoc">
       $if(author)$<meta name="author" content="$author$">$endif$
+      $if(date)$<meta name="date" content="$date$">$endif$
       $if(description)$<meta name="description" content="$description$">$endif$
       $if(title)$<title>$title$</title>$endif$
       <!-- Bootstrap -->
@@ -22,7 +23,8 @@
       $include-before$
       $endfor$
       <div class="container">
-         $if(title)$<h1 class="title">$title$</h1>$endif$
+         $if(date)$<p class="date">$date$ - $author$</p>$endif$
+         <!-- $if(title)$<h1 class="title">$title$</h1>$endif$ -->
          $if(toc)$
          <div class="row">
             <div class="col-xl-10">$body$</div>
