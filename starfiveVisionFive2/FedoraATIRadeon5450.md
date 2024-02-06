@@ -1,3 +1,7 @@
+---
+title: StarFive VisionFive 2 - Fedora 37 ATI Radeon 5450
+---
+
 # Fedora with ATI Radeon 5450, running Quake2
 
 I wanted to compile and test a few programs on a RISC-V. I only ran into the problem of minimal support of the onboard GPU and custom build Debian from the StarFive Team.

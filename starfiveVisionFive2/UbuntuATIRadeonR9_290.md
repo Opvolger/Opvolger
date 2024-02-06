@@ -1,3 +1,7 @@
+---
+title: StarFive VisionFive 2 - Ubuntu 22.04 ATI Radeon R9 290
+---
+
 # Ubuntu on VisionFive 2
 
 I wanted to compile and test a few programs on a RISC-V. I only ran into the problem of minimal support of the onboard GPU and custom build Debian from the StarFive Team.
