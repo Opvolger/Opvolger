@@ -3,6 +3,13 @@
 Here some links to project of my!
 
 - :penguin: [StarFive VisionFive 2 [RISC-V]](starfiveVisionFive2.md)
+
+Dutch only:
+
+- [Kodi addon - NPO uitzending gemist](kodi/npo.md)
+- [Kodi addon - Kanalenlijst Hans](kodi/kanalenlijst-hans.md)
+- [Kodi addon - RTLxl](kodi/rtlxl.md)
+
 <!--
 **Opvolger/Opvolger** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
