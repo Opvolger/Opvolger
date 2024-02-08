@@ -2,7 +2,7 @@
 date: 2018-nu
 author: Bas Magré
 ---
-# Kanalenlijst Hans
+# Kodi addon - Kanalenlijst Hans
 
 In de satelliet-wereld is het een algemeen begrip, de kanalenlijst gemaakt door Hans van de satellietclub De Transponder. Tijdens mijn bezoek in het clubgebouw werd duidelijk dat ik al meerdere addons gemaakt had voor Kodi. Een paar clubleden vroegen zich af of ik dit ook met de Kanalenlijst van Hans kon doen. Natuurlijk, dus zo gezegd, zo gedaan. [plugin.video.hanssettings](https://github.com/Opvolger/plugin.video.hanssettings)
 

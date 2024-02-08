@@ -2,7 +2,7 @@
 date: 2013-nu
 author: Bas Magré
 ---
-# Uitzendinggemist (NPO)
+# Kodi addon - NPO Uitzending gemist
 
 Een stukje uitleg over het hoe en waarom van de addon [plugin.video.uzg](https://github.com/Opvolger/plugin.video.uzg) voor Kodi. Deze blijf ik aanvullen als er (grote) dingen veranderen.
 

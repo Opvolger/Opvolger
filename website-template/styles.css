@@ -2,6 +2,12 @@ img{
     width:100%;
 }
 
+
+.menu-icon {
+    margin-left: 8px;
+    color: #6d7884;
+}
+
 figcaption{
     font-style: italic;
     font-size: small;
