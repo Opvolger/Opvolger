@@ -17,7 +17,9 @@ genHtml kodi/kanalenlijst-hans "Kodi - Kanalenlijst Hans"
 
 genHtml starfiveVisionFive2/FedoraATIRadeon5450 "StarFive VisionFive 2 Fedora ATI Radeon 5450"
 genHtml starfiveVisionFive2/UbuntuATIRadeonR9_290 "StarFive VisionFive 2 Ubuntu 22.04 ATI Radeon R9 290"
-genHtml starfiveVisionFive2/UbuntuATIRadeonR9_290_2023_11_20 "StarFive VisionFive 2 23.10 Ubuntu ATI Radeon R9 290"
+genHtml starfiveVisionFive2/UbuntuATIRadeonR9_290_2023_11_20 "StarFive VisionFive 2 Ubuntu 23.10 ATI Radeon R9 290"
+genHtml starfiveVisionFive2/OpenSuseATIRadeonR9_290 "StarFive VisionFive 2 OpenSuse Tumbleweed ATI Radeon R9 290"
+
 
 # TODO fix link .md to .html
 rsync -a --prune-empty-dirs --include '*/' --include '*.ico' --include '*.html' --include '*.css' --include '*.png' --include '*.jpeg' --exclude '*' ./ ../website
