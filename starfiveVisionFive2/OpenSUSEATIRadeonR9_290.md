@@ -557,7 +557,7 @@ Save and Exit
 
 #### Edit fstab
 
-I needed this, i think the kernel has no vfat compiled.
+Updates of the efi-boot must not be written on the efi-partition
 
 ```bash
 sudo nano ~/OpenSUSETumbleweed/sd/root/etc/fstab
