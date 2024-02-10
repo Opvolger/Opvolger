@@ -2,21 +2,39 @@
 date: 2023-02-05
 author: Bas Magré
 ---
-# StarFive VisionFive 2 - OpenSuse Tumbleweed with external GPU ATI Radeon R9 290
+# StarFive VisionFive 2 - OpenSUSE Tumbleweed with external GPU ATI Radeon R9 290
 
-In addition to Ubuntu and Fedora, I had also run OpenSuse Tumbleweed on the StarFive VisionFive 2. I had never written a manual for this before. Hence this manual.
-The entire manual works from 1 directory. In my case ~/OpenSuseTumbleweed
+In addition to Ubuntu and Fedora, I had also run OpenSUSE Tumbleweed on the StarFive VisionFive 2. I had never written a manual for this before. Hence this manual.
+The OpenSUSE Tumbleweed image uses a kernel that does not yet have the PCIe patches of the StarFive VisionFive 2. More information about what is and is not main-stream in the kernel can be found here: [site](https://rvspace.org/en/project/JH7110_Upstream_Plan)
+
+So I have created my own kernel and updated the efi/root partition a little bit to boot OpenSUSE Tumbleweed with external GPU.
+
+The entire manual works from 1 directory. In my case ~/OpenSUSETumbleweed
 
 ```bash
-$ mkdir OpenSuseTumbleweed
-$ cd OpenSuseTumbleweed/
+$ mkdir OpenSUSETumbleweed
+$ cd OpenSUSETumbleweed/
 ```
+
+## Hardware
+
+- StarFive VisionFive 2
+- BEYIMEI PCIE Riser-Ver010X GPU Riser, 1X tot 16X (4PIN/6PIN/MOLEX) PCIE-verlengkabel, M.2 naar PCI-E Riser Card Bitcoin Litecoin Ethereum.
+This is about 11 EURO on amazon, so no big deal... [amazon-link](https://www.amazon.nl/dp/B0BF4PH83Y?ref_=pe_28126711_487767311_302_E_DDE_dt_1)
+- AMD/ATI Hawaii PRO [Radeon R9 290/390], Bought on a Dutch second-hand website, for 45 EURO. or ATI Radeon 5450, Bought on a Dutch second-hand website, for 10 EURO.
+- An ATX power supply (was still lying around in the house)
+- For debugging a USB to TTL (was still lying around in the house), is about 5 EURO.
+
+![setup StarFive VisionFive 2](UbuntuATIRadeonR9_290/setup_001.jpeg)
+![setup StarFive VisionFive 2](UbuntuATIRadeonR9_290/setup_002.jpeg)
+or
+![setup StarFive VisionFive 2](FedoraATIRadeon5450/setup.png)
 
 ## Downloads
 
 We'll start with some downloads, we'll need:
 
-- images from OpenSuse Tumbleweed [site](https://en.opensuse.org/HCL:VisionFive2)
+- images from OpenSUSE Tumbleweed [site](https://en.opensuse.org/HCL:VisionFive2)
 - EFI-boot from Ubuntu [site](https://packages.ubuntu.com/mantic/cd-boot-images-riscv64)
 - kernel/firmware from StarFive VisionFive 2 repo [site](https://github.com/starfive-tech/VisionFive2)
 
@@ -162,9 +180,9 @@ $ sudo systemctl start firewalld.service
 
 You can turn off the VisionFive 2 again
 
-### Images from OpenSuse Tumbleweed
+### Images from OpenSUSE Tumbleweed
 
-Download the images from the OpenSuse Tumbleweed [site](https://en.opensuse.org/HCL:VisionFive2).
+Download the images from the OpenSUSE Tumbleweed [site](https://en.opensuse.org/HCL:VisionFive2).
 
 ```bash
 $ wget https://download.opensuse.org/repositories/devel:/RISCV:/Factory:/Contrib:/StarFive:/VisionFive2/images/openSUSE-Tumbleweed-RISC-V-JeOS-starfivevisionfive2.riscv64-2024.01.16-Build23.43.raw.xz
@@ -210,8 +228,8 @@ remote: Total 3389 (delta 1233), reused 2471 (delta 832), pack-reused 0
 Receiving objects: 100% (3389/3389), 435.72 MiB | 13.27 MiB/s, done.
 Resolving deltas: 100% (1233/1233), done.
 Updating files: 100% (3554/3554), done.
-opvolger@desktop:~/OpenSuseTumbleweed$ ^C
-opvolger@desktop:~/OpenSuseTumbleweed$ git clone --branch VF2_6.1_v3.8.2 --depth 1 https://github.com/starfive-tech/linux.git
+opvolger@desktop:~/OpenSUSETumbleweed$ ^C
+opvolger@desktop:~/OpenSUSETumbleweed$ git clone --branch VF2_6.1_v3.8.2 --depth 1 https://github.com/starfive-tech/linux.git
 Cloning into 'linux'...
 remote: Enumerating objects: 84693, done.
 remote: Counting objects: 100% (84693/84693), done.
@@ -411,38 +429,36 @@ $ make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- modules -j 16
   CALL    scripts/checksyscalls.sh
 
 # install modules to dir
-$ mkdir ~/OpenSuseTumbleweed/modules
-$ make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- INSTALL_MOD_PATH=~/OpenSuseTumbleweed/modules modules_install -j 16 
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/arch/riscv/kvm/kvm.ko
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/crypto/authenc.ko
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/crypto/authencesn.ko
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/crypto/blake2b_generic.ko
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/crypto/cbc.ko
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/crypto/echainiv.ko
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/crypto/seqiv.ko
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/crypto/xor.ko
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/crypto/xxhash_generic.ko
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/drivers/clk/starfive/clk-starfive-jh7100-audio.ko
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/drivers/gpu/drm/drm_shmem_helper.ko
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/drivers/gpu/drm/virtio/virtio-gpu.ko
+$ mkdir ~/OpenSUSETumbleweed/modules
+$ make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- INSTALL_MOD_PATH=~/OpenSUSETumbleweed/modules modules_install -j 16 
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/arch/riscv/kvm/kvm.ko
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/crypto/authenc.ko
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/crypto/authencesn.ko
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/crypto/blake2b_generic.ko
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/crypto/cbc.ko
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/crypto/echainiv.ko
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/crypto/seqiv.ko
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/crypto/xor.ko
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/crypto/xxhash_generic.ko
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/drivers/clk/starfive/clk-starfive-jh7100-audio.ko
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/drivers/gpu/drm/drm_shmem_helper.ko
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/drivers/gpu/drm/virtio/virtio-gpu.ko
 ...
 ...
 ...
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/net/netfilter/xt_nat.ko
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/net/sched/cls_cgroup.ko
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/net/xfrm/xfrm_algo.ko
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/net/xfrm/xfrm_user.ko
-  INSTALL /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+/kernel/net/netfilter/xt_tcpudp.ko
-  DEPMOD  /home/opvolger/OpenSuseTumbleweed/modules/lib/modules/6.1.31+
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/net/netfilter/xt_nat.ko
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/net/sched/cls_cgroup.ko
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/net/xfrm/xfrm_algo.ko
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/net/xfrm/xfrm_user.ko
+  INSTALL /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+/kernel/net/netfilter/xt_tcpudp.ko
+  DEPMOD  /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+
 ```
 
 The kernel is Done!
 
 ### EFI-boot from Ubuntu (cd-boot-images-riscv64_10_all.deb)
 
-The OpenSuse Tumbleweed image uses a kernel that does not yet have the PCIe patches of the StarFive VisionFive 2. More information about what is and is not main-stream in the kernel can be found here: site
-
-The boot chain of OpenSuse Tumbleweed (OpenSBI - U-Boot - EFI) would not work with my kernel (6.1.31+). That's why I chose NOT to boot from SD card and use StarFive VisionFive 2's OpenSBI and U-Boot. Unfortunately, OpenSuse's efi boot did not work with this. That's why I use the efi-boot from Ubuntu (it worked with my 6.1.31+ kernel).
+The boot chain of OpenSUSE Tumbleweed (OpenSBI - U-Boot - EFI) would not work with my kernel (6.1.31+). That's why I chose NOT to boot from SD card and use StarFive VisionFive 2's OpenSBI and U-Boot. Unfortunately, OpenSUSE's efi boot did not work with this. That's why I use the efi-boot from Ubuntu (it worked with my 6.1.31+ kernel).
 
 Download
 [cd-boot-images-riscv64_10_all.deb](http://mirrors.kernel.org/ubuntu/pool/main/c/cd-boot-images-riscv64/cd-boot-images-riscv64_10_all.deb)
@@ -457,21 +473,21 @@ $ dpkg-deb -x cd-boot-images-riscv64_10_all.deb cd-boot-images-riscv64_10_all
 
 ## Copy/Change files to SD-card
 
-On my computer i flashed the OpenSuse Tumbleweed to /dev/sdb
+On my computer i flashed the OpenSUSE Tumbleweed to /dev/sdb
 
 ### EFI-partition
 
 We need to copy bootriscv64.efi to the EFI-partition
 
 ```bash
-$ cd ~/OpenSuseTumbleweed
+$ cd ~/OpenSUSETumbleweed
 $ mkdir -p sd/efi
 # EFI partition is the first partition
-$ sudo mount /dev/sdb1 ~/OpenSuseTumbleweed/sd/efi
-# We will now replace the efi boot from OpenSuse Tumbleweed with the Ubuntu version
+$ sudo mount /dev/sdb1 ~/OpenSUSETumbleweed/sd/efi
+# We will now replace the efi boot from OpenSUSE Tumbleweed with the Ubuntu version
 $ sudo cp cd-boot-images-riscv64_10_all/usr/share/cd-boot-images-riscv64/tree/EFI/boot/bootriscv64.efi sd/efi/EFI/BOOT/bootriscv64.efi
 # unmount again
-$ sudo umount ~/OpenSuseTumbleweed/sd/efi
+$ sudo umount ~/OpenSUSETumbleweed/sd/efi
 ```
 
 ### ROOT-partition
@@ -479,15 +495,15 @@ $ sudo umount ~/OpenSuseTumbleweed/sd/efi
 We need to copy the kernel files
 
 ```bash
-$ cd ~/OpenSuseTumbleweed
+$ cd ~/OpenSUSETumbleweed
 $ mkdir -p sd/root
 # ROOT partition is the 3e partition
-$ sudo mount /dev/sdb3 ~/OpenSuseTumbleweed/sd/root
+$ sudo mount /dev/sdb3 ~/OpenSUSETumbleweed/sd/root
 # copy kernel files
-$ sudo cp linux/arch/riscv/boot/dts/starfive/jh7110-visionfive-v2.dtb ~/OpenSuseTumbleweed/sd/root/boot/dtb-6.1.31+
-$ sudo cp linux/arch/riscv/boot/Image ~/OpenSuseTumbleweed/sd/root/boot/Image-6.1.31+
-$ sudo cp linux/System.map ~/OpenSuseTumbleweed/sd/root/boot/System.map-6.1.31+
-$ sudo cp modules/lib/modules/6.1.31+ ~/OpenSuseTumbleweed/sd/root/usr/lib/modules -R
+$ sudo cp linux/arch/riscv/boot/dts/starfive/jh7110-visionfive-v2.dtb ~/OpenSUSETumbleweed/sd/root/boot/dtb-6.1.31+
+$ sudo cp linux/arch/riscv/boot/Image ~/OpenSUSETumbleweed/sd/root/boot/Image-6.1.31+
+$ sudo cp linux/System.map ~/OpenSUSETumbleweed/sd/root/boot/System.map-6.1.31+
+$ sudo cp modules/lib/modules/6.1.31+ ~/OpenSUSETumbleweed/sd/root/usr/lib/modules -R
 ```
 
 #### Edit grub2.cfg
@@ -495,7 +511,7 @@ $ sudo cp modules/lib/modules/6.1.31+ ~/OpenSuseTumbleweed/sd/root/usr/lib/modul
 We need to edit the current grub2.cfg so we can boot the created kernel.
 
 ```bash
-sudo nano ~/OpenSuseTumbleweed/sd/root/boot/grub2/grub.cfg
+sudo nano ~/OpenSUSETumbleweed/sd/root/boot/grub2/grub.cfg
 ```
 
 Scroll until tou see:
@@ -544,7 +560,7 @@ Save and Exit
 I needed this, i think the kernel has no vfat compiled.
 
 ```bash
-sudo nano ~/OpenSuseTumbleweed/sd/root/etc/fstab
+sudo nano ~/OpenSUSETumbleweed/sd/root/etc/fstab
 ```
 
 from:
@@ -568,7 +584,7 @@ UUID=c0fea55f-b955-491e-82fb-eef04b20619d / ext4 noatime,nobarrier 0 1
 We need to add a grub option, so as we rebuild grub (get a new grub2.cfg) we still can boot the custom kernel.
 
 ```bash
-sudo nano ~/OpenSuseTumbleweed/sd/root/etc/grub.d/40_custom
+sudo nano ~/OpenSUSETumbleweed/sd/root/etc/grub.d/40_custom
 ```
 
 ```ini
@@ -595,7 +611,7 @@ menuentry 'openSUSE Tumbleweed, with Linux 6.1.31+' {
 De default boot option is item 0. We have added a new custom item we want to boot in the future as default.
 
 ```bash
-$ sudo nano ~/OpenSuseTumbleweed/sd/root/etc/default/grub
+$ sudo nano ~/OpenSUSETumbleweed/sd/root/etc/default/grub
 ```
 
 from:
@@ -614,15 +630,16 @@ GRUB_DEFAULT=3
 
 ```bash
 # umount again
-$ sudo umount ~/OpenSuseTumbleweed/sd/root
+$ sudo umount ~/OpenSUSETumbleweed/sd/root
 ```
 
 ## GParted
 
 The root-partition will not be resized. So we have to do this.
 I use GParted, yes it can be done command-line but this is easyer.
-![fix blocka](OpenSuseATIRadeonR9_290/fix_blocks.png)
-![fix blocka](OpenSuseATIRadeonR9_290/resize.png)
+![fix blocka](OpenSUSEATIRadeonR9_290/fix_blocks.png)
+Hit Fix!
+![fix blocka](OpenSUSEATIRadeonR9_290/resize.png)
 and apply the changes!
 
 ## Boot the StarFive VisionFive 2
@@ -878,10 +895,31 @@ Continue? [y/n/v/...? shows all options] (y): y
 ...
 ...
 ...
+(1118/1128) Installing: sddm-0.20.0-4.1.riscv64 ..........................[done]
+(1119/1128) Installing: plasma5-workspace-branding-openSUSE-84.87~git20231[done]
+update-alternatives: using /usr/share/xsessions/plasma5.desktop to provide /usr/share/xsessions/default.desktop (default-xsession.desktop) in auto mode
+(1120/1128) Installing: plasma5-session-5.27.10-3.1.noarch ...............[done]
+(1121/1128) Installing: pim-sieve-editor-23.08.4-1.1.riscv64 .............[done]
+(1122/1128) Installing: patterns-base-x11-20200505-47.1.riscv64 ..........[done]
+(1123/1128) Installing: patterns-base-x11_enhanced-20200505-47.1.riscv64 .[done]
+(1124/1128) Installing: plasma5-session-wayland-5.27.10-3.1.riscv64 ......[done]
+(1125/1128) Installing: patterns-kde-kde_pim-20231206-2.1.noarch .........[done]
+(1126/1128) Installing: patterns-games-games-20220126-1.2.riscv64 ........[done]
+(1127/1128) Installing: patterns-kde-kde_plasma-20231206-2.1.noarch ......[done]
+(1128/1128) Installing: patterns-kde-kde-20231206-2.1.noarch .............[done]
+%posttrans(java-11-openjdk-headless-11.0.22.0-17.1.riscv64) script output:
+++ /usr/bin/file --mime-type -b /var/lib/ca-certificates/java-cacerts
+++ stat -c %s /usr/lib64/jvm/java-11-openjdk-11/lib/security/cacerts
+++ /usr/bin/file --mime-type -b -L /usr/lib64/jvm/java-11-openjdk-11/lib/security/cacerts
+Running post-transaction scripts .........................................[done]
+Update notifications were received from the following packages:
+mariadb-11.2.2-28.1.riscv64 (/var/adm/update-messages/mariadb-11.2.2-28.1-something)
+View the notifications now? [y/n] (n):
+
 # reboot, sometimes it hangs! then hard reset the board!
 $ reboot
 ```
 
-Done! You will now have OpenSuse on RISC-V
+Done! You will now have OpenSUSE with KDE on RISC-V
 
-![screenshot of OpenSuse on RISC-V](OpenSuseATIRadeonR9_290/screenshot.png)
+![screenshot of OpenSUSE on RISC-V](OpenSUSEATIRadeonR9_290/Screenshot_OpenSUSE_Tumbleweed.png)
