@@ -155,6 +155,73 @@ $ cp /home/opvolger/Downloads/SF2_2023_11_20/visionfive2/kernel_modules/lib/modu
 $ rm usr/lib/modules/6.6.0+/build
 $ rm usr/lib/modules/5.15.0-starfive -rf
 $ find . | cpio -H newc -o | zstd -19 --ultra -o ../initrd.img-6.6.0+
+$ find . | cpio -H newc -o | gzip -9 > ../initrd-6.1.31+.img
 $ cp ../initrd.img-6.6.0+ /run/media/opvolger/cloudimg-rootfs/boot/
 $ exit
+```
+
+https://forum.rvspace.org/t/nvme-boot-using-visionfive2-software-v2-11-5/2464
+
+Boot from emmc OpenSUSE
+
+```bash
+mmc info
+mmc dev 0 # == emmc
+mmc dev 1 # == sd
+mmc part
+
+ext4ls mmc 1:4 # ls for mmc dev 1 part 4
+```
+
+Boot from emmc OpenSUSE
+
+```bash
+ext4load mmc 0:3 ${kernel_addr_r} /boot/vmlinuz-6.1.31+
+ext4load mmc 0:3 ${ramdisk_addr_r} /boot/initrd.img-6.1.31+
+ext4load mmc 0:3 ${fdt_addr_r} /boot/dtb-6.1.31+
+#setenv bootargs 'console=ttyS0,115200 debug rootwait earlycon=sbi'
+setenv bootargs 'root=/dev/mmcblk0p3 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+#setenv kernel_comp_addr_r 0x88000000
+setenv kernel_comp_addr_r 0x50000000
+#setenv kernel_comp_size 0x4000000
+setenv kernel_comp_size 0x04000000
+booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
+```
+
+Boot Fedora
+
+```bash
+# https://www.mail-archive.com/devel@openvz.org/msg41066.html
+make CROSS_COMPILE=riscv64-linux-gnu- ARCH=riscv menuconfig
+make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- -j 16
+make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- INSTALL_MOD_PATH=~/OpenSUSETumbleweed/modules modules_install -j 16 
+
+
+rm /home/opvolger/Downloads/SF2_2023_11_20/fedora/vmlinuz-6.1.31+ --force
+rm /home/opvolger/Downloads/SF2_2023_11_20/fedora/System.map-6.1.31+ --force
+rm /home/opvolger/Downloads/SF2_2023_11_20/fedora/dtb-6.1.31+ --force
+cp /home/opvolger/OpenSUSETumbleweed/linux/arch/riscv/boot/Image.gz /home/opvolger/Downloads/SF2_2023_11_20/fedora/vmlinuz-6.1.31+
+cp /home/opvolger/OpenSUSETumbleweed/linux/System.map /home/opvolger/Downloads/SF2_2023_11_20/fedora/System.map-6.1.31+
+cp /home/opvolger/OpenSUSETumbleweed/linux/arch/riscv/boot/dts/starfive/jh7110-visionfive-v2.dtb /home/opvolger/Downloads/SF2_2023_11_20/fedora/dtb-6.1.31+
+rm /home/opvolger/Downloads/SF2_2023_11_20/fedora/ramdisk/usr/lib/modules/6.1.31+ -rf
+cp /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+ /home/opvolger/Downloads/SF2_2023_11_20/fedora/ramdisk/usr/lib/modules -R
+cd /home/opvolger/Downloads/SF2_2023_11_20/fedora/ramdisk
+rm ../initrd-6.1.31+.img --force
+find . | cpio -H newc -o | gzip -9 > ../initrd-6.1.31+.img
+cp ../*6.1.31+ /run/media/opvolger/__boot
+cp ../initrd-6.1.31+.img /run/media/opvolger/__boot
+
+```
+
+```bash
+ext4load mmc 1:2 ${kernel_addr_r} /vmlinuz-6.1.31+
+ext4load mmc 1:2 ${fdt_addr_r} /dtb-6.1.31+
+ext4load mmc 1:2 ${ramdisk_addr_r} /initrd-6.1.31+.img
+#setenv bootargs 'console=ttyS0,115200 debug rootwait earlycon=sbi'
+setenv bootargs 'ro root=UUID=ee62c484-2eaf-45d7-937c-02fbe3ad8535 quiet LANG=en_US.UTF-8 rootflags=subvol=root'
+#setenv kernel_comp_addr_r 0x88000000
+setenv kernel_comp_addr_r 0x50000000
+#setenv kernel_comp_size 0x4000000
+setenv kernel_comp_size 0x04000000
+booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
 ```

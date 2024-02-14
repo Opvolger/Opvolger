@@ -9,6 +9,8 @@ The OpenSUSE Tumbleweed image uses a kernel that does not yet have the PCIe patc
 
 So I have created my own kernel and updated the efi/root partition a little bit to boot OpenSUSE Tumbleweed with external GPU.
 
+See the YouTube Video for the end result: [video](https://www.youtube.com/watch?v=65Ruq_NOBe8)
+
 The entire manual works from 1 directory. In my case ~/OpenSUSETumbleweed
 
 ```bash
@@ -923,3 +925,48 @@ $ reboot
 Done! You will now have OpenSUSE with KDE on RISC-V
 
 ![screenshot of OpenSUSE on RISC-V](OpenSUSEATIRadeonR9_290/Screenshot_OpenSUSE_Tumbleweed.png)
+
+## After Updates
+
+After running updates the system gives my only a grub prompt.
+I fixxed that by recreating the `grup.cfg` on the EFI partition
+
+```bash
+$ sudo mount /dev/sdb1 ~/OpenSUSETumbleweed/sd/efi/
+$ sudo blkid
+...
+...
+...
+/dev/sda3: TYPE="BitLocker" PARTLABEL="Basic data partition" PARTUUID="a4305c27-eb7f-4ab2-a711-e6f9420bf175"
+/dev/sda4: BLOCK_SIZE="512" UUID="8698031798030581" TYPE="ntfs" PARTUUID="5633b16b-b2ed-4f0c-b9f1-38471da05550"
+/dev/sdb1: SEC_TYPE="msdos" LABEL_FATBOOT="EFI" LABEL="EFI" UUID="9035-7EB0" BLOCK_SIZE="512" TYPE="vfat" PARTLABEL="p.UEFI" PARTUUID="1efd457e-107c-4159-8ca7-70f808bb0975"
+/dev/sdb3: LABEL="ROOT" UUID="c0fea55f-b955-491e-82fb-eef04b20619d" BLOCK_SIZE="4096" TYPE="ext4" PARTLABEL="p.lxroot" PARTUUID="ae391a45-c12f-48f8-b9af-3c1c5872db1f"
+/dev/sdb5: LABEL="SWAP" UUID="9a7b06a0-0385-44c1-8487-8881b55420ab" TYPE="swap" PARTLABEL="p.swap" PARTUUID="59a6c3a5-1cae-47e1-9c14-4899c752c449"
+/dev/zram0: LABEL="zram0" UUID="8a74b26d-ba01-4e1e-aaa7-08f769c4d7f2" TYPE="swap"
+/dev/sdb4: PARTLABEL="spl" PARTUUID="3e53f545-ccaa-4ba4-bde8-1bf3826557d9"
+/dev/sdb2: PARTLABEL="uboot" PARTUUID="a3a77f65-d8e8-4450-a3b2-b06faf72bff2"
+/dev/sda2: PARTLABEL="Microsoft reserved partition" PARTUUID="44d42eb1-d5aa-47ca-a146-dcb13723529c"
+
+$ sudo nano ~/OpenSUSETumbleweed/sd/efi/EFI/BOOT/grub.cfg
+```
+
+and set this back: (have a good look if it is the correct UUID my /dev/sdb3 == c0fea55f-b955-491e-82fb-eef04b20619d)
+
+```ini
+set btrfs_relative_path="yes"
+search --fs-uuid --set=root c0fea55f-b955-491e-82fb-eef04b20619d
+set prefix=($root)/boot/grub2
+source ($root)/boot/grub2/grub.cfg
+```
+
+```bash
+$ sudo umount ~/OpenSUSETumbleweed/sd/efi/
+```
+
+Boot your VisionFive again!
+
+## Compile yquake2 / duke3d
+
+```bash
+zypper install libcurl-devel git SDL2-devel git openal-soft-devel libvpx-devel alsa-devel flac-devel
+```
