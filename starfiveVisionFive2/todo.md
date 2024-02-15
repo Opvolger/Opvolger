@@ -213,6 +213,8 @@ cp ../initrd-6.1.31+.img /run/media/opvolger/__boot
 
 ```
 
+https://command-not-found.com/mkimage
+
 ```bash
 ext4load mmc 1:2 ${kernel_addr_r} /vmlinuz-6.1.31+
 ext4load mmc 1:2 ${fdt_addr_r} /dtb-6.1.31+
