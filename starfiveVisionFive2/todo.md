@@ -218,12 +218,21 @@ cp /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+ /home/opvolger/
 cd /home/opvolger/Downloads/SF2_2023_11_20/fedora/ramdisk
 rm ../initrd-6.1.31+.img --force
 find . | cpio -H newc -o | gzip -9 > ../initrd-6.1.31+.img
-cp ../*6.1.31+ /run/media/opvolger/__boot
-cp ../initrd-6.1.31+.img /run/media/opvolger/__boot
-
+yes | cp ../dtb-6.1.31+ /run/media/opvolger/__boot
+yes | cp ../vmlinuz-6.1.31+ /run/media/opvolger/__boot
+yes | cp ../System.map-6.1.31+ /run/media/opvolger/__boot
+yes | cp ../initrd-6.1.31+.img /run/media/opvolger/__boot
+mkimage -C none -A riscv -T script -d /home/opvolger/code/Opvolger/starfiveVisionFive2/FedoraATIRadeon5450/boot.cmd /run/media/opvolger/__boot/boot.scr
 ```
 
 https://command-not-found.com/mkimage
+https://stackoverflow.com/questions/28891221/uenv-txt-vs-boot-scr
+https://github.com/linux-sunxi/u-boot-sunxi/wiki
+
+```bash
+load mmc 1:2 ${scriptaddr} boot.scr; source ${scriptaddr}
+sysboot mmc 1:2 any ${scriptaddr} /extlinux/extlinux.conf
+```
 
 ```bash
 ext4load mmc 1:2 ${kernel_addr_r} /vmlinuz-6.1.31+
