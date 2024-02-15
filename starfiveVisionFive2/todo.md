@@ -190,6 +190,15 @@ booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
 
 Boot Fedora
 
+```ini
+modulename:  zram.ko
+configname: CONFIG_ZRAM
+Linux Kernel Configuration
+└─>Device Drivers
+└─>Block devices
+└─>Compressed RAM block device support
+```
+
 ```bash
 # https://www.mail-archive.com/devel@openvz.org/msg41066.html
 make CROSS_COMPILE=riscv64-linux-gnu- ARCH=riscv menuconfig
@@ -225,3 +234,16 @@ setenv kernel_comp_addr_r 0x50000000
 setenv kernel_comp_size 0x04000000
 booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
 ```
+
+```bash
+$ sudo nano ~/visionfive2/root/etc/yum.repos.d/fedora.repo
+```
+
+If you want to disable the GPG validation for the whole Repo, add the following line to the Repo definition in /etc/yum.conf:
+
+gpgcheck=0
+
+# baseurl=http://fedora.riscv.rocks/repos-dist/f39/latest/riscv64/
+# http://fedora.riscv.rocks/repos-dist/f40/latest/riscv64/
+# http://fedora.riscv.rocks/repos/f40-build/latest/riscv64/repodata/
+# http://fedora.riscv.rocks/repos-dist/f40/latest/
