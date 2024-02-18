@@ -180,6 +180,10 @@ ext4load mmc 0:3 ${kernel_addr_r} /boot/vmlinuz-6.1.31+
 ext4load mmc 0:3 ${fdt_addr_r} /boot/dtb-6.1.31+
 ext4load mmc 0:3 ${ramdisk_addr_r} /boot/initrd.img-6.1.31+
 
+ext4load mmc 1:3 ${kernel_addr_r} /boot/vmlinuz-6.6.0+
+ext4load mmc 1:3 ${fdt_addr_r} /boot/dtb-6.6.0+
+ext4load mmc 1:3 ${ramdisk_addr_r} /boot/initrd-6.6.0+.img
+
 #setenv bootargs 'console=ttyS0,115200 debug rootwait earlycon=sbi'
 setenv bootargs 'root=/dev/mmcblk0p3 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
 #setenv kernel_comp_addr_r 0x88000000
@@ -187,6 +191,46 @@ setenv kernel_comp_addr_r 0x50000000
 #setenv kernel_comp_size 0x4000000
 setenv kernel_comp_size 0x04000000
 booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
+```
+
+```bash
+pacman -S xorg plasma plasma-wayland-session kde-applications --ignore kcharselect,kde-dev-scripts,kontrast,gwenview,kpkpass,keysmith,kdbgsettings
+```
+
+```bash
+git clone https://github.com/starfive-tech/Tools.git
+git clone https://github.com/starfive-tech/opensbi.git
+git clone https://github.com/starfive-tech/u-boot.git
+
+git clone https://github.com/u-boot/u-boot.git
+git clone https://github.com/riscv-software-src/opensbi.git
+
+make -C Tools/spl_tool
+# https://github.com/starfive-tech/VisionFive2/blob/JH7110_VisionFive2_devel/Makefile
+# https://en.opensuse.org/VisionFive2:Tips#Downstream_firmware_construction
+
+make -C u-boot ARCH=riscv starfive_visionfive2_defconfig
+make -C u-boot ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- -j16 OPENSBI=../opensbi/build/platform/generic/firmware/fw_dynamic.bin 
+
+make -C opensbi ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- PLATFORM=generic FW_PAYLOAD_PATH=../u-boot/u-boot.bin FW_FDT_PATH=../u-boot/arch/riscv/dts/jh7110-starfive-visionfive-2.dtb FW_TEXT_START=0x40000000
+make -C opensbi ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- PLATFORM=generic FW_PAYLOAD_PATH=../u-boot/u-boot.bin FW_FDT_PATH=../u-boot/arch/riscv/dts/starfive_visionfive2.dtb FW_TEXT_START=0x40000000
+
+wget https://raw.githubusercontent.com/starfive-tech/VisionFive2/JH7110_VisionFive2_devel/conf/visionfive2-uboot-fit-image.its
+# change location of fw_payload.bin
+nano visionfive2-uboot-fit-image.its
+mkimage -f visionfive2-uboot-fit-image.its -A riscv -O u-boot -T firmware visionfive2_fw_payload.img
+./Tools/spl_tool/spl_tool -c -f u-boot/spl/u-boot-spl.bin 0x01010101
+
+sudo /sbin/sgdisk --clear  \
+    --new=1:4096:8191     --change-name=1:"spl"   --typecode=1:2E54B353-1271-4842-806F-E436D6AF6985   \
+    --new=2:8192:16383 --change-name=2:"uboot" --typecode=2:5B193300-FC78-40CD-8002-E86C45580B47 \
+    /dev/sdb
+/sbin/partprobe
+
+# SPL:
+sudo dd if=u-boot/spl/u-boot-spl.bin.normal.out of=/dev/sdb1
+# U-Boot:
+sudo dd if=visionfive2_fw_payload.img of=/dev/sdb2
 ```
 
 Boot Fedora
@@ -202,34 +246,102 @@ Linux Kernel Configuration
 
 ```bash
 # https://www.mail-archive.com/devel@openvz.org/msg41066.html
-make CROSS_COMPILE=riscv64-linux-gnu- ARCH=riscv menuconfig
-make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- -j 16
-make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- INSTALL_MOD_PATH=~/OpenSUSETumbleweed/modules modules_install -j 16 
 
+linux_dir=/home/opvolger/starfive/upstream
+kernel_ver="6.6.0+"
+dtb_filename=jh7110-starfive-visionfive-2-v1.3b.dtb
+boot_dir=/run/media/opvolger/ROOT/boot/
+tmp_dir=/home/opvolger/OpenSUSETumbleweed/tmp/boot
+module_dir=/home/opvolger/OpenSUSETumbleweed/tmp/modules
 
-rm /home/opvolger/Downloads/SF2_2023_11_20/fedora/vmlinuz-6.1.31+ --force
-rm /home/opvolger/Downloads/SF2_2023_11_20/fedora/System.map-6.1.31+ --force
-rm /home/opvolger/Downloads/SF2_2023_11_20/fedora/dtb-6.1.31+ --force
-cp /home/opvolger/OpenSUSETumbleweed/linux/arch/riscv/boot/Image.gz /home/opvolger/Downloads/SF2_2023_11_20/fedora/vmlinuz-6.1.31+
-cp /home/opvolger/OpenSUSETumbleweed/linux/System.map /home/opvolger/Downloads/SF2_2023_11_20/fedora/System.map-6.1.31+
-cp /home/opvolger/OpenSUSETumbleweed/linux/arch/riscv/boot/dts/starfive/jh7110-visionfive-v2.dtb /home/opvolger/Downloads/SF2_2023_11_20/fedora/dtb-6.1.31+
-rm /home/opvolger/Downloads/SF2_2023_11_20/fedora/ramdisk/usr/lib/modules/6.1.31+ -rf
-cp /home/opvolger/OpenSUSETumbleweed/modules/lib/modules/6.1.31+ /home/opvolger/Downloads/SF2_2023_11_20/fedora/ramdisk/usr/lib/modules -R
-cd /home/opvolger/Downloads/SF2_2023_11_20/fedora/ramdisk
-rm ../initrd-6.1.31+.img --force
-find . | cpio -H newc -o | gzip -9 > ../initrd-6.1.31+.img
-yes | cp ../dtb-6.1.31+ /run/media/opvolger/__boot
-yes | cp ../vmlinuz-6.1.31+ /run/media/opvolger/__boot
-yes | cp ../System.map-6.1.31+ /run/media/opvolger/__boot
-yes | cp ../initrd-6.1.31+.img /run/media/opvolger/__boot
+linux_dir=/home/opvolger/OpenSUSETumbleweed/linux
+kernel_ver="6.1.31+"
+dtb_filename=jh7110-visionfive-v2.dtb
+boot_dir=/run/media/opvolger/__boot
+tmp_dir=/home/opvolger/Downloads/SF2_2023_11_20/fedora
+module_dir=/home/opvolger/OpenSUSETumbleweed/modules
+
+make -C $linux_dirCROSS_COMPILE=riscv64-linux-gnu- ARCH=riscv menuconfig
+make -C $linux_dir ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- -j 16
+make -C $linux_dir ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- INSTALL_MOD_PATH=$module_dir modules_install -j 16
+
+rm $tmp_dir/vmlinuz-$kernel_ver --force
+rm $tmp_dir/System.map-$kernel_ver --force
+rm $tmp_dir/dtb-$kernel_ver --force
+
+cp $linux_dir/arch/riscv/boot/Image.gz $tmp_dir/vmlinuz-$kernel_ver
+cp $linux_dir/System.map $tmp_dir/System.map-$kernel_ver
+cp $linux_dir/arch/riscv/boot/dts/starfive/$dtb_filename $tmp_dir/dtb-$kernel_ver
+
+rm $tmp_dir/ramdisk/usr/lib/modules/$kernel_ver -rf
+cp $module_dir/lib/modules/$kernel_ver $tmp_dir/ramdisk/usr/lib/modules -R
+cd $tmp_dir/ramdisk
+rm ../initrd-$kernel_ver.img --force
+find . | cpio -H newc -o | gzip -9 > ../initrd-$kernel_ver.img
+yes | cp ../dtb-$kernel_ver $boot_dir
+yes | cp ../vmlinuz-$kernel_ver $boot_dir
+yes | cp ../System.map-$kernel_ver $boot_dir
+yes | cp ../initrd-$kernel_ver.img $boot_dir
+
 mkimage -C none -A riscv -T script -d /home/opvolger/code/Opvolger/starfiveVisionFive2/FedoraATIRadeon5450/boot.cmd /run/media/opvolger/__boot/boot.scr
+cpio -i -F initrd.img-5.15.0
 ```
+
+```
+load mmc 0:1 ${scriptaddr} boot.scr; source ${scriptaddr}
+
+load mmc 1:3 ${scriptaddr} boot.scr; source ${scriptaddr}
+```
+
+```bash
+mkdir $tmp_dir/ramdisk/lib/firmware/radeon
+mkdir $tmp_dir/ramdisk/lib/firmware/amdgpu
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/CYPRESS_uvd.bin $tmp_dir/ramdisk/lib/firmware/radeon/CYPRESS_uvd.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/CEDAR_smc.bin $tmp_dir/ramdisk/lib/firmware/radeon/CEDAR_smc.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/CEDAR_me.bin $tmp_dir/ramdisk/lib/firmware/radeon/CEDAR_me.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/CEDAR_pfp.bin $tmp_dir/ramdisk/lib/firmware/radeon/CEDAR_pfp.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/CEDAR_rlc.bin $tmp_dir/ramdisk/lib/firmware/radeon/CEDAR_rlc.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/amdgpu/hawaii_k_smc.bin $tmp_dir/ramdisk/lib/firmware/amdgpu/hawaii_k_smc.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/amdgpu/hawaii_smc.bin $tmp_dir/ramdisk/lib/firmware/amdgpu/hawaii_smc.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/amdgpu/hawaii_uvd.bin $tmp_dir/ramdisk/lib/firmware/amdgpu/hawaii_uvd.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/amdgpu/hawaii_vce.bin $tmp_dir/ramdisk/lib/firmware/amdgpu/hawaii_vce.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/amdgpu/hawaii_sdma.bin $tmp_dir/ramdisk/lib/firmware/amdgpu/hawaii_sdma.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/amdgpu/hawaii_sdma1.bin $tmp_dir/ramdisk/lib/firmware/amdgpu/hawaii_sdma1.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/amdgpu/hawaii_pfp.bin $tmp_dir/ramdisk/lib/firmware/amdgpu/hawaii_pfp.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/amdgpu/hawaii_me.bin $tmp_dir/ramdisk/lib/firmware/amdgpu/hawaii_me.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/amdgpu/hawaii_ce.bin $tmp_dir/ramdisk/lib/firmware/amdgpu/hawaii_ce.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/amdgpu/hawaii_rlc.bin $tmp_dir/ramdisk/lib/firmware/amdgpu/hawaii_rlc.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/amdgpu/hawaii_mec.bin $tmp_dir/ramdisk/lib/firmware/amdgpu/hawaii_mec.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/amdgpu/hawaii_mc.bin $tmp_dir/ramdisk/lib/firmware/amdgpu/hawaii_mc.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/hawaii_pfp.bin $tmp_dir/ramdisk/lib/firmware/radeon/hawaii_pfp.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/hawaii_me.bin $tmp_dir/ramdisk/lib/firmware/radeon/hawaii_me.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/hawaii_ce.bin $tmp_dir/ramdisk/lib/firmware/radeon/hawaii_ce.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/hawaii_mec.bin $tmp_dir/ramdisk/lib/firmware/radeon/hawaii_mec.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/hawaii_mc.bin $tmp_dir/ramdisk/lib/firmware/radeon/hawaii_mc.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/hawaii_rlc.bin $tmp_dir/ramdisk/lib/firmware/radeon/hawaii_rlc.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/hawaii_sdma.bin $tmp_dir/ramdisk/lib/firmware/radeon/hawaii_sdma.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/hawaii_smc.bin $tmp_dir/ramdisk/lib/firmware/radeon/hawaii_smc.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/hawaii_k_smc.bin $tmp_dir/ramdisk/lib/firmware/radeon/hawaii_k_smc.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/HAWAII_pfp.bin $tmp_dir/ramdisk/lib/firmware/radeon/HAWAII_pfp.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/HAWAII_me.bin $tmp_dir/ramdisk/lib/firmware/radeon/HAWAII_me.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/HAWAII_ce.bin $tmp_dir/ramdisk/lib/firmware/radeon/HAWAII_ce.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/HAWAII_mec.bin $tmp_dir/ramdisk/lib/firmware/radeon/HAWAII_mec.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/HAWAII_mc.bin $tmp_dir/ramdisk/lib/firmware/radeon/HAWAII_mc.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/HAWAII_mc2.bin $tmp_dir/ramdisk/lib/firmware/radeon/HAWAII_mc2.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/HAWAII_rlc.bin $tmp_dir/ramdisk/lib/firmware/radeon/HAWAII_rlc.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/HAWAII_sdma.bin $tmp_dir/ramdisk/lib/firmware/radeon/HAWAII_sdma.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/radeon/HAWAII_smc.bin $tmp_dir/ramdisk/lib/firmware/radeon/HAWAII_smc.bin
+cp /home/opvolger/OpenSUSETumbleweed/linux-firmware/rt2870.bin $tmp_dir/ramdisk/lib/firmware/rt2870.bin
+
+```
+
 
 https://command-not-found.com/mkimage
 https://stackoverflow.com/questions/28891221/uenv-txt-vs-boot-scr
 https://github.com/linux-sunxi/u-boot-sunxi/wiki
 
 ```bash
+load mmc 0:1 ${scriptaddr} boot.scr; source ${scriptaddr}
 load mmc 1:2 ${scriptaddr} boot.scr; source ${scriptaddr}
 sysboot mmc 1:2 any ${scriptaddr} /extlinux/extlinux.conf
 ```
@@ -259,3 +371,8 @@ gpgcheck=0
 # http://fedora.riscv.rocks/repos-dist/f40/latest/riscv64/
 # http://fedora.riscv.rocks/repos/f40-build/latest/riscv64/repodata/
 # http://fedora.riscv.rocks/repos-dist/f40/latest/
+
+```bash
+sudo dnf system-upgrade download --releasever=rawhide --exclude=sdubby
+sudo dnf system-upgrade download --releasever=40 --exclude=sdubby
+```
