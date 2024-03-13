@@ -173,6 +173,16 @@ mmc part
 ext4ls mmc 1:4 # ls for mmc dev 1 part 4
 ```
 
+Boot Ubuntu
+
+```bash
+ext4load mmc 1:1 ${kernel_addr_r} /boot/vmlinuz-6.1.31+
+ext4load mmc 1:1 ${fdt_addr_r} /boot/dtb-6.1.31+
+ext4load mmc 1:1 ${ramdisk_addr_r} /boot/initrd.img-6.1.31+
+setenv bootargs 'root=/dev/mmcblk1p1 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
+```
+
 Boot from emmc OpenSUSE
 
 ```bash
