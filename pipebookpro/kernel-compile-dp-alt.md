@@ -67,4 +67,5 @@ CONFIG_DMI=y
 
 ```bash
 $ make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j 16
+$ make ARCH=riscv CROSS_COMPILE=aarch64-linux-gnu- INSTALL_MOD_PATH=/home/opvolger/code/linux-lts/modules modules_install -j 16 
 ```

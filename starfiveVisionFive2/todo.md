@@ -376,3 +376,97 @@ gpgcheck=0
 sudo dnf system-upgrade download --releasever=rawhide --exclude=sdubby
 sudo dnf system-upgrade download --releasever=40 --exclude=sdubby
 ```
+
+Mesa
+
+[ 1706s] cpio: glibc-2.39/include/dso_handle.h: Cannot stat: No such file or directory
+[ 1706s] cpio: glibc-2.39/include/stdlib.h: Cannot stat: No such file or directory
+[ 1706s] cpio: glibc-2.39/stdlib/: Cannot stat: No such file or directory
+[ 1706s] cpio: glibc-2.39/stdlib/atexit.c: Cannot stat: No such file or directory
+[ 1706s] cpio: glibc-2.39/sysdeps/riscv/nptl/tls.h: Cannot stat: No such file or directory
+
+
+```bash
+docker run --privileged -it registry.opensuse.org/opensuse/tumbleweed-dnf:latest bash
+
+dnf install osc obs-* sudo util-linux rpm build-initvm-* hostname kmod nano cpio glibc zig-libs
+osc -A https://api.opensuse.org checkout home:Andreas_Schwab:riscv:mesa/Mesa && cd $_
+nano Mesa.spec
+# change line 874 add ,zink
+# add 192
+# %ifarch ppc64 ppc64le riscv64
+# BuildRequires:  pkgconfig(vulkan)
+# %endif
+osc build standard riscv64
+osc build standard riscv64 -M drivers
+dockerid=d03360d16812
+
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/SRPMS/Mesa-23.3.6-0.src.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libglapi0-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libgbm-devel-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libOSMesa8-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libGL1-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libEGL-devel-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-devel-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libgbm1-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libglapi0-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libgbm1-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libGLESv3-devel-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libOSMesa-devel-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libGL1-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-debugsource-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libGLESv1_CM-devel-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libEGL1-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libGLESv2-devel-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libEGL1-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-KHR-devel-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libglapi-devel-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libOSMesa8-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-dri-devel-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libGL-devel-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+
+
+
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/SRPMS/Mesa-drivers-23.3.6-0.src.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libvdpau_nouveau-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libvdpau_virtio_gpu-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-dri-nouveau-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-vulkan-device-select-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libxatracker2-1.0.0-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libvdpau_r600-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libva-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libvdpau_radeonsi-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libvulkan_lvp-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libvdpau_r600-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-vulkan-overlay-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libRusticlOpenCL-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/docker cp $dockerid:opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-drivers-debugsource-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-vulkan-device-select-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/docker cp $dockerid:opensuseMeta
+/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libvdpau_virtio_gpu-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/docker cp $dockerid:opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libvdpau_radeonsi-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libxatracker-devel-1.0.0-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-gallium-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-dri-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libOpenCL-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-dri-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-gallium-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libRusticlOpenCL-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-vulkan-overlay-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/docker cp $dockerid:opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libvulkan_radeon-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libvulkan_lvp-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-dri-nouveau-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libOpenCL-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libvdpau_nouveau-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libvulkan_radeon-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/libxatracker2-debuginfo-1.0.0-0.riscv64.rpm /home/opvolger/opensuseMeta
+docker cp $dockerid:/var/tmp/build-root/standard-riscv64/home/abuild/rpmbuild/RPMS/riscv64/Mesa-libva-debuginfo-23.3.6-0.riscv64.rpm /home/opvolger/opensuseMeta
+
+
+
+cd /home/opvolger/opensuseMeta
+scp *.rpm 192.168.2.22:/home/opvolger/mesa
+
+
+dnf install *.rpm --allowerasing
+```
