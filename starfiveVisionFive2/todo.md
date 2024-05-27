@@ -480,3 +480,39 @@ scp *.rpm 192.168.2.22:/home/opvolger/mesa
 
 dnf install *.rpm --allowerasing
 ```
+
+Boot 6.6 kernel from github or local build
+
+```bash
+setenv ipaddr 192.168.2.222; setenv serverip 192.168.2.29
+
+# boot AMD kernel
+tftpboot ${fdt_addr_r} jh7110-starfive-visionfive-2-v1.3b.dtb;
+tftpboot ${kernel_addr_r} Image.gz;
+#ext4load mmc 0:3 ${ramdisk_addr_r} /boot/initrd.img-6.1.31+
+run chipa_set_linux;run cpu_vol_set;
+setenv bootargs 'root=/dev/mmcblk0p3 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+#booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
+booti $kernel_addr_r - $fdt_addr_r
+
+#or
+
+ext4load mmc 0:3 ${fdt_addr_r} /home/opvolger/jh7110-starfive-visionfive-2-v1.3b.dtb;ext4load mmc 0:3 ${kernel_addr_r} /home/opvolger/Image.gz;
+setenv bootargs 'root=/dev/mmcblk0p3 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0';booti $kernel_addr_r - $fdt_addr_r
+
+#or
+
+ext4load mmc 0:3 ${scriptaddr} /home/opvolger/boot.scr; source ${scriptaddr}
+
+# boot downloaded kernel from tftp
+tftpboot ${loadaddr} image.fit;
+# of from emmc
+ext4load mmc 0:3 ${loadaddr} /home/opvolger/image.fit
+
+setenv bootargs 'root=/dev/mmcblk0p3 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+bootm start ${loadaddr};bootm loados ${loadaddr};run chipa_set_linux;run cpu_vol_set; booti ${kernel_addr_r} ${ramdisk_addr_r}:${filesize} ${fdt_addr_r};
+```
+
+```bash
+mkimage -C none -A riscv -T script -d /home/opvolger/code/Opvolger/starfiveVisionFive2/OpenSUSEATIRadeonR9_290/boot.cmd /home/opvolger/code/Opvolger/starfiveVisionFive2/OpenSUSEATIRadeonR9_290/boot.scr
+```
