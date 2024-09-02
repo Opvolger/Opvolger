@@ -39,11 +39,13 @@ $ make CROSS_COMPILE=riscv64-linux-gnu- ARCH=riscv menuconfig
 
 Select the next kernel options
 
+```
 Device Drivers
 └─>Generic Driver Options
     └─>Firmware loader
       () Build named firmware blobs into the kernel binary
       (../linux-firmware) Firmware blobs root directory
+```
 
 In the `Build named firmware blobs into the kernel binary`, you will need to add your blobs of your AMD video card. In my case it was the hawaii (R2 290) blobs.
 For example the 200-series you can find you "blob-names: on [wikipedia](https://en.wikipedia.org/wiki/Radeon_200_series)
@@ -64,6 +66,7 @@ Change Firmware blobs root directory to `../linux-firmware`
 amdgpu/hawaii_k_smc.bin amdgpu/hawaii_smc.bin amdgpu/hawaii_uvd.bin amdgpu/hawaii_vce.bin amdgpu/hawaii_sdma.bin amdgpu/hawaii_sdma1.bin amdgpu/hawaii_pfp.bin amdgpu/hawaii_me.bin amdgpu/hawaii_ce.bin amdgpu/hawaii_rlc.bin amdgpu/hawaii_mec.bin amdgpu/hawaii_mc.bin
 ```
 
+```
 Device Drivers
 └─>Block devices
       <*> RAM block device support
@@ -96,6 +99,7 @@ File systems  -> [HIT ENTER]
       [*] Include support for LZO compressed file systems [HIT SPACE]
       [*] Include support for XZ compressed file systems [HIT SPACE]
       [*] Include support for ZSTD compressed file systems [HIT SPACE]
+```
 
 After all the kernel options, I want to edit the .config file. I only want modules in the kernel, so I don't need a ramdrive (or can use one of older kernel).
 
