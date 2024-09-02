@@ -19,6 +19,7 @@ genHtml starfiveVisionFive2/FedoraATIRadeon5450 "StarFive VisionFive 2 Fedora AT
 genHtml starfiveVisionFive2/UbuntuATIRadeonR9_290 "StarFive VisionFive 2 Ubuntu 22.04 ATI Radeon R9 290"
 genHtml starfiveVisionFive2/UbuntuATIRadeonR9_290_2023_11_20 "StarFive VisionFive 2 Ubuntu 23.10 ATI Radeon R9 290"
 genHtml starfiveVisionFive2/OpenSUSEATIRadeonR9_290 "StarFive VisionFive 2 OpenSUSE Tumbleweed ATI Radeon R9 290"
+genHtml starfiveVisionFive2/OpenSUSEATIRadeonR9_290_mainline "StarFive VisionFive 2 OpenSUSE Tumbleweed ATI Radeon R9 290 mainline kernel"
 
 
 # TODO fix link .md to .html
