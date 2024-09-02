@@ -221,16 +221,6 @@ Resolving deltas: 100% (1233/1233), done.
 Updating files: 100% (3554/3554), done.
 
 # We need the kernel of StarFive, we do not need history so depth 1
-$ git clone --depth 1 git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git linux-firmware
-Cloning into 'linux-firmware'...
-remote: Enumerating objects: 3389, done.
-remote: Counting objects: 100% (3389/3389), done.
-remote: Compressing objects: 100% (2461/2461), done.
-remote: Total 3389 (delta 1233), reused 2471 (delta 832), pack-reused 0
-Receiving objects: 100% (3389/3389), 435.72 MiB | 13.27 MiB/s, done.
-Resolving deltas: 100% (1233/1233), done.
-Updating files: 100% (3554/3554), done.
-opvolger@desktop:~/OpenSUSETumbleweed$ ^C
 opvolger@desktop:~/OpenSUSETumbleweed$ git clone --branch VF2_6.1_v3.8.2 --depth 1 https://github.com/starfive-tech/linux.git
 Cloning into 'linux'...
 remote: Enumerating objects: 84693, done.
