@@ -15,6 +15,8 @@ genHtml kodi/npo "Kodi - NPO Uitzendinggemist"
 genHtml kodi/rtlxl "Kodi - RTLxl"
 genHtml kodi/kanalenlijst-hans "Kodi - Kanalenlijst Hans"
 
+genHtml milkVjupiter/OpenSUSEATIRadeonR9_290 "Milk-V Jupiter OpenSUSE Tumbleweed ATI Radeon R9 290"
+
 genHtml starfiveVisionFive2/FedoraATIRadeon5450 "StarFive VisionFive 2 Fedora ATI Radeon 5450"
 genHtml starfiveVisionFive2/UbuntuATIRadeonR9_290 "StarFive VisionFive 2 Ubuntu 22.04 ATI Radeon R9 290"
 genHtml starfiveVisionFive2/UbuntuATIRadeonR9_290_2023_11_20 "StarFive VisionFive 2 Ubuntu 23.10 ATI Radeon R9 290"
@@ -27,4 +29,5 @@ rsync -a --prune-empty-dirs --include '*/' --include '*.ico' --include '*.html' 
 
 rm *.html
 rm kodi/*.html
+rm milkVjupiter/*.html
 rm starfiveVisionFive2/*.html
