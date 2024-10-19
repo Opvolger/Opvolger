@@ -3,6 +3,7 @@
 Here some links to project of my!
 
 - :penguin: [StarFive VisionFive 2 [RISC-V]](starfiveVisionFive2.md)
+- :penguin: [Milk-V Jupiter [RISC-V]](milkVjupiter.md)
 
 Dutch only:
 
