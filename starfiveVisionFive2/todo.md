@@ -516,3 +516,205 @@ bootm start ${loadaddr};bootm loados ${loadaddr};run chipa_set_linux;run cpu_vol
 ```bash
 mkimage -C none -A riscv -T script -d /home/opvolger/code/Opvolger/starfiveVisionFive2/OpenSUSEATIRadeonR9_290/boot.cmd /home/opvolger/code/Opvolger/starfiveVisionFive2/OpenSUSEATIRadeonR9_290/boot.scr
 ```
+
+Alpine
+
+```bash
+ext4load mmc 1:5 ${fdt_addr_r} /boot/dtb;ext4load mmc 1:5 ${kernel_addr_r} /boot/Image;
+setenv bootargs 'root=/dev/mmcblk1p5 rw init=/bin/sh console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0';
+setenv bootargs 'root=/dev/mmcblk1p5 rw ip=dhcp console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0';
+setenv bootargs 'root=/dev/mmcblk1p5 rw ip=dhcp init=/bin/sh console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0';
+booti $kernel_addr_r - $fdt_addr_r
+```
+
+Milk-V Jupiter
+
+```bash
+setenv dtb_addr 0x16000000
+setenv ramdisk_addr 0x16100000
+load nvme 0:5 ${kernel_addr_r} /Image.gz
+load nvme 0:5 ${dtb_addr} /spacemit/6.1.15/k1-x_milkv-jupiter.dtb
+load nvme 0:5 ${ramdisk_addr} /initrd.img-6.1.15
+setenv bootargs 'root=/dev/nvme0n1p7 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+booti $kernel_addr_r $ramdisk_addr:$filesize $dtb_addr
+
+custom kernel with 
+
+setenv dtb_addr 0x16000000
+setenv ramdisk_addr 0x16100000
+load nvme 0:7 ${kernel_addr_r} /home/opvolger/Image.gz
+load nvme 0:5 ${dtb_addr} /spacemit/6.1.15/k1-x_milkv-jupiter.dtb
+load nvme 0:5 ${ramdisk_addr} /initrd.img-6.1.15
+setenv bootargs 'root=/dev/nvme0n1p7 rw amdgpu.pcie_gen2=0 radeon.pcie_gen2=0 swiotlb=131072 console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+booti $kernel_addr_r $ramdisk_addr:$filesize $dtb_addr
+
+neofetch
+
+inxi -GSaz --vs
+dmesg | grep nouveau
+dmesg | grep amdgpu
+dmesg | grep radeon
+lspci -v
+
+setenv dtb_addr 0x16000000
+setenv ramdisk_addr 0x16100000
+load nvme 0:7 ${kernel_addr_r} /home/opvolger/Image.gz
+load nvme 0:5 ${dtb_addr} /spacemit/6.1.15/k1-x_milkv-jupiter.dtb
+load nvme 0:5 ${ramdisk_addr} /initrd.img-6.1.15
+setenv bootargs 'root=/dev/nvme0n1p7 rw console=tty0 console=ttyS0,115200 swiotlb=131072 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+booti $kernel_addr_r $ramdisk_addr:$filesize $dtb_addr
+
+setenv dtb_addr 0x16000000
+setenv ramdisk_addr 0x16100000
+load nvme 0:7 ${kernel_addr_r} /home/opvolger/Image.gz
+load nvme 0:5 ${dtb_addr} /spacemit/6.1.15/k1-x_milkv-jupiter.dtb
+load nvme 0:5 ${ramdisk_addr} /initrd.img-6.1.15
+setenv bootargs 'root=/dev/nvme0n1p7 rw swiotlb=65536 console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+booti $kernel_addr_r $ramdisk_addr:$filesize $dtb_addr
+
+setenv dtb_addr 0x16000000
+setenv ramdisk_addr 0x16100000
+load nvme 0:7 ${kernel_addr_r} /home/opvolger/Image6-6.gz
+load nvme 0:7 ${dtb_addr} /home/opvolger/k1-x_milkv-jupiter.dtb
+load nvme 0:5 ${ramdisk_addr} /initrd.img-6.1.15
+setenv bootargs 'root=/dev/nvme0n1p7 rw radeon.modeset=1 radeon.dpm=0 radeon.pcie_gen2=0 swiotlb=131072 console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+booti $kernel_addr_r $ramdisk_addr:$filesize $dtb_addr
+
+setenv dtb_addr 0x16000000
+setenv ramdisk_addr 0x16100000
+load nvme 0:7 ${kernel_addr_r} /home/opvolger/Image6-6.gz
+load nvme 0:7 ${dtb_addr} /home/opvolger/k1-x_milkv-jupiter.dtb
+load nvme 0:5 ${ramdisk_addr} /initrd.img-6.1.15
+setenv bootargs 'root=/dev/nvme0n1p7 rw radeon.modeset=1 iommu=off radeon.dpm=0 radeon.pcie_gen2=0 swiotlb=65536 console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+booti $kernel_addr_r $ramdisk_addr:$filesize $dtb_addr
+
+nvme scan
+setenv dtb_addr 0x16000000
+setenv ramdisk_addr 0x16100000
+load mmc 0:5 ${kernel_addr_r} /boot/Image.gz
+load mmc 0:5 ${dtb_addr} /boot/k1-x_milkv-jupiter.dtb
+load nvme 0:5 ${ramdisk_addr} /initramfs-6.6.36+.img
+setenv bootargs 'root=/dev/nvme0n1p7 rw radeon.modeset=1 iommu=off radeon.dpm=0 radeon.pcie_gen2=0 swiotlb=65536 console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+booti $kernel_addr_r $ramdisk_addr:$filesize $dtb_addr
+```
+
+https://support.xilinx.com/s/article/72694?language=en_US
+https://gitlab.freedesktop.org/drm/amd/-/issues/2383
+
+```bash
+inxi -GSaz --vs
+dmesg | grep nouveau
+dmesg | grep amdgpu
+dmesg | grep radeon
+```
+
+```bash
+sysboot nvme 0:5 any ${scriptaddr} /extlinux/extlinux.conf
+```
+
+```ini
+arch=riscv
+autoboot=if test ${boot_device} = nand; then run nand_boot; elif test ${boot_device} = nor; then run nor_boot; elif test ${boot_device} = mmc; then run mmc_boot; fi;
+autoload=0
+baudrate=115200
+blk_root=/dev/nvme0n1p6
+board=k1-x
+board_name=k1-x
+boot_default=echo "Current Boot Device: ${boot_device}"
+boot_device=nor
+boot_devnum=0
+bootargs=root=/dev/nvme0p7 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0
+bootcmd=run autoboot; echo "run autoboot"
+bootdelay=0
+bootfs_devname=nvme
+bootfs_part=5
+bootmenu_0="-------- Boot Options --------"=run boot_default
+bootmenu_1="Boot from Nor"=run nor_boot
+bootmenu_2="Boot from Nand"=run nand_boot
+bootmenu_3="Boot from MMC"=run mmc_boot
+bootmenu_4="Autoboot"=run autoboot
+bootmenu_5="Show current Boot Device"=run boot_default
+bootmenu_6="-------- Flash Options --------"=run flash_default
+bootmenu_7="recovery from usb"=run flash_from_usb
+bootmenu_8="recovery from mmc"=run flash_from_mmc
+bootmenu_9="recovery from net"=run flash_from_net
+bootmenu_delay=5
+commonargs=setenv bootargs earlycon=${earlycon} earlyprintk console=tty1 console=${console} loglevel=${loglevel} clk_ignore_unused swiotlb=65536 rdinit=${init}
+console=ttyS0,115200
+cpu=x60
+detect_dtb=echo "product_name: ${product_name}"; run dtb_env; echo "select ${dtb_name} to load";
+device_version=1
+dtb_addr=
+dtb_env=if test -n "${product_name}"; then if test "${product_name}" = k1_evb; then setenv dtb_name ${dtb_dir}/k1-x_evb.dtb; elif test "${product_name}" = k1_deb1; then setenv dtb_name ${dtb_dir}/k1-x_deb1
+.dtb; elif test "${product_name}" = k1_deb2; then setenv dtb_name ${dtb_dir}/k1-x_deb2.dtb; elif test "${product_name}" = k1_hs450; then setenv dtb_name ${dtb_dir}/k1-x_hs450.dtb; elif test "${product_name
+}" = k1_kx312; then setenv dtb_name ${dtb_dir}/k1-x_kx312.dtb; elif test "${product_name}" = k1_mingo; then setenv dtb_name ${dtb_dir}/k1-x_mingo.dtb; elif test "${product_name}" = k1_MINI-PC; then setenv 
+dtb_name ${dtb_dir}/k1-x_MINI-PC.dtb; else echo "match dtb by product_name: ${dtb_dir}/${product_name}.dtb"; setenv dtb_name ${dtb_dir}/${product_name}.dtb; fi; fi;
+dtb_name=/k1-x_milkv-jupiter.dtb
+earlycon=sbi
+eeprom_i2c_index=2
+eeprom_pin_group=0
+eth1addr=FE:FE:FE:7C:1D:15
+ethaddr=FE:FE:FE:7C:1D:14
+fdtcontroladdr=76ec1b70
+fileaddr=10000000
+filesize=f97c88
+flash_default=echo "Returning to Boot Menu..."
+flash_from_mmc=echo "recovery from mmc...... " flash_image mmc;
+flash_from_net=echo "recovery from net...... " flash_image net;
+flash_from_usb=echo "recovery from usb...... "; flash_image usb;
+gatewayip=192.168.1.1
+get_rootfs_env=part number ${bootfs_devname} ${boot_devnum} rootfs rootfs_part; setexpr rootfs_part ${rootfs_part} + 0; if test ${rootfs_part} > 9 ; then run rootfs_part_to_ul;fi; echo "get rootfs_part ind
+ex:${rootfs_part}";
+init=/init
+ipaddr=192.168.1.15
+kernel_addr_r=0x10000000
+kernel_comp_addr_r=0x18000000
+kernel_comp_size=0x4000000
+knl_name=Image.itb
+loadaddr=0x200000
+loaddtb=echo "Loading dtb..."; if load ${bootfs_devname} ${boot_devnum}:${bootfs_part} ${dtb_addr} ${dtb_name}; then else echo "load dtb from bootfs fail, use built-in dtb"; setenv dtb_addr ""; fi;
+loadknl=echo "Loading kernel..."; load ${bootfs_devname} ${boot_devnum}:${bootfs_part} ${kernel_addr_r} ${knl_name};
+loadramdisk=echo "Loading ramdisk ..."; if load ${bootfs_devname} ${boot_devnum}:${bootfs_part} ${ramdisk_addr} ${ramdisk_name}; then size ${bootfs_devname} ${boot_devnum}:${bootfs_part} ${ramdisk_name}; setenv ramdisk_size ${filesize}; setenv ramdisk_combo ${ramdisk_addr}:${ramdisk_size}; else echo "load ramdisk from bootfs fail, use built-in ramdisk"; setenv ramdisk_addr -; fi;
+loglevel=8
+manufacture_date=01/16/2023 11:02:20
+manufacturer=spacemit
+mmc_boot=echo "Try to boot from ${bootfs_devname}${boot_devnum} ..."; run commonargs; run set_mmc_root; run set_mmc_args; run detect_dtb; run loadknl; run loaddtb; run loadramdisk; bootm ${kernel_addr_r} ${ramdisk_combo} ${dtb_addr}; echo "########### boot kernel failed by default config, check your boot config #############"
+mmc_rootfstype=ext4
+mtdids=nor0=spi-nor
+mtdparts=spi-nor:64K@0(bootinfo),64K@64K(private),256K@128K(fsbl),64K@384K(env),192K@448K(opensbi),-@640K(uboot)
+net_data_path=spacemit_flash_file/net_flash_file/
+netdev=eth0
+netmask=255.255.255.0
+nor_boot=echo "Try to boot from ${bootfs_devname}${boot_devnum} ..."; run commonargs; run set_nor_root; run set_nor_args; run detect_dtb; run loadknl; run loaddtb; run loadramdisk; bootm ${kernel_addr_r} ${ramdisk_combo} ${dtb_addr}; echo "########### boot kernel failed by default config, check your boot config #############"
+nor_root=/dev/mtdblock6
+nor_rootfstype=squashfs
+phy_link_time=10000
+phyaddr0=1
+pmic_type=0
+product_name=k1-x_milkv-jupiter
+pxefile_addr_r=0x0c200000
+ram_size=mem=8192MB
+ramdisk_addr=-
+ramdisk_combo=-
+ramdisk_name=initramfs-generic.img
+ramdisk_size=-
+rootfs_part=6
+rootfs_part_to_ul=echo "set rootfs_part to ul"; setexpr temp_num_0 ${rootfs_part} / a; setexpr temp_num_1 ${rootfs_part} % a; setenv rootfs_part ${temp_num_0}${temp_num_1};
+scriptaddr=0x2c100000
+sdk_version=1
+serial#=1cdfdacd55e6
+serverip=10.0.92.134
+set_mmc_args=setenv bootargs "${bootargs}" root=${blk_root} rootwait rootfstype=${mmc_rootfstype};
+set_mmc_root=run get_rootfs_env; run set_rootfs_env;
+set_nor_args=setenv bootargs ${bootargs} mtdparts=${mtdparts} root=${blk_root} rootfstype=ext4
+set_nor_root=run get_rootfs_env; run set_rootfs_env;
+set_rootfs_env=if test "${bootfs_devname}" = mmc; then setenv blk_root "/dev/mmcblk${boot_devnum}p${rootfs_part}"; elif test "${bootfs_devname}" = nvme; then setenv blk_root "/dev/nvme${boot_devnum}n1p${rootfs_part}"; else echo "not define rootfs part at this blk device, add to env"; fi;
+splashfile=bianbu.bmp
+splashimage=0x20000000
+splashpos=m,m
+splashsource=nvme_fs
+stderr=serial
+stdin=serial,usbkbd
+stdout=serial
+stdout_flash=serial,vidconsole
+vendor=spacemit
