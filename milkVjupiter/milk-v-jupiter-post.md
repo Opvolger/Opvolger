@@ -1,3 +1,54 @@
+# U-boot & Opensbi
+
+# https://stijn.tintel.eu/blog/2024/05/19/compiling-uboot-bpi-f3/
+# https://doc-en.rvspace.org/VisionFive2/SWTRM/VisionFive2_SW_TRM/compiling_the_u-boot%20-%20vf2.html
+# https://docs.banana-pi.org/en/BPI-F3/GettingStarted_BPI-F3#_install_image_to_emmc_2
+
+U-Boot
+
+```bash
+cd uboot-2022.10
+CROSS_COMPILE=riscv64-linux-gnu-
+export CROSS_COMPILE
+make distclean
+make k1_defconfig
+make all
+# uboot-2022.10/arch/riscv/dts/m1-x_milkv-jupiter.dtb uboot-2022.10/spl/u-boot-spl.bin and uboot-2022.10/u-boot.bin
+# uboot-2022.10/bootinfo_emmc.bin  uboot-2022.10/bootinfo_sd.bin  uboot-2022.10/bootinfo_spinand.bin  uboot-2022.10/bootinfo_spinor.bin
+```
+
+OpenSBI
+
+```bash
+cd opensbi
+CROSS_COMPILE=riscv64-linux-gnu-
+export CROSS_COMPILE
+make PLATFORM=generic menuconfig
+```
+
+In menuconfig, under Platform Options, disable Spacemit K1pro support, enable Spacemit K1x support and Spacemit K1x board evb, save and run make again. When the build is done, export the full path to build/platform/generic/firmware/fw_dynamic.bin in the OpenSBI dir as OPENSBI and change to the U-Boot source directory. To build, U-Boot, run the following commands:
+
+```bash
+make PLATFORM=generic
+make k1_defconfig
+make
+# opensbi/build/platform/generic/firmware/fw_dynamic.bin
+```
+
+To SSD
+
+milkv-jupiter-bianbu-23.10-minimal-k1-v1.0.15-release-2024-0907.img.zip -> sd
+delete partition 5 and 6.
+
+replace opensbi and u-boot
+
+```bash
+sudo dd if=uboot-2022.10/FSBL.bin of=/dev/sdb1
+sudo dd if=opensbi/build/platform/generic/firmware/fw_dynamic.bin of=/dev/sdb3
+sudo dd if=uboot-2022.10/u-boot.itb of=/dev/sdb4
+```
+
+
 My ATI Radeon 5000 GPU won't work on the Milk-V Jupiter.
 
 I have a working openSUSE Tumbleweed 20240825 on my StarFive VisionFive 2 and an ATI Redeon 5000. (Custom kernel).
@@ -25,6 +76,11 @@ sysboot nvme 0:5 any ${scriptaddr} /extlinux/extlinux.conf
 sysboot nvme 0:5 any ${scriptaddr} /extlinux/extlinux2.conf
 sysboot nvme 0:5 any ${scriptaddr} /extlinux/extlinux3.conf
 ```
+
+This is not working, only sd card is readable.
+
+## Kernel
+
 
 After booting, I have text and a "working" driver
 
