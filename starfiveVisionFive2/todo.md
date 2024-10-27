@@ -298,9 +298,14 @@ cpio -i -F initrd.img-5.15.0
 ```
 
 ```
+setenv bootdelay 5
+setenv bootcmd 'load mmc 0:3 ${scriptaddr} boot.scr; source ${scriptaddr}'
+saveenv
+```
+
+```
 load mmc 0:1 ${scriptaddr} boot.scr; source ${scriptaddr}
 load mmc 0:3 ${scriptaddr} boot.scr; source ${scriptaddr}
-
 load mmc 1:3 ${scriptaddr} boot.scr; source ${scriptaddr}
 ```
 
