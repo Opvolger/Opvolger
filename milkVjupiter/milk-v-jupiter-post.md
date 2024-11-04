@@ -4,6 +4,22 @@
 # https://doc-en.rvspace.org/VisionFive2/SWTRM/VisionFive2_SW_TRM/compiling_the_u-boot%20-%20vf2.html
 # https://docs.banana-pi.org/en/BPI-F3/GettingStarted_BPI-F3#_install_image_to_emmc_2
 
+Kernel 6.6+ needs firmware
+- https://gitee.com/bianbu-linux/buildroot-ext/blob/bl-v1.0.y/board/spacemit/k1/target_overlay/lib/firmware/esos.elf
+- https://dev.to/luzero/bringing-up-bpi-f3-part-3-101h
+
+
+```boot.cmd
+usb start
+ramdisk_addr_r=0x21000000
+fdt_addr_r=0x31000000
+load usb 0:1 ${kernel_addr_r} /6.6/Image.gz
+load usb 0:1 ${fdt_addr_r} /6.6/m1-x_milkv-jupiter.dtb
+load mmc 0:5 ${ramdisk_addr_r} /initrd.img-6.6.36
+setenv bootargs 'console=ttyS0,115200 root=/dev/mmcblk0p7 rootfstype=ext4 rootwait rw earlycon clk_ignore_unused loglevel=7 radeon.pcie_gen2=0 swiotlb=131072 stmmaceth=chain_mode:1 selinux=0'
+booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
+```
+
 U-Boot
 
 ```bash
@@ -47,7 +63,6 @@ sudo dd if=uboot-2022.10/FSBL.bin of=/dev/sdb1
 sudo dd if=opensbi/build/platform/generic/firmware/fw_dynamic.bin of=/dev/sdb3
 sudo dd if=uboot-2022.10/u-boot.itb of=/dev/sdb4
 ```
-
 
 My ATI Radeon 5000 GPU won't work on the Milk-V Jupiter.
 

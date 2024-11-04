@@ -1,0 +1,6 @@
+u-boot/**
+opensbi/**
+tools/**
+*.bin
+*.out
+*.itb
