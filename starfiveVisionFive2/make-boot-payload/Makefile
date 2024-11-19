@@ -4,7 +4,11 @@
 .POSIX:
 
 TAG_U_BOOT=v2024.07
+export TAG_U_BOOT
 TAG_OBENSBI=v1.5.1
+export TAG_OBENSBI
+DISABLE_NVME_SUPPORT_U_BOOT=yes
+export DISABLE_NVME_SUPPORT_U_BOOT
 
 NPROC=${shell nproc}
 MK_ARCH="${shell uname -m}"
@@ -28,6 +32,11 @@ u-boot.bin: u-boot-git fw_payload.bin
 	echo $(CROSS_COMPILE)
 	cd u-boot && make distclean
 	cd u-boot && git reset --hard $(TAG_U_BOOT)
+	if [ '$(DISABLE_NVME_SUPPORT_U_BOOT)' == 'yes' ]; then \
+		sed -i 's/CONFIG_PREBOOT="nvme scan; /CONFIG_PREBOOT="/g' u-boot/configs/starfive_visionfive2_defconfig; \
+		sed -i 's/CONFIG_PCI_INIT_R=y/CONFIG_PCI_INIT_R=n/g' u-boot/configs/starfive_visionfive2_defconfig; \
+		sed -i 's/CONFIG_CMD_PCI=y/CONFIG_CMD_PCI=n/g' u-boot/configs/starfive_visionfive2_defconfig; \
+	fi
 	cd u-boot && make starfive_visionfive2_defconfig
 	cd u-boot && make OPENSBI=../opensbi/build/platform/generic/firmware/fw_payload.bin CONFIG_DEFAULT_FDT_FILE=starfive/jh7110-starfive-visionfive-2-v1.3b.dtb -j $(NPROC)
 	cp u-boot/spl/u-boot-spl.bin.normal.out .
