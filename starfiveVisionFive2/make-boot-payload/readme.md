@@ -35,6 +35,10 @@ Change the default boot environment variable
 
 ```bash
 setenv bootdelay 5
+# I have allready a boot.scr on my mmc in the root of partition 3
 setenv bootcmd 'load mmc 0:3 ${scriptaddr} boot.scr; source ${scriptaddr}'
+# save env varaible
 saveenv
+# reboot, auto boot will work
+reset
 ```
