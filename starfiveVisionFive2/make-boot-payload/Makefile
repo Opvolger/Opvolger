@@ -3,7 +3,7 @@
 # and https://github.com/u-boot/u-boot/blob/master/doc/board/starfive/visionfive2.rst
 .POSIX:
 
-TAG_U_BOOT=v2024.07
+TAG_U_BOOT=v2024.10
 export TAG_U_BOOT
 TAG_OBENSBI=v1.5.1
 export TAG_OBENSBI

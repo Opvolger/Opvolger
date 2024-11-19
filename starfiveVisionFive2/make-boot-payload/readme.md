@@ -2,8 +2,7 @@
 
 [build info](https://github.com/u-boot/u-boot/blob/master/doc/board/starfive/visionfive2.rst)
 
-Current v2024.10 of u-boot was not working for me, so i used V2024.07.
-I used the latest opensbi v1.5.1.
+Current version of u-boot is v2024.10 and I used the latest opensbi v1.5.1.
 
 I disabled the NVME init in U-Boot, this is because of some AMDGPU don't like it (fan spin 100% in u-boot and nothing GPU is not working and is not visible with lspci after booting linux.)
 
@@ -29,3 +28,13 @@ sudo dd if=u-boot.itb of=/dev/sdb2
 ```
 
 Done, you have now build your own main-stream u-boot and opensbi
+
+## Firsttime boot in u-boot
+
+Change the default boot environment variable
+
+```bash
+setenv bootdelay 5
+setenv bootcmd 'load mmc 0:3 ${scriptaddr} boot.scr; source ${scriptaddr}'
+saveenv
+```
