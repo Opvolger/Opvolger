@@ -8,6 +8,35 @@ Kernel 6.6+ needs firmware
 - https://gitee.com/bianbu-linux/buildroot-ext/blob/bl-v1.0.y/board/spacemit/k1/target_overlay/lib/firmware/esos.elf
 - https://dev.to/luzero/bringing-up-bpi-f3-part-3-101h
 
+## 2.0.2
+
+```bash
+ramdisk_addr_r=0x21000000
+fdt_addr_r=0x31000000
+load mmc 0:5 ${kernel_addr_r} /vmlinuz-6.6.36
+load mmc 0:5 ${fdt_addr_r} /spacemit/6.6.36/k1-x_milkv-jupiter.dtb
+load mmc 0:5 ${ramdisk_addr_r} /initrd.img-6.6.36
+setenv bootargs 'root=/dev/nvme0n1p7 rw swiotlb=131072 console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+bootm $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
+
+setenv ramdisk_addr_r 0x21000000
+setenv fdt_addr_r 0x31000000
+setenv bootargs 'root=/dev/nvme0n1p7 rw swiotlb=131072 console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+saveenv
+
+usb start
+load usb 0:1 ${kernel_addr_r} /6.6/Image.gz
+load usb 0:1 ${fdt_addr_r} /6.6/k1-x_milkv-jupiter.dtb
+
+usb start
+load usb 0:1 ${kernel_addr_r} /Image.gz
+load usb 0:1 ${fdt_addr_r} /k1-x_milkv-jupiter.dtb
+
+nvme scan
+load nvme 0:5 ${ramdisk_addr_r} /initramfs-6.6.36+.img
+setenv bootargs 'root=/dev/nvme0n1p7 rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
+```
 
 ```boot.cmd
 usb start
@@ -77,19 +106,43 @@ Ignore the hostname of the machine, that is due to the partition copy.
 This is my u-boot
 
 ```bash
-setenv dtb_addr 0x16000000
-setenv ramdisk_addr 0x16100000
 load nvme 0:7 ${kernel_addr_r} /home/opvolger/Image.gz
 load nvme 0:5 ${dtb_addr} /spacemit/6.1.15/k1-x_milkv-jupiter.dtb
-load nvme 0:5 ${ramdisk_addr} /initrd.img-6.1.15
+load nvme 0:5 ${ramdisk_addr_r} /initrd.img-6.1.15
 setenv bootargs 'root=/dev/nvme0n1p7 rw radeon.modeset=1 radeon.dpm=0 radeon.pcie_gen2=0 swiotlb=131072 console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
 booti $kernel_addr_r $ramdisk_addr:$filesize $dtb_addr
 ```
 
 ```bash
+usb start
+load usb 0:1 ${kernel_addr_r} /Image.gz
+load usb 0:1 ${dtb_addr} /k1-x_milkv-jupiter.dtb
+load nvme 0:5 ${ramdisk_addr_r} /initramfs-6.6.36+.img
+setenv bootargs 'console=ttyS0,115200 root=UUID=51af1d3a-4696-4dfc-b8ca-93c85b140f1e rootfstype=ext4 rootwait rw earlycon clk_ignore_unused loglevel=7 radeon.pcie_gen2=0'
+booti $kernel_addr_r $ramdisk_addr_r:$filesize $dtb_addr
+```
+
+## Fedora
+
+```bash
+usb start
+load usb 0:1 ${kernel_addr_r} /Image.gz
+load usb 0:1 ${dtb_addr} /k1-x_milkv-jupiter.dtb
+load nvme 0:5 ${ramdisk_addr_r} /initramfs-6.6.36+.img
+setenv bootargs 'root=UUID=706f4c15-ac4b-4fb9-a012-ab9a866731a7 rw rootflags=subvol=root  earlycon rootflags=subvol=root swiotlb=131072 console=tty0 console=ttyS0,115200 rootwait stmmaceth=chain_mode:1 selinux=0'
+booti $kernel_addr_r $ramdisk_addr_r:$filesize $dtb_addr
+```
+
+User 'root' with password is 'linux'.
+User 'riscv' with password 'fedora_rocks!' in 'wheel'
+and 'mock' groups.
+
+```bash
 sysboot nvme 0:5 any ${scriptaddr} /extlinux/extlinux.conf
 sysboot nvme 0:5 any ${scriptaddr} /extlinux/extlinux2.conf
 sysboot nvme 0:5 any ${scriptaddr} /extlinux/extlinux3.conf
+sysboot nvme 0:5 any ${scriptaddr} /extlinux/extlinux4.conf
+sysboot nvme 0:5 any ${scriptaddr} /extlinux/extlinux5.conf
 ```
 
 This is not working, only sd card is readable.

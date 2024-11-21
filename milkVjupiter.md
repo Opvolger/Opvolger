@@ -6,7 +6,8 @@ Here I will (if it's worth it) keep track of my projects I've done with the Milk
 
 Project OpenSUSE with an external ATI Radeon R9 290
 
-- [project](milkVjupiter/OpenSUSEATIRadeonR9_290.md)
+- [project](milkVjupiter/OpenSUSEATIRadeonR9_290.md) Only kernel 6.1 build for AMDGPU
+- [project](milkVjupiter/OpenSUSEATIRadeonHD5850.md) Kernel 6.6 build + creating the OpenSUSE Tumbleweed
 
 ## AMDGPU Working
 
