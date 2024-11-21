@@ -2,7 +2,7 @@
 date: 2024-11-20
 author: Bas Magré
 ---
-# Milk-V Jupiter - OpenSUSE Tumbleweed with external GPU ATI Radeon HD 5850
+# Milk-V Jupiter - OpenSUSE Tumbleweed with dedicated GPU ATI Radeon HD 5850
 
 ## Software
 
