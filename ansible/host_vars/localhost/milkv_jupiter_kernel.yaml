@@ -1,0 +1,77 @@
+milkv_jupiter_kernel:
+  git:
+    # use own copy, the real repo is VERY slow!
+    repo: "https://github.com/Opvolger/spacemit-k1-linux-6.6.git"
+    version: "bl-v2.0.y"
+    checkout_dir: "/home/opvolger/bianbu-kernel/source/spacemit-k1-linux-6.6"
+  extra_firmware_download:
+    - https://gitee.com/bianbu-linux/buildroot-ext/blob/bl-v2.0.y/board/spacemit/k1/target_overlay/lib/firmware/esos.elf
+  target: "/home/opvolger/bianbu-kernel"
+  dtb_file_location: /arch/riscv/boot/dts/spacemit/k1-x_milkv-jupiter.dtb
+  defconfig: k1_defconfig
+  # do not use modules
+  replace_m_for_y: true
+  extra_environment_vars: 
+    PATH: "{{ spacemit_toolchain.toolchain_path }}:{{ ansible_env.PATH }}"
+  build_params:
+    CROSS_COMPILE: riscv64-unknown-linux-gnu-
+    ARCH: riscv
+  add_to_config:
+    # disable signing check
+    CONFIG_MODULE_SIG_KEY: ""
+    # disable onboard DRM, camara, sound + CHARGER_SGM415XX
+    CONFIG_INPUT_TOUCHSCREEN: n
+    CONFIG_DRM_SPACEMIT: n
+    CONFIG_SPACEMIT_HDMI: n
+    CONFIG_SPACEMIT_HDMIAUDIO: n
+    CONFIG_SPACEMIT_DUMMYCODEC: n
+    CONFIG_SND_SOC_ES7210: n
+    CONFIG_SPACEMIT_K1X_CAMERA_V2: n
+    CONFIG_SPACEMIT_K1X_CCIC_V2: n
+    CONFIG_SPACEMIT_K1X_VI_V2: n
+    CONFIG_SPACEMIT_K1X_VI_IOMMU: n
+    CONFIG_SPACEMIT_K1X_ISP_V2: n
+    CONFIG_SPACEMIT_K1X_CPP_V2: n
+    CONFIG_SPACEMIT_K1X_SENSOR_V2: n
+    CONFIG_CHARGER_SGM415XX: n
+    # disable wifi network (gives errors)
+    CONFIG_WLAN_VENDOR_REALTEK: n
+    CONFIG_AIC8800_WLAN_SUPPORT: n
+    # firmware in kernel
+    CONFIG_EXTRA_FIRMWARE: "esos.elf radeon/CYPRESS_pfp.bin radeon/CYPRESS_me.bin radeon/CYPRESS_rlc.bin radeon/CYPRESS_smc.bin radeon/CYPRESS_uvd.bin radeon/CEDAR_smc.bin radeon/CEDAR_me.bin radeon/CEDAR_pfp.bin radeon/CEDAR_rlc.bin"
+    CONFIG_EXTRA_FIRMWARE_DIR: "../linux-firmware"
+    # needed for fedora: (zram)
+    CONFIG_BLK_DEV_RAM: y
+    CONFIG_BLK_DEV_RAM_COUNT: 16
+    CONFIG_BLK_DEV_RAM_SIZE: 4096
+
+    CONFIG_INPUT_EVDEV: y
+    
+    # AMDGPU + HDMI sound
+    CONFIG_DRM_AMDGPU: y
+    CONFIG_DRM_AMD_DC: y
+    CONFIG_DRM_AMD_DC_FP: y
+    CONFIG_SND_DYNAMIC_MINORS: y
+    CONFIG_SND_MAX_CARDS: 32
+    CONFIG_SND_VMASTER: y
+    CONFIG_SND_HDA: y
+    CONFIG_SND_HDA_INTEL: y
+    CONFIG_SND_HDA_CODEC_HDMI: y
+    CONFIG_SND_HDA_POWER_SAVE_DEFAULT: 0
+    CONFIG_SND_HDA_CORE: y
+    CONFIG_SND_HDA_COMPONENT: y
+    CONFIG_SND_INTEL_NHLT: y
+    CONFIG_SND_INTEL_DSP_CONFIG: y
+    CONFIG_SND_INTEL_SOUNDWIRE_ACPI: y
+
+    # needed for ubuntu (snap):
+    CONFIG_SQUASHFS: y
+    CONFIG_SQUASHFS_FILE_CACHE: y
+    CONFIG_SQUASHFS_DECOMP_SINGLE: y
+    CONFIG_SQUASHFS_COMPILE_DECOMP_SINGLE: y
+    CONFIG_SQUASHFS_ZLIB: y
+    CONFIG_SQUASHFS_LZ4: y
+    CONFIG_SQUASHFS_LZO: y
+    CONFIG_SQUASHFS_XZ: y
+    CONFIG_SQUASHFS_ZSTD: y
+    CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE: 3

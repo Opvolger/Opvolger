@@ -1,0 +1,14 @@
+# https://gitee.com/bianbu-linux/buildroot-ext/blob/bl-v1.0.y/board/spacemit/k1/partition_flash.json
+- name: Clear partitions and create 4 new partitions fsbl,env,opensbi and uboot
+  become: true
+  become_user: root
+  ansible.builtin.shell: "sudo sgdisk --clear \
+    --set-alignment=2 \
+    --new=1:256:767 --change-name=1:fsbl --typecode=1:76CE056B-7C39-40E6-972D-85800638DD5E \
+    --new=2:768:895 --change-name=2:env --typecode=2:9B670021-BE65-49F5-B10F-6C02EB9A8327 \
+    --new=3:2048:4095 --change-name=3:opensbi --typecode=2:EECBDE06-0362-414F-ABAB-4841EE8FA6D2 \
+    --new=4:4096:16383 --change-name=4:uboot --typecode=2:172C5C47-EFE7-49CE-BD1C-58A40A039428 \
+    {{ target }}"
+  args:
+    executable: /bin/bash
+

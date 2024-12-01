@@ -1,0 +1,38 @@
+- name: Git checkout u-boot
+  ansible.builtin.git:
+    repo: '{{ u_boot.git.repo }}'
+    dest: '{{ u_boot.git.checkout_dir }}'
+    force: true
+    version: '{{ u_boot.git.version }}'
+
+- name: Build distclean
+  community.general.make:
+    make: make
+    chdir: '{{ u_boot.git.checkout_dir }}'
+    target: distclean
+
+- name: Add to configfile {{ u_boot.git.checkout_dir }}/configs/{{ u_boot.defconfig }}
+  ansible.builtin.shell: echo "{{ item.key }}={{ item.value }}" >> {{ u_boot.git.checkout_dir }}/configs/{{ u_boot.defconfig }}
+  when: 
+    - item.value |string | length < 5 
+  loop: "{{ lookup('ansible.builtin.dict', u_boot.add_to_config) }}"
+
+- name: Add to configfile string {{ u_boot.git.checkout_dir }}/configs/{{ u_boot.defconfig }}
+  ansible.builtin.shell: echo '{{ item.key }}="{{ item.value }}"' >> {{ u_boot.git.checkout_dir }}/configs/{{ u_boot.defconfig }}
+  when: 
+    - item.value |string | length > 5 
+  loop: "{{ lookup('ansible.builtin.dict', u_boot.add_to_config) }}"
+
+- name: Build .config
+  community.general.make:
+    make: make
+    chdir: '{{ u_boot.git.checkout_dir }}'
+    target: '{{ u_boot.defconfig }}'
+
+- name: Build u-boot
+  community.general.make:
+    make: make
+    chdir: '{{ u_boot.git.checkout_dir }}'
+    jobs: '{{ build_jobs }}'
+    params: '{{ u_boot.build_params }}'
+  environment: "{{ u_boot.extra_environment_vars }}"

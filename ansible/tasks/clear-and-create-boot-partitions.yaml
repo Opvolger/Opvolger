@@ -1,0 +1,10 @@
+- name: Clear partitions and create 2 new partitions spl and uboot
+  become: true
+  become_user: root
+  ansible.builtin.shell: "sudo sgdisk --clear \
+    --set-alignment=2 \
+    --new=1:4096:8191 --change-name=1:spl --typecode=1:2E54B353-1271-4842-806F-E436D6AF6985 \
+    --new=2:8192:16383 --change-name=2:uboot --typecode=2:BC13C2FF-59E6-4262-A352-B275FD6F7172 \
+    {{ target }}"
+  args:
+    executable: /bin/bash

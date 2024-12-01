@@ -1,0 +1,27 @@
+- name: Git checkout opensbi
+  ansible.builtin.git:
+    repo: '{{ opensbi.git.repo }}'
+    dest: '{{ opensbi.git.checkout_dir }}'
+    force: true
+    version: '{{ opensbi.git.version }}'
+
+- name: Build clean
+  community.general.make:
+    make: make
+    chdir: '{{ opensbi.git.checkout_dir }}'
+    target: clean
+
+- name: Build .config
+  community.general.make:
+    make: make
+    chdir: '{{ opensbi.git.checkout_dir }}'
+    target: '{{ opensbi.defconfig }}'
+  when: opensbi.defconfig is defined
+
+- name: Build opensbi
+  community.general.make:
+    make: make
+    chdir: '{{ opensbi.git.checkout_dir }}'
+    jobs: '{{ build_jobs }}'
+    params: '{{ opensbi.build_params }}'
+  environment: "{{ opensbi.extra_environment_vars }}"

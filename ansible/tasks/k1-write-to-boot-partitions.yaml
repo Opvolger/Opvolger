@@ -1,0 +1,34 @@
+- name: "Write bootinfo_sd.bin to {{ target }}"
+  become: true
+  become_user: root
+  ansible.builtin.shell: "sudo dd if={{ u_boot.git.checkout_dir }}/bootinfo_sd.bin of={{ target }}"
+  args:
+    executable: /bin/bash
+
+- name: "Write FSBL.bin to {{ target }}1"
+  become: true
+  become_user: root
+  ansible.builtin.shell: "sudo dd if={{ u_boot.git.checkout_dir }}/FSBL.bin of={{ target }}1"
+  args:
+    executable: /bin/bash
+
+- name: "Write u-boot-env-default.bin to {{ target }}2"
+  become: true
+  become_user: root
+  ansible.builtin.shell: "sudo dd if={{ u_boot.git.checkout_dir }}/u-boot-env-default.bin of={{ target }}2"
+  args:
+    executable: /bin/bash
+
+- name: "Write fw_dynamic.itb to {{ target }}3"
+  become: true
+  become_user: root
+  ansible.builtin.shell: "sudo dd if={{ opensbi.git.checkout_dir }}/build/platform/generic/firmware/fw_dynamic.itb of={{ target }}3"
+  args:
+    executable: /bin/bash
+
+- name: "Write u-boot.itb to {{ target }}4"
+  become: true
+  become_user: root
+  ansible.builtin.shell: "sudo dd if={{ u_boot.git.checkout_dir }}/u-boot.itb of={{ target }}4"
+  args:
+    executable: /bin/bash

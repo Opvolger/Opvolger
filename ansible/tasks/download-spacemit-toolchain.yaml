@@ -1,0 +1,35 @@
+- name: Get toolchain tar.xz (if not downloaded)
+  block:
+
+    - name: Creates directory
+      ansible.builtin.file:
+        path: "{{ spacemit_toolchain.target }}"
+        state: directory
+
+    - name: Get stats of toolchain file
+      stat:
+        path: "{{ spacemit_toolchain.target }}/{{ spacemit_toolchain.download | basename }}"
+      register: spacemit_toolchainfile
+
+    - name: download toolchain
+      get_url:
+        url: "{{ spacemit_toolchain.download }}"
+        dest: "{{ spacemit_toolchain.target }}/{{ spacemit_toolchain.download | basename }}"
+      when: not spacemit_toolchainfile.stat.exists
+
+- name: Creates unpack directory
+  ansible.builtin.file:
+    path: "{{ spacemit_toolchain.target }}/unpack"
+    state: directory
+
+- name: Get stats of spacemit_toolchain path
+  stat:
+    path: "{{ spacemit_toolchain.toolchain_path }}"
+  register: spacemit_toolchain_path
+
+- name: Unarchive toolchain
+  ansible.builtin.unarchive:
+    src: "{{ spacemit_toolchain.target }}/{{ spacemit_toolchain.download | basename }}"
+    dest: "{{ spacemit_toolchain.target }}/unpack"
+    remote_src: yes
+  when: not spacemit_toolchain_path.stat.exists

@@ -1,0 +1,4 @@
+opensuse:
+  target: "/tmp/opensuse"
+  #download: https://download.opensuse.org/ports/riscv/tumbleweed/images/openSUSE-Tumbleweed-RISC-V-KDE.riscv64-rootfs.riscv64.tar.xz
+  download: https://download.opensuse.org/ports/riscv/tumbleweed/images/openSUSE-Tumbleweed-RISC-V-JeOS-devel.riscv64-rootfs.riscv64.tar.xz

@@ -1,0 +1,18 @@
+starfive_visionfive2_u_boot:
+  git:
+    repo: "https://github.com/u-boot/u-boot.git"
+    version: "v2024.10"    
+    checkout_dir: "/tmp/u-boot"
+  defconfig: starfive_visionfive2_defconfig
+  add_to_config:
+    # disable nvme in u-boot (some GPU don't like that)
+    CONFIG_BOOTCOMMAND: "load {{ on_boot.boot_device }}:3 ${scriptaddr} boot.scr; source ${scriptaddr}"
+    # disable nvme in u-boot (some GPU don't like that)
+    # escape bash + yaml, so for ' you need '\'' and $ will be '\\$'
+    CONFIG_PREBOOT: "usb start; setenv fdt_addr '\\$'{fdtcontroladdr}; fdt addr '\\$'{fdtcontroladdr}; setenv bootcmd '\\''load {{ on_boot.boot_device }}:3 '\\$'{scriptaddr} boot.scr; source '\\$'{scriptaddr}'\\''"
+    CONFIG_PCI_INIT_R: n
+    CONFIG_CMD_PCI: n
+  build_params:
+    OPENSBI: ../opensbi/build/platform/generic/firmware/fw_payload.bin
+    CONFIG_DEFAULT_FDT_FILE: starfive/jh7110-starfive-visionfive-2-v1.3b.dtb
+    CROSS_COMPILE: riscv64-linux-gnu-

@@ -1,0 +1,47 @@
+- name: Read device information of {{ target }}
+  become: true
+  become_user: root
+  community.general.parted: 
+    device: "{{ target }}"
+    unit: MiB
+  register: disk_info
+
+- name: Print disk_info
+  ansible.builtin.debug:
+    var: disk_info
+
+- name: Create new partition for bootfs
+  block:
+    - name: Create new partition for bootfs
+      become: true
+      become_user: root
+      community.general.parted:
+        device: "{{ target }}"
+        name: bootfs
+        label: gpt
+        number: "{{ disk_info.partitions | length + 1 }}"
+        part_start: "{{ disk_info.partitions[-1].end }}MiB"
+        part_end: "{{ disk_info.partitions[-1].end + 256 }}MiB"
+        state: present
+    - name: Create a ext4 filesystem on {{ target }}{{ disk_info.partitions | length + 1 }}
+      become: true
+      become_user: root
+      community.general.filesystem:
+        fstype: ext4
+        force: true
+        dev: "{{ target }}{{ disk_info.partitions | length + 1 }}"
+        # uuid: B572F8B1-E6E4-437F-9BD5-7F949FE0B507
+  when: disk_info.partitions | selectattr('name', 'search', 'bootfs') | list | length == 0
+
+- name: Creates mount directory
+  ansible.builtin.file:
+    path: "{{ opensuse.target }}/mnt"
+    state: directory
+
+- name: Read device information "{{ target }}"
+  become: true
+  become_user: root
+  community.general.parted: 
+    device: "{{ target }}"
+    unit: MiB
+  register: disk_info

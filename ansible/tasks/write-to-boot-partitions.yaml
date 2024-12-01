@@ -1,0 +1,13 @@
+- name: "Write u-boot-spl.bin.normal.out to {{ target }}1"
+  become: true
+  become_user: root
+  ansible.builtin.shell: "sudo dd if={{ u_boot.git.checkout_dir }}/spl/u-boot-spl.bin.normal.out of={{ target }}1"
+  args:
+    executable: /bin/bash
+
+- name: "Write u-boot-spl.bin.normal.out to {{ target }}2"
+  become: true
+  become_user: root
+  ansible.builtin.shell: "sudo dd if={{ u_boot.git.checkout_dir }}/u-boot.itb of={{ target }}2"
+  args:
+    executable: /bin/bash

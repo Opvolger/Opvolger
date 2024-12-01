@@ -1,0 +1,10 @@
+starfive_visionfive2_opensbi:
+  git:
+    repo: "https://github.com/riscv-software-src/opensbi.git"
+    version: "v1.5.1"
+    checkout_dir: "/tmp/opensbi"
+  build_params:
+    PLATFORM: generic
+    FW_OPTIONS: "0"
+    FW_TEXT_START: "0x40000000"
+    CROSS_COMPILE: riscv64-linux-gnu-
