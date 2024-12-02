@@ -15,7 +15,8 @@ milkv_jupiter_u_boot:
     # CONFIG_PREBOOT: "usb start; setenv bootcmd '\\''load {{ on_boot.boot_device }}:3 '\\$'{scriptaddr} boot.scr; source '\\$'{scriptaddr}'\\''"
   build_params:
     # OPENSBI: ../bianbu-opensbi/fw_dynamic.itb
-    CROSS_COMPILE: riscv64-unknown-linux-gnu-
+    # CROSS_COMPILE: riscv64-unknown-linux-gnu-
+    CROSS_COMPILE: riscv64-linux-gnu-
     ARCH: riscv
   extra_environment_vars: 
-    PATH: "{{ spacemit_toolchain.toolchain_path }}:{{ ansible_env.PATH }}"
+    # PATH: "{{ spacemit_toolchain.toolchain_path }}:{{ ansible_env.PATH }}"

@@ -66,6 +66,7 @@
       dest: '{{ kernel.git.checkout_dir }}'
       force: true
       version: '{{ kernel.git.version }}'
+    when: '{{ kernel.git.checkout }}'
 
   - name: Get set kernel directory
     set_fact: 

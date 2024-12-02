@@ -1,4 +1,0 @@
-spacemit_toolchain:
-  target: "/tmp/spacemit"
-  download: https://archive.spacemit.com/toolchain/spacemit-toolchain-linux-glibc-x86_64-v1.0.1.tar.xz
-  toolchain_path: "/tmp/spacemit/unpack/spacemit-toolchain-linux-glibc-x86_64-v1.0.1/bin"
