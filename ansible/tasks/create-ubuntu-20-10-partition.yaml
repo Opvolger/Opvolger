@@ -47,13 +47,13 @@
       become_user: root
       community.general.parted:
         device: "{{ target }}"
-        name: rootfs
+        name: cloudimg-rootfs
         label: gpt
         number: "{{ disk_info.partitions | length + 1 }}"
         part_start: "{{ disk_info.partitions[-1].end }}MiB"
         part_end: "100%"
         state: present
-  when: not disk_info.partitions[-1].name == 'rootfs'
+  when: not disk_info.partitions[-1].name == 'cloudimg-rootfs'
 
 - name: Read device information "{{ target }}"
   become: true
@@ -78,17 +78,17 @@
     register: loopback
     when: '"/dev/loop" not in loopback.stdout' 
 
-  # - name: "dd if={{ loopback.stdout }}p1 of={{ target }}{{ disk_info.partitions[-1].num }} bs=32M status=progress"
-  #   become: true
-  #   become_user: root
-  #   shell: "dd if={{ loopback.stdout }}p1 of={{ target }}{{ disk_info.partitions[-1].num }} bs=32M status=progress"
+  - name: "dd if={{ loopback.stdout }}p1 of={{ target }}{{ disk_info.partitions[-1].num }} bs=32M status=progress"
+    become: true
+    become_user: root
+    shell: "dd if={{ loopback.stdout }}p1 of={{ target }}{{ disk_info.partitions[-1].num }} bs=32M status=progress"
 
   - name: Extend an {{ target }}{{ disk_info.partitions[-1].num }} partition to fill all available space
     become: true
     become_user: root
     community.general.parted:
       device: "{{ target }}"
-      name: rootfs
+      name: cloudimg-rootfs
       number: "{{ disk_info.partitions[-1].num }}"
       label: gpt
       part_end: "100%"

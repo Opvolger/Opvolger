@@ -1,7 +1,4 @@
 ---
-- name: Create boot
-  ansible.builtin.import_playbook: starfive-visionfive2-create-boot-partitions.yaml
-
 - hosts: localhost
   vars:
     kernel: "{{ starfive_visionfive2_kernel }}"
@@ -12,5 +9,5 @@
         partition: 3
       rootfs_location: "/dev/mmcblk1p4"
   tasks:
-    - include_tasks: tasks/create-and-copy-boot-src-to-boot-partition.yaml
     - include_tasks: tasks/create-opensuse-partition.yaml
+    - include_tasks: tasks/create-and-copy-boot-src-to-boot-partition.yaml

@@ -7,12 +7,10 @@
       boot:
         device: "mmc 1"
         partition: "3"
-      rootfs_location: "/dev/mmcblk1p4"
+      rootfs_location: "/dev/mmcblk0p6"
       ramdisk:
-        device: "mmc 1"
-        partition: "4"
+        device: "mmc 0"
+        partition: "6"
         location: /boot/initrd.img
   tasks:
-    
-    - include_tasks: tasks/create-ubuntu-20-10-partition.yaml
     - include_tasks: tasks/create-and-copy-boot-src-to-boot-partition.yaml

@@ -1,0 +1,4 @@
+---
+- ansible.builtin.import_playbook: starfive-visionfive2-compile.yaml
+- ansible.builtin.import_playbook: starfive-visionfive2-create-boot-partitions.yaml
+- ansible.builtin.import_playbook: starfive-visionfive2-opensuse-all.yaml

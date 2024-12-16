@@ -42,6 +42,15 @@
         part_start: "{{ disk_info.partitions[-1].end }}MiB"
         part_end: "100%"
         state: present
+    # switch from ext2 to ext4 (so it is realy empty!)
+    - name: Create a ext2 filesystem on {{ target }}{{ disk_info.partitions | length + 1 }}
+      become: true
+      become_user: root
+      community.general.filesystem:
+        fstype: ext2
+        force: true
+        dev: "{{ target }}{{ disk_info.partitions | length + 1 }}"
+        uuid: EBD0A0A2-B9E5-4433-87C0-68B6B72699C7    
     - name: Create a ext4 filesystem on {{ target }}{{ disk_info.partitions | length + 1 }}
       become: true
       become_user: root

@@ -1,8 +1,4 @@
 ---
-
-# - name: Compile code
-#   ansible.builtin.import_playbook: starfive-visionfive2-compile.yaml
-
 - hosts: localhost
   vars:
     target: /dev/sdb
