@@ -35,4 +35,3 @@
     chdir: '{{ u_boot.git.checkout_dir }}'
     jobs: '{{ build_jobs }}'
     params: '{{ u_boot.build_params }}'
-  environment: "{{ u_boot.extra_environment_vars }}"

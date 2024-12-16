@@ -1,7 +1,7 @@
 starfive_visionfive2_kernel:
   target: "/tmp/kernel"
   download: https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-[version].tar.xz
-  version: "6.12.1"
+  version: "6.12.5"
   dtb_file_location: /arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-v1.3b.dtb
   # do not use modules
   replace_m_for_y: true

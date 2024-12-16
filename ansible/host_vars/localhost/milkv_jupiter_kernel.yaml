@@ -12,8 +12,6 @@ milkv_jupiter_kernel:
   defconfig: k1_defconfig
   # do not use modules
   replace_m_for_y: false
-  extra_environment_vars: 
-    # PATH: "{{ spacemit_toolchain.toolchain_path }}:{{ ansible_env.PATH }}"
   build_params:
     CROSS_COMPILE: riscv64-linux-gnu-
     # CROSS_COMPILE: riscv64-unknown-linux-gnu-
@@ -45,6 +43,10 @@ milkv_jupiter_kernel:
     CONFIG_FW_LOADER_DEBUG: n
     CONFIG_FW_LOADER_COMPRESS: n
     CONFIG_VT_HW_CONSOLE_BINDING: y
+
+    # needs firmware
+    CONFIG_TOUCHSCREEN_FTS: n
+
     # enable I2C
     CONFIG_I2C_HID: y
     CONFIG_I2C: y

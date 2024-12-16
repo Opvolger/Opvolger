@@ -1,6 +1,16 @@
+- name: Get set kernel directory
+  set_fact: 
+    kernel_dir: "{{ kernel.target }}/source/linux-{{ kernel.version }}"
+  when: kernel.download is defined
+
+- name: Get set kernel directory
+  set_fact: 
+    kernel_dir: "{{ kernel.git.checkout_dir }}"
+  when: kernel.git is defined
+
 - name: Creates mount directory
   ansible.builtin.file:
-    path: "{{ opensuse.target }}/mnt"
+    path: "{{ kernel_dir }}/mnt"
     state: directory
 
 - name: Read device information "{{ target }}"
@@ -14,66 +24,51 @@
 - set_fact:
     bootfs_partition: "{{ (disk_info.partitions |  selectattr('name', 'search', 'bootfs') | list | first).num }}"
 
-- name: Mount "{{ target }}{{ bootfs_partition }}"
-  become: true
-  become_user: root
-  ansible.posix.mount:
-    path: "{{ opensuse.target }}/mnt"
-    src: "{{ target }}{{ bootfs_partition }}"
-    fstype: ext4
-    state: ephemeral
+- name: Mount block
+  block:
+  - name: Mount "{{ target }}{{ bootfs_partition }}"
+    become: true
+    become_user: root
+    ansible.posix.mount:
+      path: "{{ kernel_dir }}/mnt"
+      src: "{{ target }}{{ bootfs_partition }}"
+      fstype: ext4
+      state: ephemeral
 
-- name: Get set kernel directory
-  set_fact: 
-    kernel_dir: "{{ kernel.target }}/source/linux-{{ kernel.version }}"
-  when: kernel.download is defined
+  - name: Copy kernel Image.gz
+    become: true
+    become_user: root
+    ansible.builtin.copy:
+      src: "{{ kernel_dir }}/arch/riscv/boot/Image.gz"
+      dest: "{{ kernel_dir }}/mnt/Image.gz"
+      remote_src: yes
 
-- name: Get set kernel directory
-  set_fact: 
-    kernel_dir: "{{ kernel.git.checkout_dir }}"
-  when: kernel.git is defined
+  - name: Check if Image.itb kernel file exists
+    stat: 
+      path: "{{ kernel_dir }}/arch/riscv/boot/Image.itb"
+    register: itb_file
 
-- name: Copy kernel
-  become: true
-  become_user: root
-  ansible.builtin.copy:
-    src: "{{ kernel_dir }}/arch/riscv/boot/Image.gz"
-    dest: "{{ opensuse.target }}/mnt/Image.gz"
-    remote_src: yes
+  - name: Copy kernel Image.itb
+    become: true
+    become_user: root
+    ansible.builtin.copy:
+      src: "{{ kernel_dir }}/arch/riscv/boot/Image.itb"
+      dest: "{{ kernel_dir }}/mnt/Image.itb"
+      remote_src: yes
+    when: itb_file.stat.exists
 
-- name: Copy kernel
-  become: true
-  become_user: root
-  ansible.builtin.copy:
-    src: "{{ kernel_dir }}/arch/riscv/boot/Image.itb"
-    dest: "{{ opensuse.target }}/mnt/Image.itb"
-    remote_src: yes
+  - name: Copy device tree
+    become: true
+    become_user: root
+    ansible.builtin.copy:
+      src: "{{ kernel_dir }}{{ kernel.dtb_file_location }}"
+      dest: "{{ kernel_dir }}/mnt/{{ kernel.dtb_file_location | basename }}"
+      remote_src: yes
 
-- name: Copy device tree
-  become: true
-  become_user: root
-  ansible.builtin.copy:
-    src: "{{ kernel_dir }}{{ kernel.dtb_file_location }}"
-    dest: "{{ opensuse.target }}/mnt/{{ kernel.dtb_file_location | basename }}"
-    remote_src: yes
-
-- name: write hostname using jinja2
-  become: true
-  become_user: root
-  ansible.builtin.template:
-      src: templates/boot.cmd.j2
-      dest: "{{ opensuse.target }}/mnt/boot.cmd"
-
-- name: Create boot.scr from boot.cmd
-  become: true
-  become_user: root
-  ansible.builtin.shell: "sudo mkimage -C none -A riscv -T script -d {{ opensuse.target }}/mnt/boot.cmd {{ opensuse.target }}/mnt/boot.scr"
-  args:
-    executable: /bin/bash
-
-- name: Unmount "{{ opensuse.target }}/mnt"
-  become: true
-  become_user: root
-  ansible.posix.mount:
-    path: "{{ opensuse.target }}/mnt"
-    state: unmounted
+  always:
+  - name: Unmount "{{ kernel_dir }}/mnt"
+    become: true
+    become_user: root
+    ansible.posix.mount:
+      path: "{{ kernel_dir }}/mnt"
+      state: unmounted

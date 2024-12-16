@@ -1,0 +1,127 @@
+- name: Creates directory
+  ansible.builtin.file:
+    path: "{{ ubuntu2410.target }}{{ item }}"
+    state: directory
+  with_items: 
+   - ""
+   - "/mnt"
+
+- name: Get stats of Ubuntu 20.10 decompress file {{ ubuntu2410.download | basename  | replace('.xz','') }}
+  stat:
+    path: "{{ ubuntu2410.target }}/{{ ubuntu2410.download | basename  | replace('.xz','') }}"
+  register: ubuntu2410filedecompress
+
+- name: Get Ubuntu 20.10 rootfs tar.xz
+  block:
+    - name: Get stats of Ubuntu 20.10 rootfs file
+      stat:
+        path: "{{ ubuntu2410.target }}/{{ ubuntu2410.download | basename }}"
+      register: ubuntu2410file
+
+    - name: download {{ ubuntu2410.download | basename }}
+      get_url:
+        url: "{{ ubuntu2410.download }}"
+        dest: "{{ ubuntu2410.target }}/{{ ubuntu2410.download | basename }}"
+      when: not ubuntu2410file.stat.exists
+
+    - name: decompress {{ ubuntu2410.download | basename }}
+      shell: "xz --decompress {{ ubuntu2410.target }}/{{ ubuntu2410.download | basename }}"
+  when: not ubuntu2410filedecompress.stat.exists
+
+- name: Read device information of {{ target }}
+  become: true
+  become_user: root
+  community.general.parted: 
+    device: "{{ target }}"
+    unit: MiB
+  register: disk_info
+
+- name: Print disk_info
+  ansible.builtin.debug:
+    var: disk_info
+
+- name: Create new partition for rootfs
+  block:
+    - name: Create new partition for rootfs
+      become: true
+      become_user: root
+      community.general.parted:
+        device: "{{ target }}"
+        name: rootfs
+        label: gpt
+        number: "{{ disk_info.partitions | length + 1 }}"
+        part_start: "{{ disk_info.partitions[-1].end }}MiB"
+        part_end: "100%"
+        state: present
+  when: not disk_info.partitions[-1].name == 'rootfs'
+
+- name: Read device information "{{ target }}"
+  become: true
+  become_user: root
+  community.general.parted: 
+    device: "{{ target }}"
+    unit: MiB
+  register: disk_info
+
+- name: Mount block and loop
+  block:
+  - name: Find already setup lo device
+    become: true
+    become_user: root
+    shell: "losetup -l | grep {{ ubuntu2410.download | basename }} | awk '{print $1}'"
+    register: loopback
+
+  - name: Setup lo device
+    become: true
+    become_user: root
+    shell: "losetup --partscan --find --show {{ ubuntu2410.target }}/{{ ubuntu2410.download | basename | replace('.xz','') }}"
+    register: loopback
+    when: '"/dev/loop" not in loopback.stdout' 
+
+  # - name: "dd if={{ loopback.stdout }}p1 of={{ target }}{{ disk_info.partitions[-1].num }} bs=32M status=progress"
+  #   become: true
+  #   become_user: root
+  #   shell: "dd if={{ loopback.stdout }}p1 of={{ target }}{{ disk_info.partitions[-1].num }} bs=32M status=progress"
+
+  - name: Extend an {{ target }}{{ disk_info.partitions[-1].num }} partition to fill all available space
+    become: true
+    become_user: root
+    community.general.parted:
+      device: "{{ target }}"
+      name: rootfs
+      number: "{{ disk_info.partitions[-1].num }}"
+      label: gpt
+      part_end: "100%"
+      resize: true
+      state: present
+
+  - name: Mount "{{ target }}{{ disk_info.partitions[-1].num }}"
+    become: true
+    become_user: root
+    ansible.posix.mount:
+      path: "{{ ubuntu2410.target }}/mnt"
+      src: "{{ target }}{{ disk_info.partitions[-1].num }}"
+      fstype: ext4
+      state: ephemeral
+
+  - name: Remove mount point /boot/efi in fstab
+    become: true
+    become_user: root
+    lineinfile:
+      path: "{{ ubuntu2410.target }}/mnt/etc/fstab"
+      state: absent
+      regexp: '^LABEL=UEFI'
+
+  always:
+
+  - name: Unmount "{{ ubuntu2410.target }}/mnt"
+    become: true
+    become_user: root
+    ansible.posix.mount:
+      path: "{{ ubuntu2410.target }}/mnt"
+      state: unmounted
+
+  - name: Remove loop device
+    become: true
+    become_user: root
+    shell: "sudo losetup -d $(losetup -l | grep {{ ubuntu2410.download | basename | replace('.xz','') }} | awk '{print $1}')"

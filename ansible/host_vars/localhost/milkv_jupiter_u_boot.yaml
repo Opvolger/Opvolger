@@ -18,5 +18,4 @@ milkv_jupiter_u_boot:
     # CROSS_COMPILE: riscv64-unknown-linux-gnu-
     CROSS_COMPILE: riscv64-linux-gnu-
     ARCH: riscv
-  extra_environment_vars: 
-    # PATH: "{{ spacemit_toolchain.toolchain_path }}:{{ ansible_env.PATH }}"
+

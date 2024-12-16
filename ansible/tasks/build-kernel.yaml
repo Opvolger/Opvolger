@@ -140,4 +140,3 @@
     chdir: "{{ kernel_dir }}"
     jobs: '{{ build_jobs }}'
     params: '{{ kernel.build_params }}'
-  environment: "{{ kernel.extra_environment_vars }}"

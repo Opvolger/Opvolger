@@ -3,9 +3,6 @@
   vars:
     build_jobs: 16
     target: /dev/sdb
-    on_boot:
-      boot_device: "mmc 1"
-      rootfs_location: "/dev/mmcblk1p3"
     opensbi: "{{ starfive_visionfive2_opensbi }}"
     u_boot: "{{ starfive_visionfive2_u_boot }}"
     kernel: "{{ starfive_visionfive2_kernel }}"

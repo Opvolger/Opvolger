@@ -24,7 +24,8 @@ ansible-playbook [board]-[action].yaml --ask-become-pass -v
 Examples for Starfive Visionfive2:
 
 - starfive-visionfive2-compile.yaml: Compiles U-boot, OpenSBI and the kernel
-- starfive-visionfive2-create-boot.yaml: starfive-visionfive2-compile.yaml + creates boot partitions + bootfs (with kernel)
-- starfive-visionfive2-opensuse.yaml: starfive-visionfive2-create-boot.yaml + creates rootfs partition
+- starfive-visionfive2-create-boot-partitions.yaml: starfive-visionfive2-compile.yaml + creates boot partitions + copy kernel
+- starfive-visionfive2-opensuse.yaml: starfive-visionfive2-create-boot-partitions.yaml + creates rootfs partition + create boot.src
+- starfive-visionfive2-ubuntu-20-10.yaml: starfive-visionfive2-create-boot-partitions.yaml + creates rootfs partition + create boot.src
 - starfive-visionfive2-update-boot.yaml: updates U-boot, OpenSBI and the kernel on the boot partitions
 - starfive-visionfive2-update-kernel.yaml: updates the kernel and copied to the bootfs

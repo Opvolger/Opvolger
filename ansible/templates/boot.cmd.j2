@@ -4,15 +4,15 @@ ramdisk_addr_r={{ on_boot.ramdisk_addr_r }}
 {% if on_boot.fdt_addr_r is defined %}
 fdt_addr_r={{ on_boot.fdt_addr_r }}
 {% endif %}
-{% if on_boot.bootargs is defined %}
-setenv bootargs '{{ on_boot.bootargs }}'
+{% if on_boot.boot.bootargs is defined %}
+setenv bootargs '{{ on_boot.boot.bootargs }}'
 {% else %}
 setenv bootargs 'root={{ on_boot.rootfs_location }} rw console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
 {% endif %}
-load {{ on_boot.boot_device }}:{{ on_boot.bootfs_partition }} ${kernel_addr_r} /Image.gz
-load {{ on_boot.boot_device }}:{{ on_boot.bootfs_partition }} ${fdt_addr_r} /{{ kernel.dtb_file_location | basename }}
-{% if on_boot.load_ramdisk_location is defined %}
-load {{ on_boot.boot_device }}:{{ on_boot.bootfs_partition }} ${ramdisk_addr_r} {{ on_boot.load_ramdisk_location }}
+load {{ on_boot.boot.device }}:{{ on_boot.boot.partition }} ${kernel_addr_r} /Image.gz
+load {{ on_boot.boot.device }}:{{ on_boot.boot.partition }} ${fdt_addr_r} /{{ kernel.dtb_file_location | basename }}
+{% if on_boot.ramdisk is defined %}
+load {{ on_boot.ramdisk.device }}:{{ on_boot.ramdisk.partition }} ${ramdisk_addr_r} {{ on_boot.ramdisk.location }}
 booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
 {% else %}
 booti ${kernel_addr_r} - ${fdt_addr_r}

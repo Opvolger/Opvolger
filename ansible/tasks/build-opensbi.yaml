@@ -24,4 +24,4 @@
     chdir: '{{ opensbi.git.checkout_dir }}'
     jobs: '{{ build_jobs }}'
     params: '{{ opensbi.build_params }}'
-  environment: "{{ opensbi.extra_environment_vars }}"
+

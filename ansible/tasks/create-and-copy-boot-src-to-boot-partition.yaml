@@ -1,0 +1,49 @@
+
+- name: Creates mount directory
+  ansible.builtin.file:
+    path: "/tmp/mnt"
+    state: directory
+
+- name: Read device information "{{ target }}"
+  become: true
+  become_user: root
+  community.general.parted: 
+    device: "{{ target }}"
+    unit: MiB
+  register: disk_info
+
+- set_fact:
+    bootfs_partition: "{{ (disk_info.partitions |  selectattr('name', 'search', 'bootfs') | list | first).num }}"
+
+- name: Mount block
+  block:
+  - name: Mount "{{ target }}{{ bootfs_partition }}"
+    become: true
+    become_user: root
+    ansible.posix.mount:
+      path: "/tmp/mnt"
+      src: "{{ target }}{{ bootfs_partition }}"
+      fstype: ext4
+      state: ephemeral
+
+  - name: write hostname using jinja2
+    become: true
+    become_user: root
+    ansible.builtin.template:
+        src: templates/boot.cmd.j2
+        dest: "/tmp/mnt/boot.cmd"
+
+  - name: Create boot.scr from boot.cmd
+    become: true
+    become_user: root
+    ansible.builtin.shell: "sudo mkimage -C none -A riscv -T script -d /tmp/mnt/boot.cmd /tmp/mnt/boot.scr"
+    args:
+      executable: /bin/bash
+
+  always:
+  - name: Unmount "/tmp/mnt"
+    become: true
+    become_user: root
+    ansible.posix.mount:
+      path: "/tmp/mnt"
+      state: unmounted

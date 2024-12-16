@@ -9,8 +9,13 @@
     on_boot:
       boot:
         device: "mmc 1"
-        partition: 3
+        partition: "3"
       rootfs_location: "/dev/mmcblk1p4"
+      ramdisk:
+        device: "mmc 1"
+        partition: "4"
+        location: /boot/initrd.img
   tasks:
+    
+    - include_tasks: tasks/create-ubuntu-20-10-partition.yaml
     - include_tasks: tasks/create-and-copy-boot-src-to-boot-partition.yaml
-    - include_tasks: tasks/create-opensuse-partition.yaml
