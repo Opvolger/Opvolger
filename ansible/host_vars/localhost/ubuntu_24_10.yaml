@@ -1,3 +1,0 @@
-ubuntu2410:
-  target: "/home/opvolger/tmp/ubuntu"
-  download: https://cdimage.ubuntu.com/releases/24.10/release/ubuntu-24.10-preinstalled-server-riscv64.img.xz
