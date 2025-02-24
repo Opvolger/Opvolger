@@ -68,7 +68,7 @@ OpenSBI
 cd opensbi
 CROSS_COMPILE=riscv64-linux-gnu-
 export CROSS_COMPILE
-make PLATFORM=generic menuconfig
+make PLATFORM_DEFCONFIG=k1_defconfig PLATFORM=generic menuconfig
 ```
 
 In menuconfig, under Platform Options, disable Spacemit K1pro support, enable Spacemit K1x support and Spacemit K1x board evb, save and run make again. When the build is done, export the full path to build/platform/generic/firmware/fw_dynamic.bin in the OpenSBI dir as OPENSBI and change to the U-Boot source directory. To build, U-Boot, run the following commands:
