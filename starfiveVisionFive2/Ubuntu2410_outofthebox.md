@@ -9,6 +9,19 @@ So we need a u-boot (from Ubuntu) without the initialization of the PCI-e contro
 
 So we can now just flash Ubuntu 24.10 to an eMMC, use the custom flash-files (u-boot + opensbi).
 
+a lot of AMDGPU's worked on this setup:
+
+- ATI Radeon HD 5450 (Cedar PRO)
+- ATI Radeon HD 5850 (Cypress PRO)
+- AMD Radeon R9 290 (Hawaii PRO)
+- AMD Radeon R9 290X (Hawaii XT)
+
+not working:
+
+- AMD Radeon RX 6600 (Navi 23 XL)
+
+It is booting, it gives screenoutput (black) and then the system hangs completely
+
 ## Flash Ubuntu 24.10 to eMMC
 
 download from the [site](https://ubuntu.com/download/risc-v) the [image 24.10](https://cdimage.ubuntu.com/releases/24.10/release/ubuntu-24.10-preinstalled-server-riscv64+nezha.img.xz).
