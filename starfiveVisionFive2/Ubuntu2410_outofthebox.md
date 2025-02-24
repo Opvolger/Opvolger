@@ -61,7 +61,7 @@ sudo apt upgrade
 # add repo for firefox
 sudo add-apt-repository ppa:mozillateam/ppa
 # install what default stuff + install kde + firefox + some c dev tools (so you can compile some stuff)
-sudo apt install software-properties-common sddm sddm-theme-breeze kde-standard build-essential libxml2 libcurl4-gnutls-dev neofetch ubuntu-dev-tools libopenal-dev libpng-dev libjpeg-dev libfreetype6-dev libfontconfig1-dev libcurl4-gnutls-dev libsdl2-dev zlib1g-dev libbz2-dev libedit-dev python-is-python3 m4 clang sddm-theme-breeze firefox
+sudo apt install software-properties-common cmake cabextract sddm sddm-theme-breeze kde-standard build-essential libxml2 libcurl4-gnutls-dev neofetch ubuntu-dev-tools libopenal-dev libpng-dev libjpeg-dev libfreetype6-dev libfontconfig1-dev libcurl4-gnutls-dev libsdl2-dev zlib1g-dev libbz2-dev libedit-dev python-is-python3 m4 clang sddm-theme-breeze firefox
 ```
 
 I did get a configuration i had to fill in: `Please enter the default mirror you want to be used by pbuilder.`
