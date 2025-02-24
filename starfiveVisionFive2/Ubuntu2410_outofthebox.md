@@ -1,6 +1,13 @@
-# Ubuntu 24.10
+# Ubuntu 24.10 on StarFive VisionFive 2 with AMDGPU
 
-It is using the 6.11 kernel. This has the PCI-e controller of StarFive VisionFive 2 + AMDGPU drivers that are working with RISC-V
+Ubuntu 24.10 is using the 6.11 kernel. This has the PCI-e controller of StarFive VisionFive 2 + AMDGPU drivers that are working with RISC-V.
+So if you have a m2 to pci-e adapter you can now run Ubuntu with AMDGPU on RISC-V (without building your own kernel with patches etc.)
+
+The only problem is now the u-boot that initialize the PCI-e controller to scan for m.2 drivers. Some of my AMDPGU do not like that (fan 100% and not detected anymore in the kernel).
+
+So we need a u-boot (from Ubuntu) without the initialization of the PCI-e controller. I have build that and release the flash-files (u-boot + opensbi) on github.
+
+So we can now just flash Ubuntu 24.10 to an eMMC, use the custom flash-files (u-boot + opensbi).
 
 ## Flash Ubuntu 24.10 to eMMC
 
@@ -71,3 +78,7 @@ I hit enter and get the question again, so i filled in: `http://archive.ubuntu.c
 # now reboot
 sudo reboot
 ```
+
+## Done
+
+You will now see a KDE desktop login! Good luck and have fun!
