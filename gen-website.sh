@@ -24,6 +24,7 @@ genHtml starfiveVisionFive2/UbuntuATIRadeonR9_290_2023_11_20 "StarFive VisionFiv
 genHtml starfiveVisionFive2/OpenSUSEATIRadeonR9_290 "StarFive VisionFive 2 OpenSUSE Tumbleweed ATI Radeon R9 290"
 genHtml starfiveVisionFive2/OpenSUSEATIRadeonR9_290_mainline "StarFive VisionFive 2 OpenSUSE Tumbleweed ATI Radeon R9 290 mainline kernel"
 genHtml starfiveVisionFive2/Ubuntu2410_outofthebox "StarFive VisionFive 2 Ubuntu 24.10 AMDGPU"
+genHtml starfiveVisionFive2/Ubuntu2504_outofthebox "StarFive VisionFive 2 Ubuntu 25.04 AMDGPU"
 
 # TODO fix link .md to .html
 rsync -a --prune-empty-dirs --include '*/' --include '*.ico' --include '*.html' --include '*.css' --include '*.png' --include '*.jpeg' --exclude '*' ./ ../website
