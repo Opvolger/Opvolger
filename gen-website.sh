@@ -27,7 +27,7 @@ genHtml starfiveVisionFive2/Ubuntu2410_outofthebox "StarFive VisionFive 2 Ubuntu
 genHtml starfiveVisionFive2/Ubuntu2504_outofthebox "StarFive VisionFive 2 Ubuntu 25.04 AMDGPU"
 
 # TODO fix link .md to .html
-rsync -a --prune-empty-dirs --include '*/' --include '*.ico' --include '*.html' --include '*.css' --include '*.png' --include '*.jpeg' --exclude '*' ./ ../website
+rsync -a --prune-empty-dirs --include '*/' --include '*.ico' --include '*.html' --include '*.css' --include '*.png' --include '*.jpeg' --include '*.jpg' --exclude '*' ./ ../website
 
 rm *.html
 rm kodi/*.html

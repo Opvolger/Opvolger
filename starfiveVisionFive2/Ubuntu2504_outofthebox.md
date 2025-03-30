@@ -43,7 +43,8 @@ It can look something like this:
 or
 ![img](FedoraATIRadeon5450/setup.png)
 or
-[youtube video](https://www.youtube.com/watch?v=Jp0ZPA4IQGw)
+![img](Ubuntu2504_outofthebox/PXL_20250120_212814579.MP_smaller.jpg)
+see [youtube video](https://www.youtube.com/watch?v=Jp0ZPA4IQGw)
 
 ## Flash Ubuntu 25.04 (beta) to eMMC
 
@@ -134,4 +135,4 @@ network:
 
 You will now see a KDE desktop login! Good luck and have fun!
 
-![screenshot of OpenSUSE on RISC-V](Ubuntu2504_outofthebox/StarFiveVisionFive2Ubuntu25-04.png)
+![screenshot of Ubuntu 25.04 (beta) on RISC-V](Ubuntu2504_outofthebox/StarFiveVisionFive2Ubuntu25-04.png)
