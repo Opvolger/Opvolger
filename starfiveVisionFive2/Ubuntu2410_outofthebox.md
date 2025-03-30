@@ -1,15 +1,19 @@
-# Ubuntu 24.10 on StarFive VisionFive 2 with AMDGPU
+---
+date: 2025-02-25
+author: Bas Magré
+---
+# Ubuntu 24.10 StarFive VisionFive 2 AMDGPU
 
-Ubuntu 24.10 is using the 6.11 kernel. This has the PCI-e controller of StarFive VisionFive 2 + AMDGPU drivers that are working with RISC-V.
-So if you have a m2 to pci-e adapter you can now run Ubuntu with AMDGPU on RISC-V (without building your own kernel with patches etc.)
+Ubuntu 24.10 is using the 6.11 kernel. This has the PCI-e controller of JH7110 SoC + AMDGPU drivers that are working with RISC-V.
+So if you have a M.2 to pci-e adapter you can now run Ubuntu with AMDGPU on RISC-V (without building your own kernel with patches etc.)
 
-The only problem is now the u-boot that initialize the PCI-e controller to scan for m.2 drivers. Some of my AMDPGU do not like that (fan 100% and not detected anymore in the kernel).
+The only problem is now the U-boot that initialize the PCI-e controller to scan for M.2 drivers. Some of my AMDPGU do not like that (fan 100% and not detected anymore in the kernel).
 
-So we need a u-boot (from Ubuntu) without the initialization of the PCI-e controller. I have build that and release the flash-files (u-boot + opensbi) on github.
+So we need a U-boot (with the patches from Ubuntu) without the initialization of the PCI-e controller. I have build that and release the flash-files (u-boot + opensbi) on github.
 
-So we can now just flash Ubuntu 24.10 to an eMMC, use the custom flash-files (u-boot + opensbi).
+So we can now just flash Ubuntu 24.10 to an eMMC and use the custom flash-files (u-boot + opensbi).
 
-a lot of AMDGPU's worked on this setup:
+A lot of my AMDGPU's worked on this setup:
 
 - ATI Radeon HD 5450 (Cedar PRO)
 - ATI Radeon HD 5850 (Cypress PRO)
@@ -21,6 +25,8 @@ not working:
 - AMD Radeon RX 6600 (Navi 23 XL)
 
 It is booting, it gives screenoutput (black) and then the system hangs completely
+
+My setup is a SD-card to boot (custom U-boot) and an eMMC for the Ubuntu operation system (default Ubuntu kernel and GNU software)
 
 ## Flash Ubuntu 24.10 to eMMC
 
@@ -36,7 +42,7 @@ So on build we need to set `CONFIG_PCI_INIT_R` and `CONFIG_CMD_PCI` to n (no).
 
 I all ready create this builds and they can be found [here](https://github.com/Opvolger/ansible-riscv-sd-card-creater/releases):
 
-Insert you SD-card in you computer
+Insert you SD-card in you computer (this example expect /dev/sdb to be your SD-card)
 
 ```bash
 wget https://github.com/Opvolger/ansible-riscv-sd-card-creater/releases/download/0.1.0/release.tgz
@@ -44,7 +50,7 @@ tar -xvzf release.tgz
 # check where your SD-card is with lsblk, in this example it is /dev/sdb
 # delete MBR of SD-Card
 sudo dd if=/dev/zero of=/dev/sdb bs=512 count=1 conv=notrunc
-# we will create the needed partitions to boot from SD-card
+# we will create the needed partitions to boot from SD-card (for more information see https://docs.u-boot.org/en/latest/board/starfive/visionfive2.html)
 sudo sgdisk --clear \
     --set-alignment=2 \
     --new=1:4096:8191 --change-name=1:spl --typecode=1:2E54B353-1271-4842-806F-E436D6AF6985 \

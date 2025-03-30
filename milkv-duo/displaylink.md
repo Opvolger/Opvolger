@@ -275,3 +275,27 @@ CONFIG_FANOTIFY=y
 CONFIG_ZSMALLOC=y
 CONFIG_ZRAM=y
 ```
+
+
+use docker sdk v2
+
+docker run --privileged -itd --name duodocker -v $(pwd):/home/work milkvtech/milkv-duo:latest /bin/bash
+docker exec -it 044 bash
+
+cd /home/work/
+
+./build.sh
+
+cd /home/work/linux_5.10/build/sg2000_milkv_duos_musl_riscv64_sd
+
+export PATH="/home/work/host-tools/gcc/riscv64-linux-musl-x86_64/bin/:$PATH"
+make ARCH=riscv CROSS_COMPILE=riscv64-unknown-linux-musl- -j 16
+
+uImage_addr=0x81800000
+setenv kernel_comp_addr_r 0x85800000
+setenv kernel_comp_size 0x87800000
+update_addr=0x9fe00000
+load mmc 0:1 ${uImage_addr} Image.gz
+load mmc 0:1 ${update_addr} sg2000_milkv_duos_musl_riscv64_sd.dtb
+setenv bootargs 'console=ttyS0,115200 root=/dev/mmcblk0p3 rootwait rw earlycon loglevel=7 selinux=0'
+booti $uImage_addr - $update_addr

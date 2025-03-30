@@ -173,6 +173,15 @@ mmc part
 ext4ls mmc 1:4 # ls for mmc dev 1 part 4
 ```
 
+```bash
+load mmc 1:2 ${kernel_addr_r} /vmlinuz-6.12.7-200.0.riscv64.fc41.riscv64
+load mmc 1:2 ${fdt_addr_r} /dtb/starfive/jh7110-starfive-visionfive-2-v1.3b.dtb
+load mmc 1:2 ${ramdisk_addr_r} /initramfs-6.12.7-200.0.riscv64.fc41.riscv64.img
+setenv bootargs 'root=UUID=3bfb82ed-248a-4621-bd60-5147d280c8a3 rw earlycon rootflags=subvol=root console=tty0 console=ttyS0,115200 rootwait stmmaceth=chain_mode:1 selinux=0'
+booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
+```
+
+
 Boot Ubuntu
 
 ```bash
