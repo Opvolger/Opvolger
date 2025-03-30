@@ -112,11 +112,26 @@ sudo apt upgrade
 # add repo for firefox
 sudo add-apt-repository ppa:mozillateam/ppa
 # install what default stuff + install kde + firefox + some c dev tools (so you can compile some stuff)
-sudo apt install software-properties-common cmake cabextract sddm sddm-theme-breeze kde-standard build-essential libxml2 libcurl4-gnutls-dev fastfetch ubuntu-dev-tools libopenal-dev libpng-dev libjpeg-dev libfreetype6-dev libfontconfig1-dev libcurl4-gnutls-dev libsdl2-dev zlib1g-dev libbz2-dev libedit-dev python-is-python3 m4 clang  firefox
+sudo apt install nano software-properties-common cmake cabextract sddm sddm-theme-breeze kde-standard build-essential libxml2 libcurl4-gnutls-dev fastfetch ubuntu-dev-tools libopenal-dev libpng-dev libjpeg-dev libfreetype6-dev libfontconfig1-dev libcurl4-gnutls-dev libsdl2-dev zlib1g-dev libbz2-dev libedit-dev python-is-python3 m4 clang  firefox kde-spectacle
 # now reboot
 sudo reboot
+```
+
+Fix network manager in KDE (so you can control network in KDE)
+
+```bash
+sudo nano /etc/netplan/01-network-manager-all.yaml
+```
+
+```yaml
+# Let NetworkManager manage all devices on this system
+network:
+  version: 2
+  renderer: NetworkManager
 ```
 
 ## Done
 
 You will now see a KDE desktop login! Good luck and have fun!
+
+![screenshot of OpenSUSE on RISC-V](Ubuntu2504_outofthebox/StarFiveVisionFive2Ubuntu25-04.png)
