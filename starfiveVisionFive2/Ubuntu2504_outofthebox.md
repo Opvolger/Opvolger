@@ -131,6 +131,11 @@ network:
   renderer: NetworkManager
 ```
 
+```bash
+systemctl disable systemd-networkd.service
+systemctl enable NetworkManager.service
+```
+
 ## Done
 
 You will now see a KDE desktop login! Good luck and have fun!
