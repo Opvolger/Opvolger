@@ -5,6 +5,12 @@ Here I will (if it's worth it) keep track of my projects I've done with the Star
 
 On the day I received the Starfive VisionFive 2, this was early in the evening... I already had Quake2 working late late in evening. (After updating firmware and getting Image-69 working). This was nothing more than a 'make' and remove the *.so files which were not "OpenGL ES3" and it worked. Unfortunately, I couldn't get many other games to work due to the limitation of only having "OpenGL ES 3.0" working on the onboard GPU.
 
+## Debian Trixie RC1
+
+We can now use the Debian Trixie RC1 Setup, only have to use custom u-boot/opensbi flash-files.
+
+- So this [project](starfiveVisionFive2/DebianTrixieAMDGPU.md) was born! (Part VII)
+
 ## Ubuntu 24.10 has now kernel 6.11
 
 We can now use the Ubuntu 24.10 kernel, only have to use custom u-boot/opensbi flash-files.
