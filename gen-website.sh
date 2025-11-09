@@ -15,6 +15,8 @@ genHtml kodi/npo "Kodi - NPO Uitzendinggemist"
 genHtml kodi/rtlxl "Kodi - RTLxl"
 genHtml kodi/kanalenlijst-hans "Kodi - Kanalenlijst Hans"
 
+genHtml raspberrypi5/FedoraATIRadeonR9_290 "Raspberry Pi 5 - Fedora with AMDGPU, play Halflife 2"
+
 genHtml milkVjupiter/OpenSUSEATIRadeonR9_290 "Milk-V Jupiter OpenSUSE Tumbleweed ATI Radeon R9 290"
 genHtml milkVjupiter/OpenSUSEATIRadeonHD5850 "Milk-V Jupiter OpenSUSE Tumbleweed ATI Radeon HD 5850"
 
@@ -31,5 +33,6 @@ rsync -a --prune-empty-dirs --include '*/' --include '*.ico' --include '*.html' 
 
 rm *.html
 rm kodi/*.html
+rm raspberrypi5/*.html
 rm milkVjupiter/*.html
 rm starfiveVisionFive2/*.html
