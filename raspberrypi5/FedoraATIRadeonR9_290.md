@@ -347,8 +347,155 @@ $ sudo ARCH=arm64 make modules_install INSTALL_MOD_PATH=/run/media/opvolger/fedo
 
 Umount the root and boot partitions from the SD-card.
 
-If everything works great, you will see a setup.
+If everything works great, you will see a setup and can create a user.
+
+### Install Stream
+
+We need to install fex (intel/amd64 emulator), it needs it own root-fs. We will make one for him.
 
 ```bash
-$ sudo dnf install fex-emu fex-emu-filesystem fex-emu-rootfs-fedora fex-emu-thunks fex-emu-utils erofs-fuse  erofs-utils  squashfuse  squashfuse-libs
+$ sudo dnf install fex-emu fex-emu-filesystem fex-emu-rootfs-fedora fex-emu-thunks fex-emu-utils erofs-fuse  erofs-utils  squashfuse  squashfuse-libs patchelf
+```
+
+Now run `FEXRootFSFetcher` to create a intel/amd64 root-fs. I had the most success with Ubuntu 24.04.
+
+```bash
+$ FEXRootFSFetcher
+RootFS not found. Do you want to try and download one?
+Response {y,yes,1} or {n,no,0}
+$ y
+RootFS list selection
+Options:
+        0: Cancel
+        1: Fedora 40 (EroFS)
+        2: Fedora 40 (SquashFS)
+        3: Fedora 38 (EroFS)
+        4: Fedora 38 (SquashFS)
+        5: ArchLinux (EroFS)
+        6: ArchLinux (SquashFS)
+        7: Ubuntu 24.04 (EroFS)
+        8: Ubuntu 24.04 (SquashFS)
+        9: Ubuntu 23.10 (EroFS)
+        10: Ubuntu 23.10 (SquashFS)
+        11: Ubuntu 23.04 (EroFS)
+        12: Ubuntu 23.04 (SquashFS)
+        13: Ubuntu 22.10 (EroFS)
+        14: Ubuntu 22.10 (SquashFS)
+        15: Ubuntu 22.04 (EroFS)
+        16: Ubuntu 22.04 (SquashFS)
+        17: Ubuntu 20.04 (EroFS)
+        18: Ubuntu 20.04 (SquashFS)
+
+Response {1-18} or 0 to cancel
+$ 7
+Selected Rootfs: Ubuntu 24.04 (EroFS)
+        URL: https://rootfs.fex-emu.gg/Ubuntu_24_04/2025-03-04/Ubuntu_24_04.ero
+Are you sure that you want to download this image
+Response {y,yes,1} or {n,no,0}
+$ y
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 1393M  100 1393M    0     0  34.0M      0  0:00:40  0:00:40 --:--:-- 33.4M
+Do you wish to extract the erofs file or use it as-is?
+Options:
+        0: Cancel
+        1: Extract
+        2: As-Is
+
+Response {1-2} or 0 to cancel
+$ 1
+Extracting Erofs. This might take a few minutes.
+Do you wish to set this RootFS as default?
+Response {y,yes,1} or {n,no,0}
+$ y
+Ubuntu_24_04 set as default RootFS
+```
+
+We now have a root-fs for intel/amd64 (games). But we need to install steam and dependacies, so we can game!
+
+```bash
+# here is the intel/amd64 root-fs located
+$ cd ~/.fex-emu/RootFS/Ubuntu_24_04/
+# get into the root-fs (so we can install steam on the root-fs)
+$ python chroot.py chroot
+INFO:root:Creating FEX paths
+INFO:root:Copying FEXInterpreter depends
+INFO:root:Patching FEX dependencies
+INFO:root:Mounting rootfs paths
+INFO:root:Setting up FEXServer config
+INFO:root:Chrooting in to /home/opvolger/.fex-emu/RootFS/Ubuntu_24_04
+root@raspberrypi:/# apt update
+.....
+.....
+.....
+.....
+Get:73 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [7144 B]
+Get:74 http://archive.ubuntu.com/ubuntu noble-backports/universe i386 Packages [15.8 kB]
+Get:75 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [28.9 kB]
+Get:76 http://archive.ubuntu.com/ubuntu noble-backports/universe Translation-en [17.5 kB]
+Get:77 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [11.0 kB]
+Get:78 http://archive.ubuntu.com/ubuntu noble-backports/restricted amd64 Components [212 B]
+Get:79 http://archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Components [212 B]
+Fetched 76.5 MB in 20s (3846 kB/s)
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+189 packages can be upgraded. Run 'apt list --upgradable' to see them.
+root@raspberrypi:/# apt install steam
+.....
+.....
+.....
+.....
+Recommended packages:
+  luit
+The following NEW packages will be installed:
+  bubblewrap cpp cpp-13 cpp-13-x86-64-linux-gnu cpp-x86-64-linux-gnu file fuse3 gcc-13-base libauthen-sasl-perl
+  libclone-perl libdata-dump-perl libencode-locale-perl libfile-basedir-perl libfile-desktopentry-perl
+  libfile-listing-perl libfile-mimeinfo-perl libfont-afm-perl libfuse3-3 libhtml-form-perl libhtml-format-perl
+  libhtml-parser-perl libhtml-tagset-perl libhtml-tree-perl libhttp-cookies-perl libhttp-daemon-perl
+  libhttp-date-perl libhttp-message-perl libhttp-negotiate-perl libio-html-perl libio-socket-ssl-perl
+  libio-stringy-perl libipc-system-simple-perl libisl23 liblwp-mediatypes-perl liblwp-protocol-https-perl
+  libmagic-mgc libmagic1t64 libmailtools-perl libmpc3 libmpfr6 libnet-dbus-perl libnet-http-perl libnet-smtp-ssl-perl
+  libnet-ssleay-perl libnm0 libnm0:i386 libpipewire-0.3-0t64 libpipewire-0.3-common libspa-0.2-modules
+  libtext-iconv-perl libtie-ixhash-perl libtimedate-perl libtry-tiny-perl liburi-perl libva-glx2 libva-glx2:i386
+  libwww-perl libwww-robotrules-perl libx11-protocol-perl libxkbfile1 libxml-parser-perl libxml-twig-perl
+  libxml-xpathengine-perl libxmuu1 libxxf86dga1 perl-openssl-defaults steam:i386 steam-devices steam-installer
+  steam-libs steam-libs:i386 steam-libs-i386:i386 x11-utils x11-xserver-utils xdg-desktop-portal
+  xdg-desktop-portal-gtk xdg-utils
+0 upgraded, 77 newly installed, 0 to remove and 189 not upgraded.
+Need to get 17.8 MB of archives.
+After this operation, 63.1 MB of additional disk space will be used.
+Do you want to continue? [Y/n] Y
+.....
+.....
+.....
+.....
+Setting up libmailtools-perl (2.21-2) ...
+Setting up libhttp-daemon-perl (6.16-1) ...
+Setting up cpp (4:13.2.0-7ubuntu1) ...
+Setting up xdg-desktop-portal-gtk (1.15.1-1build2) ...
+Setting up x11-xserver-utils (7.7+10build2) ...
+Setting up liblwp-protocol-https-perl (6.13-1) ...
+Setting up libwww-perl (6.76-1) ...
+Setting up libxml-parser-perl (2.47-1build3) ...
+Setting up libxml-twig-perl (1:3.52-2) ...
+Setting up libnet-dbus-perl (1.2.0-2build3) ...
+Processing triggers for hicolor-icon-theme (0.17-2) ...
+Processing triggers for libc-bin (2.39-0ubuntu8.4) ...
+root@raspberrypi:/#
+exit
+INFO:root:Returning from chroot
+INFO:root:Deleting FEX paths
+INFO:root:Unmount rootfs paths
+[sudo] password for opvolger:
+INFO:root:Fixing any potential permission issues
+```
+
+We now have installed steam on the root-fs on the emulator. Now we need to install steam on the system. This can be done with the [script from box64](https://raw.githubusercontent.com/ptitSeb/box64/refs/heads/main/install_steam.sh)
+
+```bash
+cd ~/
+wget https://raw.githubusercontent.com/ptitSeb/box64/refs/heads/main/install_steam.sh
+chmod +x install_steam.sh
+./install_steam.sh
 ```
