@@ -494,8 +494,17 @@ INFO:root:Fixing any potential permission issues
 We now have installed steam on the root-fs on the emulator. Now we need to install steam on the system. This can be done with the [script from box64](https://raw.githubusercontent.com/ptitSeb/box64/refs/heads/main/install_steam.sh)
 
 ```bash
-cd ~/
-wget https://raw.githubusercontent.com/ptitSeb/box64/refs/heads/main/install_steam.sh
-chmod +x install_steam.sh
-./install_steam.sh
+$ cd ~/
+$ wget https://raw.githubusercontent.com/ptitSeb/box64/refs/heads/main/install_steam.sh
+$ chmod +x install_steam.sh
+$ ./install_steam.sh
+# run steam!
+$ FEXBatch
+FEXBash-opvolger@raspberrypi:~> steam
 ```
+
+This can give an error of missing packages... just hit Enter and continue.
+
+This script will install steam in your home dir. after the setup is finished you can start steam just with the command `steam`. ignore all the errors you see in your screen.... Steam client will start!
+
+Download `Half Life 2`. Start your game!
