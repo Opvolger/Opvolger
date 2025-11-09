@@ -96,7 +96,7 @@ Than you can change it and rebuild the kernel.
 Change Firmware blobs root directory to `../linux-firmware`
 
 ```ini
-radeon/hawaii_pfp.bin radeon/hawaii_me.bin radeon/hawaii_ce.bin radeon/hawaii_mec.bin radeon/hawaii_mc.bin radeon/hawaii_rlc.bin radeon/hawaii_sdma.bin radeon/hawaii_smc.bin radeon/hawaii_k_smc.bin radeon/HAWAII_pfp.bin radeon/HAWAII_me.bin radeon/HAWAII_ce.bin radeon/HAWAII_mec.bin radeon/HAWAII_mc.bin radeon/HAWAII_mc2.bin radeon/HAWAII_rlc.bin radeon/HAWAII_sdma.bin radeon/HAWAII_smc.bin
+amdgpu/hawaii_k_smc.bin amdgpu/hawaii_smc.bin amdgpu/hawaii_uvd.bin amdgpu/hawaii_vce.bin amdgpu/hawaii_sdma.bin amdgpu/hawaii_sdma1.bin amdgpu/hawaii_pfp.bin amdgpu/hawaii_me.bin amdgpu/hawaii_ce.bin amdgpu/hawaii_rlc.bin amdgpu/hawaii_mec.bin amdgpu/hawaii_mc.bin radeon/hawaii_pfp.bin radeon/hawaii_me.bin radeon/hawaii_ce.bin radeon/hawaii_mec.bin radeon/hawaii_mc.bin radeon/hawaii_rlc.bin radeon/hawaii_sdma.bin radeon/hawaii_smc.bin radeon/hawaii_k_smc.bin radeon/HAWAII_pfp.bin radeon/HAWAII_me.bin radeon/HAWAII_ce.bin radeon/HAWAII_mec.bin radeon/HAWAII_mc.bin radeon/HAWAII_mc2.bin radeon/HAWAII_rlc.bin radeon/HAWAII_sdma.bin radeon/HAWAII_smc.bin
 ```
 
 Add AMDGPU/ATIGPU support
@@ -144,6 +144,25 @@ File systems
 
 I changed all the `M` (Modules) to `*` (with in the kernel) (if possible) (with the space bar) and added all the Btrfs options. No idea if i need them all....
 
+Change `M` to `*` from ZRAM and enable all the sub `Compressed RAM block device support`:
+
+```
+Device Drivers
+└─>Block devices
+    └─><*>Compressed RAM block device support
+       [*]     lz4 compression support
+        [*]     lz4hc compression support 
+        [*]     zstd compression support  
+        [*]     deflate compression support
+        [*]     842 compression support
+        [*]     lzo and lzo-rle compression support
+                Default zram compressor (zstd)  --->
+        [*]     Write back incompressible or idle page to backing device
+        [*]     Track access time of zram entries
+        [*]     Track zRam block status
+        [*]     Enable multiple compression streams
+```
+
 We now need to set the page size from 16 to 4 in the kernel
 
 ```
@@ -153,11 +172,83 @@ Kernel Features
 
 Now you need to select `4KB` (space bar).
 
-We can now Exit and save the changes! 
+We can now Exit and save the changes!
 
 You can disable more options (Like `Amateur Radio support`, `Industrial I/O support`, `USB sound devices` ,`ALSA for SoC audio support`, `Broadcom VideoCore support`, `Touchscreens`, `Media USB Adapters`, `Radio Adapters` and `Support for small TFT LCD display modules`), but this is optional. The kernel will compile faster.
 
+Before we can build, we need to add a kernel patch. We need to change code so the pi can work with the AMDGPU.
+
+Create a file `drm.patch` in `/home/opvolger/demo/raspberrypi-6.12-y/`. I found this patch [here](https://github.com/geerlingguy/raspberry-pi-pcie-devices/discussions/756).
+
+```patch
+From c1d421d7c501c77e8c04bdfa141a55e639822c03 Mon Sep 17 00:00:00 2001
+From: Yang Bo <bo.yang@smail.nju.edu.cn>
+Date: Wed, 28 May 2025 11:18:19 +0800
+Subject: [PATCH] Add amdgpu support for arm SoC
+
+Change-Id: Ic95c8514271d246dd668631810e8dee210f7f1b4
+Signed-off-by: Yanghaku <bo.yang@smail.nju.edu.cn>
+---
+ drivers/gpu/drm/ttm/ttm_bo_util.c | 14 +-------------
+ drivers/gpu/drm/ttm/ttm_module.c  |  5 +++++
+ 2 files changed, 6 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/gpu/drm/ttm/ttm_bo_util.c b/drivers/gpu/drm/ttm/ttm_bo_util.c
+index 0b3f4267130c..e0e55cb9edd2 100644
+--- a/drivers/gpu/drm/ttm/ttm_bo_util.c
++++ b/drivers/gpu/drm/ttm/ttm_bo_util.c
+@@ -343,8 +343,6 @@ static int ttm_bo_kmap_ttm(struct ttm_buffer_object *bo,
+ 		.no_wait_gpu = false
+ 	};
+ 	struct ttm_tt *ttm = bo->ttm;
+-	struct ttm_resource_manager *man =
+-			ttm_manager_type(bo->bdev, bo->resource->mem_type);
+ 	pgprot_t prot;
+ 	int ret;
+ 
+@@ -354,17 +352,7 @@ static int ttm_bo_kmap_ttm(struct ttm_buffer_object *bo,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (num_pages == 1 && ttm->caching == ttm_cached &&
+-	    !(man->use_tt && (ttm->page_flags & TTM_TT_FLAG_DECRYPTED))) {
+-		/*
+-		 * We're mapping a single page, and the desired
+-		 * page protection is consistent with the bo.
+-		 */
+-
+-		map->bo_kmap_type = ttm_bo_map_kmap;
+-		map->page = ttm->pages[start_page];
+-		map->virtual = kmap(map->page);
+-	} else {
++	{
+ 		/*
+ 		 * We need to use vmap to get the desired page protection
+ 		 * or to make the buffer object look contiguous.
+diff --git a/drivers/gpu/drm/ttm/ttm_module.c b/drivers/gpu/drm/ttm/ttm_module.c
+index b3fffe7b5062..9f3e425626b5 100644
+--- a/drivers/gpu/drm/ttm/ttm_module.c
++++ b/drivers/gpu/drm/ttm/ttm_module.c
+@@ -63,7 +63,12 @@ pgprot_t ttm_prot_from_caching(enum ttm_caching caching, pgprot_t tmp)
+ {
+ 	/* Cached mappings need no adjustment */
+ 	if (caching == ttm_cached)
++	{
++#ifdef CONFIG_ARM64
++		return pgprot_dmacoherent(tmp);
++#endif
+ 		return tmp;
++	}
+ 
+ #if defined(__i386__) || defined(__x86_64__)
+ 	if (caching == ttm_write_combined)
+-- 
+2.49.0
+```
+
 ```bash
+# we first apply the patch
+$ git apply 
 # now we build the kernel. i have 16 cores, so i will build with -j 16
 $ make -j 16
 ```
@@ -197,21 +288,67 @@ enable_serial=1
 enable_uart=1
 ```
 
+First check you PARTUUID of your fedora rootfs. You can do this with with the command `blkid`
+
+```bash
+$ blkid
+................
+................
+................
+................
+/dev/sdb1: LABEL_FATBOOT="BOOTFS" LABEL="BOOTFS" UUID="F830-72A5" BLOCK_SIZE="512" TYPE="vfat" PARTUUID="a5e8e31d-01"
+/dev/zram0: LABEL="zram0" UUID="d3cb02f4-a70f-4f48-92ce-1bb0474c14fc" TYPE="swap"
+/dev/sdb3: LABEL="fedora" UUID="fe1a5809-2964-4049-804b-c6308eea9706" UUID_SUB="8695f5be-13c2-4f38-9ec4-ca593ac9665d" BLOCK_SIZE="4096" TYPE="btrfs" PARTUUID="a5e8e31d-03"
+```
+
 Now create the file `/run/media/opvolger/BOOTFS/cmdline.txt` with nano or something else.
 
 This will add kernel argument on boot time.
 We enable serial output, set the correct settings for the root-fs of fedora, disable radeon drivers and enable amdgpu drivers.
 
+Here we can use `a5e8e31d-03` for the `PARTUUID`. don't forget to update. The boot process will stop. (it will not find a root partition).
+
 ```ini
-console=serial0,115200 console=tty1 root=PARTUUID=ead7b37c-03 ro rootflags=subvol=root rhgb rootflags=subvol=root fsck.repair=yes rootwait plymouth.ignore-serial-consoles radeon.si_support=0 radeon.cik_support=0 amdgpu.si_support=1 amdgpu.cik_support=1
+console=serial0,115200 console=tty1 root=PARTUUID=a5e8e31d-03 ro rootflags=subvol=root rhgb rootflags=subvol=root fsck.repair=yes rootwait plymouth.ignore-serial-consoles radeon.si_support=0 radeon.cik_support=0 amdgpu.si_support=1 amdgpu.cik_support=1
 ```
+
+Now we change the fstab file from the fedora root partition. We have deleted the boot partition, so we must delete it from the mount on startup.
+
+```bash
+sudo nano /run/media/opvolger/fedora/root/etc/fstab
+```
+
+Add a `#` for the /boot and /boot/efi mounts. On a newer version the UUID's can be different, keep them, only add the `#` on the lines where `/boot` annd `/boot/efi` are located.
+
+```ini
+UUID=fe1a5809-2964-4049-804b-c6308eea9706 / btrfs x-systemd.growfs,compress=zstd:1,defaults,subvol=root 0 1
+#UUID=c17a86dd-8323-4e0d-9595-3ba0107f6345 /boot ext4 defaults 0 0
+UUID=fe1a5809-2964-4049-804b-c6308eea9706 /home btrfs x-systemd.growfs,compress=zstd:1,subvol=home 0 0
+UUID=fe1a5809-2964-4049-804b-c6308eea9706 /var btrfs x-systemd.growfs,compress=zstd:1,subvol=var 0 0
+#UUID=9AB8-3989 /boot/efi vfat defaults,umask=0077,shortname=winnt 0 0
+```
+
+Now we only have to copy the kernel files!
 
 ```bash
 $ cd /home/opvolger/demo/raspberrypi-6.12-y
 # copy kernel and device tree to boot partition SD-card
 $ cp arch/arm64/boot/Image /run/media/opvolger/BOOTFS/
 $ cp arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dtb /run/media/opvolger/BOOTFS/
+# copy overlay needed for pi boot process
+$ mkdir /run/media/opvolger/BOOTFS/overlays
+$ cp /home/opvolger/demo/raspberrypi-6.12-y/arch/arm64/boot/dts/overlays/* /run/media/opvolger/BOOTFS/overlays
 
 # now make the modules install them on the SD-card root partition (fedora)
-sudo ARCH=arm64 make modules_install INSTALL_MOD_PATH=/run/media/opvolger/fedora/
+$ sudo ARCH=arm64 make modules_install INSTALL_MOD_PATH=/run/media/opvolger/fedora/
+```
+
+## Boot from SD-Card
+
+Umount the root and boot partitions from the SD-card.
+
+If everything works great, you will see a setup.
+
+```bash
+$ sudo dnf install fex-emu fex-emu-filesystem fex-emu-rootfs-fedora fex-emu-thunks fex-emu-utils erofs-fuse  erofs-utils  squashfuse  squashfuse-libs
 ```
