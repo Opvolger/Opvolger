@@ -23,7 +23,13 @@ setenv bootargs 'root=/dev/mmcblk2p1 rw radeon.pcie_gen_cap=0x10001 radeon.pcie_
 booti $kernel_addr_r - $fdt_addr_r
 ```
 
-setenv bootargs 'root=/dev/mmcblk2p1 rw radeon.pcie_gen_cap=0x10001 radeon.pcie_lane_cap=0x10000 radeon.modeset=1 iommu=pt pcie_aspm=off radeon.dpm=0 radeon.pcie_gen2=0 cma=512M swiotlb=65536 console=tty0 console=ttyS0,115200 earlycon rootwait selinux=0'
+setenv bootargs 'root=/dev/nvme0n1p6 rw radeon.dpm=0 radeon.pcie_gen2=0 swiotlb=65536 console=tty0 console=ttyS0,115200 earlycon rootwait selinux=0'
+
+setenv bootargs 'root=/dev/mmcblk2p1 rw radeon.dpm=0 radeon.pcie_gen2=0 swiotlb=65536 console=tty0 console=ttyS0,115200 earlycon rootwait selinux=0'
+
+setenv bootargs 'root=/dev/mmcblk2p1 rw radeon.si_support=0 radeon.cik_support=0 amdgpu.pcie_gen_cap=0x10001 amdgpu.pcie_lane_cap=0x10000 amdgpu.modeset=1 amdgpu.dpm=0 amdgpu.pcie_gen2=0 swiotlb=65536 console=tty0 console=ttyS0,115200 earlycon rootwait selinux=0'
+
+setenv bootargs 'root=/dev/mmcblk2p1 rw amdgpu.pcie_gen_cap=0x10001 amdgpu.pcie_lane_cap=0x10000 amdgpu.modeset=1 iommu=pt pcie_aspm=off amdgpu.dpm=0 amdgpu.pcie_gen2=0 cma=512M swiotlb=65536 console=tty0 console=ttyS0,115200 earlycon rootwait selinux=0'
 
 
 ```log

@@ -30,7 +30,7 @@ This will give something like this:
 
 Compiling will be done on an amd64 desktop. So we will cross-compile.
 
-I have installed Fedora linux and had to install some stuff to be able to cross compile
+I have installed Fedora Linux and had to install some stuff to be able to cross compile
 
 ```bash
 $ sudo dnf group install "Development Tools"
@@ -505,6 +505,6 @@ FEXBash-opvolger@raspberrypi:~> steam
 
 This can give an error of missing packages... just hit Enter and continue.
 
-This script will install steam in your home dir. after the setup is finished you can start steam just with the command `steam`. ignore all the errors you see in your screen.... Steam client will start!
+This script will install Steam in your home dir. After the setup is finished you can start Steam just with the command `FEXBatch` and than `steam`. ignore all the errors you see in your screen.... Steam client will start!
 
 Download `Half Life 2`. Start your game!
