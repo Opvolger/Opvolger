@@ -15,7 +15,7 @@ So if you don't want to run a vender Linux kernel/distro, you can run a mainline
 I am on Fedora 43, and needed to install some missing packages (new laptop)
 
 ```bash
-sudo dnf install openssl-devel-engine swig gcc-c++-riscv64-linux-gnu gcc-c++ libmpc-devel gcc-plugin-devel git openal-soft-devel ncurses-devel flex bison gnutls-devel
+sudo dnf install openssl-devel-engine swig gcc-c++-riscv64-linux-gnu gcc-c++ libmpc-devel gcc-plugin-devel git openal-soft-devel ncurses-devel flex bison gnutls-devel screen
 ```
 
 ## Building OpenSBI
@@ -388,6 +388,91 @@ make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- menuconfig -j 16
 make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- -j 16
 ```
 
-## Put them on a SD-Card
+## Create bootable SD-Card
 
-## Add rootfs and boot from it
+So we now have a compiled U-boot. Time to put it on a SD-Card (partitiontable must be GPT not MBR)
+
+I will create the default 2 SPL/U-Boot partitions and a bigger one so we can put the kernel on it.
+
+On my machine my SD-Card reader is on /dev/sdb so:
+
+```bash
+# create the correct boot partitions to boot (needs sudo)
+sudo sgdisk --clear \
+    --set-alignment=2 \
+    --new=1:4096:8191 --change-name=1:spl --typecode=1:2E54B353-1271-4842-806F-E436D6AF6985 \
+    --new=2:8192:16383 --change-name=2:uboot --typecode=2:BC13C2FF-59E6-4262-A352-B275FD6F7172 \
+    --new=3:16384:100M --change-name=3:boot --typecode=3:BC13C2FF-59E6-4262-A352-B275FD6F7173 \
+    /dev/sdb
+# format the boot partition
+sudo mkfs.ext4 /dev/sdb3
+# now put the firmware on partition 1 and 2
+sudo dd if=/tmp/u-boot/spl/u-boot-spl.bin.normal.out of=/dev/sdb1
+sudo dd if=/tmp/u-boot/u-boot.itb of=/dev/sdb2
+# now mount and copy the boot files from debian to the 3th partition
+mkdir /tmp/mnt
+sudo mount /dev/sdb3 /tmp/mnt
+sudo mkdir /tmp/mnt/starfive
+sudo cp linux/arch/riscv/boot/dts/starfive/jh7110s-starfive-visionfive-2-lite.dtb /tmp/mnt/starfive/jh7110s-starfive-visionfive-2-lite.dtb
+sudo cp linux/arch/riscv/boot/Image /tmp/mnt/Image
+sudo umount /dev/sdb3
+```
+
+## Run U-Boot and the kernel
+
+Put the SD-Card in the StarFive VisionFive 2 Lite.
+
+Lets Boot!
+
+I have a serial connection to my `StarFive VisionFive 2 Lite`. (start a serial connection for example with `screen -L /dev/ttyUSB0 115200`, how to connect to serial see this [pdf](https://doc-en.rvspace.org/VisionFive2Lite/PDF/VisionFive2_Lite_QSG.pdf))
+
+```bash
+load mmc 1:3 ${kernel_addr_r} /Image
+load mmc 1:3 ${fdt_addr_r} /starfive/jh7110s-starfive-visionfive-2-lite.dtb
+setenv bootargs ''
+# and boot!
+booti $kernel_addr_r - $fdt_addr_r
+# now it will panic kernel, there is no rootfs!
+```
+
+## Boot Debain Trixie Setup
+
+For example, we can start the `initramfs` from the debian-trixie setup.
+
+```bash
+# get initramfs for the setup
+wget http://ftp.debian.org/debian/dists/trixie/main/installer-riscv64/current/images/netboot/debian-installer/riscv64/initrd.gz
+# mount SD-Card to /tmp/mnt
+sudo mount /dev/sdb3 /tmp/mnt
+# copy it to the SD-Card
+sudo cp initrd.gz /tmp/mnt/initrd.gz
+sudo umount /dev/sdb3
+```
+
+Download the [debian-trixie-DI-rc1-riscv64-DVD-1.iso](https://cdimage.debian.org/cdimage/trixie_di_rc1/riscv64/iso-dvd/debian-trixie-DI-rc1-riscv64-DVD-1.iso), but the debian-trixie-DI-rc1-riscv64-DVD-1.iso on USB. I used balenaEtcher to flash the iso on a USB device.
+
+Put the USB with the iso on an USB-slot and put the SD-Card in the SD-Card slot.
+
+Connect to the board with a serail connection
+
+```bash
+load mmc 1:3 ${kernel_addr_r} /Image
+load mmc 1:3 ${fdt_addr_r} /starfive/jh7110s-starfive-visionfive-2-lite.dtb
+load mmc 1:3 ${ramdisk_addr_r} /initrd.gz
+# we don't need bootargs
+setenv bootargs ''
+# and boot!
+booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
+```
+
+Welcome in the setup of Debian. You kan install Debian on a new partition, for example a new partition 4. After the setup you can boot with:
+
+```bash
+load mmc 1:3 ${kernel_addr_r} /Image
+load mmc 1:3 ${fdt_addr_r} /starfive/jh7110s-starfive-visionfive-2-lite.dtb
+load mmc 1:4 ${ramdisk_addr_r} /boot/initrd.img
+# we will use partition 4 as rootfs
+setenv bootargs 'root=/dev/mmcblk0p4'
+# and boot!
+booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
+```
