@@ -476,3 +476,5 @@ setenv bootargs 'root=/dev/mmcblk0p4'
 # and boot!
 booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
 ```
+
+![img](LiteUBootKernel/LiteTrixieSetup.jpg)
