@@ -20,10 +20,10 @@ sudo dnf install openssl-devel-engine swig gcc-c++-riscv64-linux-gnu gcc-c++ lib
 
 ## Building OpenSBI
 
-v1.7 of OpenSBI has a bug for the StarFive VisionFive 2. It is al fixed on master, but I use v1.6 for now.
+v1.7 of OpenSBI has already support for the StarFive VisionFive 2 Lite.
 
 ```bash
-git clone --branch v1.6 --depth=1 https://github.com/riscv-software-src/opensbi.git
+git clone --branch v1.7 --depth=1 https://github.com/riscv-software-src/opensbi.git
 cd opensbi
 make CROSS_COMPILE=riscv64-linux-gnu- PLATFORM=generic FW_OPTIONS=0 FW_TEXT_START=0x40000000
 ```
@@ -394,7 +394,7 @@ So we now have a compiled U-boot. Time to put it on a SD-Card (partitiontable mu
 
 I will create the default 2 SPL/U-Boot partitions and a bigger one so we can put the kernel on it.
 
-On my machine my SD-Card reader is on /dev/sdb so:
+On my machine my SD-Card reader is on /dev/sda so:
 
 ```bash
 # create the correct boot partitions to boot (needs sudo)
@@ -403,19 +403,19 @@ sudo sgdisk --clear \
     --new=1:4096:8191 --change-name=1:spl --typecode=1:2E54B353-1271-4842-806F-E436D6AF6985 \
     --new=2:8192:16383 --change-name=2:uboot --typecode=2:BC13C2FF-59E6-4262-A352-B275FD6F7172 \
     --new=3:16384:100M --change-name=3:boot --typecode=3:BC13C2FF-59E6-4262-A352-B275FD6F7173 \
-    /dev/sdb
+    /dev/sda
 # format the boot partition
-sudo mkfs.ext4 /dev/sdb3
+sudo mkfs.ext4 /dev/sda3
 # now put the firmware on partition 1 and 2
-sudo dd if=/tmp/u-boot/spl/u-boot-spl.bin.normal.out of=/dev/sdb1
-sudo dd if=/tmp/u-boot/u-boot.itb of=/dev/sdb2
+sudo dd if=u-boot/spl/u-boot-spl.bin.normal.out of=/dev/sda1
+sudo dd if=u-boot/u-boot.itb of=/dev/sda2
 # now mount and copy the boot files from debian to the 3th partition
 mkdir /tmp/mnt
-sudo mount /dev/sdb3 /tmp/mnt
+sudo mount /dev/sda3 /tmp/mnt
 sudo mkdir /tmp/mnt/starfive
 sudo cp linux/arch/riscv/boot/dts/starfive/jh7110s-starfive-visionfive-2-lite.dtb /tmp/mnt/starfive/jh7110s-starfive-visionfive-2-lite.dtb
 sudo cp linux/arch/riscv/boot/Image /tmp/mnt/Image
-sudo umount /dev/sdb3
+sudo umount /dev/sda3
 ```
 
 ## Run U-Boot and the kernel
@@ -443,10 +443,10 @@ For example, we can start the `initramfs` from the debian-trixie setup.
 # get initramfs for the setup
 wget http://ftp.debian.org/debian/dists/trixie/main/installer-riscv64/current/images/netboot/debian-installer/riscv64/initrd.gz
 # mount SD-Card to /tmp/mnt
-sudo mount /dev/sdb3 /tmp/mnt
+sudo mount /dev/sda3 /tmp/mnt
 # copy it to the SD-Card
 sudo cp initrd.gz /tmp/mnt/initrd.gz
-sudo umount /dev/sdb3
+sudo umount /dev/sda3
 ```
 
 Download the [debian-trixie-DI-rc1-riscv64-DVD-1.iso](https://cdimage.debian.org/cdimage/trixie_di_rc1/riscv64/iso-dvd/debian-trixie-DI-rc1-riscv64-DVD-1.iso), but the debian-trixie-DI-rc1-riscv64-DVD-1.iso on USB. I used balenaEtcher to flash the iso on a USB device.
