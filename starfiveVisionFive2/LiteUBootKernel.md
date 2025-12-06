@@ -427,8 +427,8 @@ Lets Boot!
 I have a serial connection to my `StarFive VisionFive 2 Lite`. (start a serial connection for example with `screen -L /dev/ttyUSB0 115200`, how to connect to serial see this [pdf](https://doc-en.rvspace.org/VisionFive2Lite/PDF/VisionFive2_Lite_QSG.pdf))
 
 ```bash
-load mmc 1:3 ${kernel_addr_r} /Image
-load mmc 1:3 ${fdt_addr_r} /starfive/jh7110s-starfive-visionfive-2-lite.dtb
+load mmc 0:3 ${kernel_addr_r} /Image
+load mmc 0:3 ${fdt_addr_r} /starfive/jh7110s-starfive-visionfive-2-lite.dtb
 setenv bootargs ''
 # and boot!
 booti $kernel_addr_r - $fdt_addr_r
@@ -456,9 +456,9 @@ Put the USB with the iso on an USB-slot and put the SD-Card in the SD-Card slot.
 Connect to the board with a serail connection
 
 ```bash
-load mmc 1:3 ${kernel_addr_r} /Image
-load mmc 1:3 ${fdt_addr_r} /starfive/jh7110s-starfive-visionfive-2-lite.dtb
-load mmc 1:3 ${ramdisk_addr_r} /initrd.gz
+load mmc 0:3 ${kernel_addr_r} /Image
+load mmc 0:3 ${fdt_addr_r} /starfive/jh7110s-starfive-visionfive-2-lite.dtb
+load mmc 0:3 ${ramdisk_addr_r} /initrd.gz
 # we don't need bootargs
 setenv bootargs ''
 # and boot!
@@ -468,9 +468,9 @@ booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
 Welcome in the setup of Debian. You kan install Debian on a new partition, for example a new partition 4. After the setup you can boot with:
 
 ```bash
-load mmc 1:3 ${kernel_addr_r} /Image
-load mmc 1:3 ${fdt_addr_r} /starfive/jh7110s-starfive-visionfive-2-lite.dtb
-load mmc 1:4 ${ramdisk_addr_r} /boot/initrd.img
+load mmc 0:3 ${kernel_addr_r} /Image
+load mmc 0:3 ${fdt_addr_r} /starfive/jh7110s-starfive-visionfive-2-lite.dtb
+load mmc 0:4 ${ramdisk_addr_r} /boot/initrd.img
 # we will use partition 4 as rootfs
 setenv bootargs 'root=/dev/mmcblk0p4'
 # and boot!
