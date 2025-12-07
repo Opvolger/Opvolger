@@ -10,7 +10,7 @@ mv wine-10.0-amd64-wow64 wine
 
 sudo ln -s ~/Downloads/wine/bin/wine /usr/local/bin/wine
 sudo ln -s ~/Downloads/wine/bin/wineserver /usr/local/bin/wineserver
-sudo ln -s ~/Downloads/wine/bine/wineboot /usr/local/bin/wineboot
+sudo ln -s ~/Downloads/wine/bin/wineboot /usr/local/bin/wineboot
 sudo ln -s ~/Downloads/wine/bin/wine64 /usr/local/bin/wine64
 
 wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
