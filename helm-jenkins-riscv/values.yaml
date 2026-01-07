@@ -1,0 +1,37 @@
+# kubectl create namespace jenkins
+# helm pull jenkins/jenkins
+# helm install jenkins jenkins/jenkins -n jenkins --values values.yaml
+# helm upgrade jenkins jenkins/jenkins -n jenkins --values values.yaml
+# helm uninstall jenkins -n jenkins
+
+global:
+  domain: k8s.riscv.net
+
+jenkinsUrlProtocol: "http"
+
+agent:
+  image:
+    repository: "opvolger/inbound-agent"
+    tag: "3345.v03dee9b_f88fc-1"
+controller:
+  probes:
+    startupProbe:
+      failureThreshold: 20
+      periodSeconds: 15
+      timeoutSeconds: 30
+    livenessProbe:
+      failureThreshold: 10
+      initialDelaySeconds: 30
+    readinessProbe:
+      failureThreshold: 10
+      initialDelaySeconds: 30
+  image:
+    repository: opvolger/jenkins
+  sidecars:
+    configAutoReload:
+      enabled: false # crashed al the time
+      image:
+        repository: opvolger/k8s-sidecar
+  ingress:
+    enabled: true
+    hostName: "{{ .Release.Name }}.{{ .Values.global.domain }}"
