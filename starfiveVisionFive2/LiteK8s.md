@@ -126,7 +126,9 @@ I already have done a howto compiling a kernel for the `StarFive VisionFive 2 Li
 
 So I compiled my own kernel 6.19-rc1 with the patch and all the options needed.
 
-## install k3s
+## Install k3s
+
+For the server node
 
 ```bash
 wget https://raw.githubusercontent.com/Opvolger/k3s/refs/heads/release-1.34-riscv/install.sh
@@ -134,15 +136,26 @@ chmod +x install.sh
 sudo GITHUB_URL=https://github.com/Opvolger/k3s/releases INSTALL_K3S_VERSION=v1.34-1 ./install.sh
 ```
 
-## fix config
-
-.kube/config
+for the other agent nodes, replace the token for the token from the server (`/var/lib/rancher/k3s/server/token
+`).
 
 ```bash
-kubectl get pods -A
+wget https://raw.githubusercontent.com/Opvolger/k3s/refs/heads/release-1.34-riscv/install.sh
+chmod +x install.sh
+sudo GITHUB_URL=https://github.com/Opvolger/k3s/releases INSTALL_K3S_VERSION=v1.34-1 INSTALL_K3S_EXEC="agent --server https://192.168.2.30:6443 --token K105aa9e1f8a944fa6f1d8641b3c4e19cf962d943f56168d9441ff749b3014bdbae::server:281ceb4f9e6aaabdd0363c77991bf31e
+" ./install.sh
 ```
 
-## install Jenkins helm-chart
+## Fix Kube config
+
+Get the `/etc/rancher/k3s/k3s.yaml` from the server and more it in your local `.kube/config`. Change the ip address to what is the ip of your master node.
+
+```bash
+kubectl get pods -A -o wide
+kubectl get nodes -o wide
+```
+
+## Install Jenkins helm-chart
 
 See the github repo from [jenkins helm-chart](https://github.com/jenkinsci/helm-charts)
 
@@ -187,7 +200,14 @@ global:
 
 jenkinsUrlProtocol: "http"
 
+agent:
+  image:
+    repository: "opvolger/inbound-agent"
+    tag: "3345.v03dee9b_f88fc-1"
 controller:
+  admin:
+    username: opvolger
+    password: demodemo
   probes:
     startupProbe:
       failureThreshold: 20
@@ -203,7 +223,7 @@ controller:
     repository: opvolger/jenkins
   sidecars:
     configAutoReload:
-      enabled: false # this is crashing
+      enabled: false # crashed al the time
       image:
         repository: opvolger/k8s-sidecar
   ingress:
