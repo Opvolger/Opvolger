@@ -1,0 +1,15 @@
+controller:
+  admin:
+    username: opvolger
+    password: demodemo
+  image:
+    repository: opvolger/jenkins
+    tag: 2.528.3-jdk21
+  sidecars:
+    configAutoReload:
+      image:
+        repository: opvolger/k8s-sidecar
+        tag: 1.30.7
+  ingress:
+    enabled: true
+    hostName: "{{ .Release.Name }}.k8s.riscv.net"

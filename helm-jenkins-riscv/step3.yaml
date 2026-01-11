@@ -2,11 +2,6 @@ persistence:
   volumes:
    - name: tmp
      emptyDir: {}
-agent:
-  defaultsProviderTemplate: default
-  image:
-    repository: "opvolger/inbound-agent"
-    tag: "3345.v03dee9b_f88fc-1"
 controller:
   admin:
     username: opvolger
