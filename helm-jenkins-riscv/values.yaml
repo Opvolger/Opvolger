@@ -37,3 +37,52 @@ controller:
   ingress:
     enabled: true
     hostName: "jenkins.k8s.riscv.net"
+  installPlugins:
+    - kubernetes:latest
+    - workflow-aggregator:latest
+    - git:latest
+    - configuration-as-code:latest
+    - blueocean:latest
+    - job-dsl:latest
+  JCasC:
+    configScripts:
+      jobs: |
+        jobs:
+          - script: >
+              pipelineJob('test') {
+                definition {
+                  cps {
+                    sandbox()
+                    script("""\
+                      pipeline {
+                          agent {
+                              kubernetes {
+                                  yaml '''
+                      apiVersion: v1
+                      kind: Pod
+                      spec:
+                        containers:
+                        - name: shell
+                          image: ubuntu
+                          command:
+                          - sleep
+                          args:
+                          - infinity
+                          securityContext:
+                            runAsUser: 1000
+                      '''
+                                  defaultContainer 'shell'
+                                  retries 2
+                              }
+                          }
+                          stages {
+                              stage('Main') {
+                                  steps {
+                                      sh 'uname -a'
+                                  }
+                              }
+                          }
+                      }""".stripIndent())
+                  }
+                }
+              }
