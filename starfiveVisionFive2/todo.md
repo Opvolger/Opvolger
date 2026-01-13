@@ -1,4 +1,36 @@
 
+```bash
+load mmc 1:3 ${kernel_addr_r} /vmlinux
+load mmc 1:3 ${fdt_addr_r} /jh7110-starfive-visionfive-2-v1.3b.dtb
+load mmc 1:3 ${ramdisk_addr_r} /initrd.gz
+# we don't need bootargs
+setenv bootargs ''
+# and boot!
+booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
+```
+
+sudo grubby --args=radeon.cik_support=0 --args=amdgpu.cik_support=1 --args=radeon.si_support=0 --args=amdgpu.si_support=1 --args=amdgpu.dc=1 --update-kernel=ALL
+sudo grubby --args=radeon.cik_support=0 --update-kernel=ALL
+sudo grubby --args=radeon.si_support=0 --update-kernel=ALL
+sudo grubby --args=amdgpu.si_support=1 --update-kernel=ALL
+sudo grubby --args=modprobe.blacklist=radeon --update-kernel=ALL
+
+grubby --remove-args="modprobe.blacklist=radeon" --update-kernel=ALL
+
+sudo grubby --args=radeon.cik_support=0 --args=amdgpu.cik_support=1 --update-kernel=ALL
+
+/dev/mmcblk0p4
+
+```bash
+load mmc 0:1 ${kernel_addr_r} /boot/vmlinuz
+load mmc 0:1 ${fdt_addr_r} /boot/jh7110-starfive-visionfive-2-v1.3b.dtb
+load mmc 0:1 ${ramdisk_addr_r} /boot/initrd.img
+# we will use partition 4 as rootfs
+setenv bootargs 'root=/dev/mmcblk0p1 radeon.si_support=0 radeon.cik_support=0 amdgpu.si_support=1 amdgpu.cik_support=1'
+# and boot!
+booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
+```
+
 
 ```bash
 # set the ip of the VisionFive 2, and of the server (where docker is running)
