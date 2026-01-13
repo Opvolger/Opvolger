@@ -1,4 +1,13 @@
-# K3s on postmarketos
+---
+date: 2023-10-31
+author: Bas Magré
+categories: ["ARM"]
+tags: ["xiaomi-poco-f1", "ARM", "Kubernetes"]
+title: "Xiaomi POCO F1 - K3S Cluster on postmarketos"
+---
+## Some notes
+
+I created a custom kernel so I can run K3S on my mobile phone.
 
 ## flash mobile phone
 

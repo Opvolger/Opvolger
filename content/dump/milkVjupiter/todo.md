@@ -1,3 +1,6 @@
+---
+draft: true
+---
 
 sudo cp arch/riscv/boot/Image.gz /run/media/opvolger/jupiter/
 make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- -j 12

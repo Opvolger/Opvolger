@@ -1,3 +1,7 @@
+---
+draft: true
+---
+
 # Starfive VisionFive 2
 
 Here I will (if it's worth it) keep track of my projects I've done with the Starfive VisionFive 2.

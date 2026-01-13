@@ -1,3 +1,6 @@
+---
+draft: true
+---
 # Compile kernel
 
 You can't clone repo from xff.cz. Only a bundle

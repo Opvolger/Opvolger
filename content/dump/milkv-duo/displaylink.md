@@ -1,3 +1,7 @@
+---
+draft: true
+---
+
 # Info
 
 # https://github.com/carlosedp/riscv-bringup/blob/master/Ubuntu-Rootfs-Guide.md

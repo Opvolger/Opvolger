@@ -1,3 +1,7 @@
+---
+draft: true
+---
+
 # WINE on RISC-V
 
 [link](https://www.jeffgeerling.com/blog/2025/build-box64-box32-x86-emulation-on-risc-v-linux#comments)

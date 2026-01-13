@@ -1,4 +1,13 @@
-# Fedora on Pinebook Pro
+---
+date: 2025-07-07
+author: Bas Magré
+categories: ["ARM"]
+tags: ["pinebook-pro", "ARM"]
+title: "Pinebook Pro - Fedora setup"
+---
+## Fedora on Pinebook Pro
+
+Some stuff I did after installing Fedora on my Pinebook Pro.
 
 howto from [nullr0ute](https://nullr0ute.com/2021/05/fedora-on-the-pinebook-pro/)
 

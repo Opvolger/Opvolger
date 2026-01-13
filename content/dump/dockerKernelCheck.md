@@ -1,3 +1,7 @@
+---
+draft: true
+---
+
 https://raw.githubusercontent.com/docker/docker/master/contrib/check-config.sh
 
 

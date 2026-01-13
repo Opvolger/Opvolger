@@ -1,3 +1,6 @@
+---
+draft: true
+---
 # Cisco switch
 
 type: cisco ws-c3650-48ts
