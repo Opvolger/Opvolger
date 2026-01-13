@@ -13,6 +13,36 @@ Kernel 6.6+ needs firmware
 ```bash
 ramdisk_addr_r=0x21000000
 fdt_addr_r=0x31000000
+load mmc 0:5 ${kernel_addr_r} /Image.gz
+load mmc 0:5 ${fdt_addr_r} /k1-x_milkv-jupiter.dtb
+# nvme 0:7 == OpenSUSE
+nvme scan
+load nvme 0:7 ${ramdisk_addr_r} /boot/initrd-6.10.7-1-default
+setenv bootargs 'root=/dev/nvme0n1p7 rw swiotlb=131072 console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
+
+ramdisk_addr_r=0x21000000
+fdt_addr_r=0x31000000
+load mmc 0:5 ${kernel_addr_r} /Image.gz
+load mmc 0:5 ${fdt_addr_r} /k1-x_milkv-jupiter.dtb
+# 0:9 == Ubuntu
+nvme scan
+load nvme 0:9 ${ramdisk_addr_r} /boot/initrd.img-6.11.0-8-generic
+setenv bootargs 'root=/dev/nvme0n1p9 rw swiotlb=131072 console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
+
+ramdisk_addr_r=0x21000000
+fdt_addr_r=0x31000000
+load mmc 0:5 ${kernel_addr_r} /Image.gz
+load mmc 0:5 ${fdt_addr_r} /k1-x_milkv-jupiter.dtb
+# nvme 0:6 == Fedora
+nvme scan
+load nvme 0:5 ${ramdisk_addr_r} /initrd-6.11.4-1-default
+setenv bootargs 'root=/dev/nvme0n1p6 rw swiotlb=131072 console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
+
+ramdisk_addr_r=0x21000000
+fdt_addr_r=0x31000000
 load mmc 0:5 ${kernel_addr_r} /vmlinuz-6.6.36
 load mmc 0:5 ${fdt_addr_r} /spacemit/6.6.36/k1-x_milkv-jupiter.dtb
 load mmc 0:5 ${ramdisk_addr_r} /initrd.img-6.6.36

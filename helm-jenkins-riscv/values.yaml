@@ -1,0 +1,88 @@
+persistence:
+  volumes:
+   - name: tmp
+     emptyDir: {}
+agent:
+  defaultsProviderTemplate: default
+  image:
+    repository: "opvolger/inbound-agent"
+    tag: "3345.v03dee9b_f88fc-1"
+controller:
+  admin:
+    username: opvolger
+    password: demodemo
+  # some more time for the low performance RISC-V boards 
+  probes:
+    startupProbe:
+      failureThreshold: 20
+      periodSeconds: 15
+      timeoutSeconds: 30
+    livenessProbe:
+      failureThreshold: 10
+      initialDelaySeconds: 30
+    readinessProbe:
+      failureThreshold: 10
+      initialDelaySeconds: 30
+  image:
+    repository: opvolger/jenkins
+    tag: 2.528.3-jdk21
+  sidecars:
+    configAutoReload:
+      additionalVolumeMounts:
+        - name: tmp
+          mountPath: "/tmp"
+      image:
+        repository: opvolger/k8s-sidecar
+        tag: 1.30.7
+  ingress:
+    enabled: true
+    hostName: "jenkins.k8s.riscv.net"
+  installPlugins:
+    - kubernetes:latest
+    - workflow-aggregator:latest
+    - git:latest
+    - configuration-as-code:latest
+    - blueocean:latest
+    - job-dsl:latest
+  JCasC:
+    configScripts:
+      jobs: |
+        jobs:
+          - script: >
+              pipelineJob('test') {
+                definition {
+                  cps {
+                    sandbox()
+                    script("""\
+                      pipeline {
+                          agent {
+                              kubernetes {
+                                  yaml '''
+                      apiVersion: v1
+                      kind: Pod
+                      spec:
+                        containers:
+                        - name: shell
+                          image: ubuntu
+                          command:
+                          - sleep
+                          args:
+                          - infinity
+                          securityContext:
+                            runAsUser: 1000
+                      '''
+                                  defaultContainer 'shell'
+                                  retries 2
+                              }
+                          }
+                          stages {
+                              stage('Main') {
+                                  steps {
+                                      sh 'uname -a'
+                                  }
+                              }
+                          }
+                      }""".stripIndent())
+                  }
+                }
+              }

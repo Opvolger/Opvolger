@@ -1,0 +1,6 @@
+controller:
+  sidecars:
+    configAutoReload:
+      image:
+        repository: opvolger/k8s-sidecar
+        tag: 1.30.7
