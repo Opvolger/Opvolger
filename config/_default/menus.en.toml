@@ -18,7 +18,7 @@
 [[main]]
  name = "KODI Addons"
  weight = 11
- pageRef = "/kodi"
+ pageRef = "/kodi/kodi"
 
 [[main]]
  name = "NPO"
@@ -37,6 +37,11 @@
  parent = "KODI Addons"
  pageRef = "/kodi/kanalenlijst-hans/"
  weight = 3
+
+[[main]]
+ name = "ARM"
+ pageRef = "tags/ARM"
+ weight = 30
 
 [[main]]
  name = "RISC-V"

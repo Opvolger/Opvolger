@@ -3,7 +3,7 @@ date: 2013-01-01
 author: Bas Magré
 categories: ["KODI"]
 tags: ["RTLxl", "KODI"]
-title: Kodi addon - RTLxl
+title: KODI Addons - RTLxl
 ---
 ## Intro
 
