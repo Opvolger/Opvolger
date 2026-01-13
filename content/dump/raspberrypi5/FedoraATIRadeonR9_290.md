@@ -24,7 +24,7 @@ Next I Resized the fedora partition to the end of the disk.
 
 This will give something like this:
 
-![img](images/posts/FedoraATIRadeonR9_290/gparted.png)
+![img](images/posts/starfive-visionfive-2/FedoraATIRadeonR9_290/gparted.png)
 
 ## Build the kernel
 
