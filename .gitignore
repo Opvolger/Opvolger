@@ -1,7 +1,8 @@
-starfiveVisionFive2/*.html
 *.html
 **/boot.scr
-report.txt
 jenkins/**
 *.tgz
 *.war
+public/**
+.hugo_build.lock
+resources/_gen/**
