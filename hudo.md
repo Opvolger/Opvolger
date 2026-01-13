@@ -11,3 +11,9 @@ git submodule update --remote --merge
 ```bash
 hugo server --noHTTPCache
 ```
+
+# build
+
+```bash
+hugo build --destination ../website/
+```
