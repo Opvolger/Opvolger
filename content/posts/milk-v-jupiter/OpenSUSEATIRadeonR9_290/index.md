@@ -35,7 +35,7 @@ I have tried everything
 
 I really have no idea why this has to be so complicated, I bought another 1x to 16x PCIe converter, it will arrive this week. It is possible that it does not want to work on 2x (mainboard) or with a 4x to 16x PCIe converter. Other video cards did work with the 4x to 16x PCIe converter in between. We will see. I hope that the 1x to 16x will work because the Riser board also indirectly goes from 1x to 16x.
 
-hence the somewhat strange setup: ![setup Milk-V Jupiter](images/posts/milk-v-jupiter/OpenSUSEATIRadeonR9_290/setup_001.jpeg)
+hence the somewhat strange setup: ![setup Milk-V Jupiter](cover.jpeg)
 
 ## Compiling the kernel
 

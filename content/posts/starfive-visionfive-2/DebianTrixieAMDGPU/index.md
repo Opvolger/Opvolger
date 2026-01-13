@@ -22,11 +22,9 @@ This is about 11 EURO on amazon, so no big deal... [amazon-link](https://www.ama
 - For debugging a USB to TTL (was still lying around in the house), is about 5 EURO.
 
 ![setup StarFive VisionFive 2](setup_001.jpeg)
-![setup StarFive VisionFive 2](setup_002.jpeg)
+![setup StarFive VisionFive 2](cover.jpeg)
 or
 ![setup StarFive VisionFive 2](setup.png)
-
-![setup StarFive VisionFive 2](cover.jpeg)
 
 I created a "stand" for this all, see [StarFive VisionFive 2 GPU stand (3D design)](https://www.youtube.com/watch?v=Jp0ZPA4IQGw).
 

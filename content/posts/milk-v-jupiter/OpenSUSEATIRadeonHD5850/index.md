@@ -301,4 +301,4 @@ Now hit `Ctrl + Alt + F2`. Login with user opvolger and your password.
 
 We will see the Desktop!
 
-![Milk-V Jupiter KDE Desktop with AMDGPU](images/posts/milk-v-jupiter/OpenSUSEATIRadeonHD5850/desktop.png)
+![Milk-V Jupiter KDE Desktop with AMDGPU](cover.png)
