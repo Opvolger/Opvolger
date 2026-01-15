@@ -277,6 +277,99 @@ yarn install
 yarn napi build --bin lightningcss --release --features cli --target riscv64gc-unknown-linux-gnu
 ```
 
+save file `../package.json`
+
+```json
+{
+  "name": "lightningcss-linux-riscv64-gnu",
+  "version": "1.30.2",
+  "license": "MPL-2.0",
+  "description": "A CSS parser, transformer, and minifier written in Rust",
+  "main": "lightningcss.linux-riscv64-gnu.node",
+  "browserslist": "last 2 versions, not dead",
+  "publishConfig": {
+    "access": "public"
+  },
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/parcel"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/parcel-bundler/lightningcss.git"
+  },
+  "engines": {
+    "node": ">= 12.0.0"
+  },
+  "files": [
+    "lightningcss.linux-riscv64-gnu.node"
+  ],
+  "resolutions": {
+    "lightningcss": "link:."
+  },
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "riscv64"
+  ],
+  "libc": [
+    "glibc"
+  ]
+}
+```
+
+TODO:
+
+Misschien CSS_TRANSFORMER_WASM gebruiken
+
+```ini
+@freelensapp/tooltip:build: built modules 9.97 KiB (javascript) 1.22 KiB (css/mini-extract) [built]
+@freelensapp/tooltip:build:   ./index.ts + 10 modules 9.97 KiB [not cacheable] [built] [code generated]
+@freelensapp/tooltip:build:   css ../../../node_modules/.pnpm/css-loader@6.11.0_webpack@5.104.1/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!../../../node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!../../../node_modules/.pnpm/sass-loader@16.0.6_sass@1.97.2_webpack@5.104.1/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].use[3]!./src/tooltip.scss 1.22 KiB [built] [code generated]
+@freelensapp/tooltip:build: 
+@freelensapp/tooltip:build: ERROR in ./src/tooltip.scss (./src/tooltip.scss.webpack[javascript/auto]!=!../../../node_modules/.pnpm/css-loader@6.11.0_webpack@5.104.1/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!../../../node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!../../../node_modules/.pnpm/sass-loader@16.0.6_sass@1.97.2_webpack@5.104.1/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].use[3]!./src/tooltip.scss)
+@freelensapp/tooltip:build: Module Error (from ../../../node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/cjs.js):
+@freelensapp/tooltip:build: Loading PostCSS "@tailwindcss/postcss" plugin failed: Cannot find module '../lightningcss.linux-riscv64-gnu.node'
+@freelensapp/tooltip:build: Require stack:
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/lightningcss@1.30.2/node_modules/lightningcss/node/index.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/@tailwindcss+node@4.1.18/node_modules/@tailwindcss/node/dist/index.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/@tailwindcss+postcss@4.1.18/node_modules/@tailwindcss/postcss/dist/index.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/utils.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/index.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/cjs.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/loader-runner@4.3.1/node_modules/loader-runner/lib/loadLoader.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/loader-runner@4.3.1/node_modules/loader-runner/lib/LoaderRunner.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/webpack@5.104.1_webpack-cli@6.0.1/node_modules/webpack/lib/NormalModuleFactory.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/webpack@5.104.1_webpack-cli@6.0.1/node_modules/webpack/lib/Compiler.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/webpack@5.104.1_webpack-cli@6.0.1/node_modules/webpack/lib/webpack.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/webpack@5.104.1_webpack-cli@6.0.1/node_modules/webpack/lib/index.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/webpack-cli@6.0.1_webpack-dev-server@5.2.3_webpack@5.104.1/node_modules/webpack-cli/lib/webpack-cli.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/webpack-cli@6.0.1_webpack-dev-server@5.2.3_webpack@5.104.1/node_modules/webpack-cli/lib/bootstrap.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/webpack-cli@6.0.1_webpack-dev-server@5.2.3_webpack@5.104.1/node_modules/webpack-cli/bin/cli.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/webpack@5.104.1_webpack-cli@6.0.1/node_modules/webpack/bin/webpack.js
+@freelensapp/tooltip:build: 
+@freelensapp/tooltip:build: (@/home/opvolger/freelens/packages/ui-components/tooltip/src/tooltip.scss)
+@freelensapp/tooltip:build: Error: Loading PostCSS "@tailwindcss/postcss" plugin failed: Cannot find module '../lightningcss.linux-riscv64-gnu.node'
+@freelensapp/tooltip:build: Require stack:
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/lightningcss@1.30.2/node_modules/lightningcss/node/index.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/@tailwindcss+node@4.1.18/node_modules/@tailwindcss/node/dist/index.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/@tailwindcss+postcss@4.1.18/node_modules/@tailwindcss/postcss/dist/index.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/utils.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/index.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/postcss-loader@8.2.0_postcss@8.5.6_typescript@5.9.3_webpack@5.104.1/node_modules/postcss-loader/dist/cjs.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/loader-runner@4.3.1/node_modules/loader-runner/lib/loadLoader.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/loader-runner@4.3.1/node_modules/loader-runner/lib/LoaderRunner.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/webpack@5.104.1_webpack-cli@6.0.1/node_modules/webpack/lib/NormalModuleFactory.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/webpack@5.104.1_webpack-cli@6.0.1/node_modules/webpack/lib/Compiler.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/webpack@5.104.1_webpack-cli@6.0.1/node_modules/webpack/lib/webpack.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/webpack@5.104.1_webpack-cli@6.0.1/node_modules/webpack/lib/index.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/webpack-cli@6.0.1_webpack-dev-server@5.2.3_webpack@5.104.1/node_modules/webpack-cli/lib/webpack-cli.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/webpack-cli@6.0.1_webpack-dev-server@5.2.3_webpack@5.104.1/node_modules/webpack-cli/lib/bootstrap.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/webpack-cli@6.0.1_webpack-dev-server@5.2.3_webpack@5.104.1/node_modules/webpack-cli/bin/cli.js
+@freelensapp/tooltip:build: - /home/opvolger/freelens/node_modules/.pnpm/webpack@5.104.1_webpack-cli@6.0.1/node_modules/webpack/bin/webpack.js
+```
+
 Now we have the turborepo and lightningcss for RISC-V. Back to freelens
 
 We need to update `node_modules/.pnpm/turbo@2.7.2/node_modules/turbo/bin/turbo` and add the binary we had build.
@@ -289,10 +382,12 @@ sed -i -e 's|arm64|riscv64|g'  node_modules/.pnpm/turbo@2.7.2/node_modules/turbo
 mkdir -p node_modules/.pnpm/turbo@2.7.2/node_modules/turbo-linux-riscv64/bin
 cp ../turborepo/target/riscv64gc-unknown-linux-gnu/release-turborepo/turbo node_modules/.pnpm/turbo@2.7.2/node_modules/turbo-linux-riscv64/bin/turbo
 #lightningcss
-mkdir -p node_modules/.pnpm/lightningcss@1.30.2/node_modules/lightningcss-linux-riscv64-gnu/
 mkdir -p node_modules/.pnpm/lightningcss-linux-riscv64-gnu@1.30.2/node_modules/lightningcss-linux-riscv64-gnu
-cp ../lightningcss/lightningcss node_modules/.pnpm/lightningcss@1.30.2/node_modules/lightningcss-linux-riscv64-gnu/lightningcss.linux-riscv64-gnu.node
+mkdir -p node_modules/.pnpm/lightningcss@1.30.2/node_modules/lightningcss-linux-riscv64-gnu
 cp ../lightningcss/lightningcss node_modules/.pnpm/lightningcss-linux-riscv64-gnu@1.30.2/node_modules/lightningcss-linux-riscv64-gnu/lightningcss.linux-riscv64-gnu.node
+cp ../lightningcss/lightningcss node_modules/.pnpm/lightningcss@1.30.2/node_modules/lightningcss-linux-riscv64-gnu/lightningcss.linux-riscv64-gnu.node
+cp ../package.json node_modules/.pnpm/lightningcss-linux-riscv64-gnu@1.30.2/node_modules/lightningcss-linux-riscv64-gnu/package.json
+cp ../package.json node_modules/.pnpm/lightningcss@1.30.2/node_modules/lightningcss-linux-riscv64-gnu/package.json
 ```
 
 Now we can build the application!
