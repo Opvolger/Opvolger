@@ -208,6 +208,102 @@ kubectl get pods -A -o wide
 kubectl get nodes -o wide
 ```
 
+## Build FreeLens for RISCV
+
+```bash
+# On the risc-v machine:
+# needed for build (I have Debian)
+sudo apt install build-essential python3-setuptools libnss3 
+# clone project
+git clone https://github.com/freelensapp/freelens.git
+cd freelens
+# Prerequisites
+# install nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+# use unofficial RISC-V build
+export NVM_NODEJS_ORG_MIRROR=https://unofficial-builds.nodejs.org/download/release
+# instal node
+nvm install node
+# install pnpm
+corepack install
+# build the app
+corepack enable pnpm
+pnpm i
+```
+
+### Steps with `pnpm i`
+
+remove the `  - electron-winstaller` in pnpm-workspace.yaml . We don't want a windows installer. It will give problems with 7z.exe download.
+
+update file `node_modules/.pnpm/electron@39.2.7/node_modules/@electron/get/dist/cjs/artifact-utils.js`. electron has no riscv64 release. We have to do this in the run op `pnpm i` but before the `../node_modules/electron postinstall$ node install.js` step.
+
+I did this with 2 windows. It downloads electron@39.2.7 and after that, try to download it. We need to change the javascript before the download.
+
+```bash
+sed -i -e 's|electron/electron/releases|riscv-forks/electron-riscv-releases/releases|g'  node_modules/.pnpm/electron@39.2.7/node_modules/@electron/get/dist/cjs/artifact-utils.js && \
+sed -i -e 's|electron-v39.2.7-linux-arm64.zip|electron-v39.2.7-linux-riscv64.zip|g' node_modules/.pnpm/electron@39.2.7/node_modules/electron/checksums.json && \
+sed -i -e 's|445465a43bd2ffaec09877f4ed46385065632a4683c2806cc6211cc73c110024|136804dbd04f1c6b9a6047c4e7bb648876214ff453b62fb3bdc81505b6f5aab2|g' node_modules/.pnpm/electron@39.2.7/node_modules/electron/checksums.json
+```
+
+### Steps with `pnpm build`
+
+Turborepo is used in building FreeLens, but there is no native build. So we need to build it, and change/add some stuff in the node_modules so it will run.
+
+Build turborepo for RISC-V
+
+```bash
+# we need capnp
+sudo apt install capnproto libprotobuf-dev protobuf-compiler binutils-dev lld
+# install rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+# clone project
+git clone https://github.com/vercel/turborepo.git
+# compile project
+cd turborepo
+git checkout v2.7.2
+cargo build --profile release-turborepo -p turbo --target riscv64gc-unknown-linux-gnu
+```
+
+Build lightningcss for RISC-V
+
+```bash
+sudo apt install yarnpkg
+sudo ln -s /usr/bin/yarnpkg /usr/bin/yarn
+git clone https://github.com/parcel-bundler/lightningcss.git
+cd lightningcss
+git checkout v1.30.2
+export NODE_OPTIONS=--max-old-space-size=1536
+yarn install
+yarn napi build --bin lightningcss --release --features cli --target riscv64gc-unknown-linux-gnu
+```
+
+Now we have the turborepo and lightningcss for RISC-V. Back to freelens
+
+We need to update `node_modules/.pnpm/turbo@2.7.2/node_modules/turbo/bin/turbo` and add the binary we had build.
+
+We need to add lightningcss bin for RISC-V
+
+```bash
+#turborepo
+sed -i -e 's|arm64|riscv64|g'  node_modules/.pnpm/turbo@2.7.2/node_modules/turbo/bin/turbo
+mkdir -p node_modules/.pnpm/turbo@2.7.2/node_modules/turbo-linux-riscv64/bin
+cp ../turborepo/target/riscv64gc-unknown-linux-gnu/release-turborepo/turbo node_modules/.pnpm/turbo@2.7.2/node_modules/turbo-linux-riscv64/bin/turbo
+#lightningcss
+mkdir -p node_modules/.pnpm/lightningcss@1.30.2/node_modules/lightningcss-linux-riscv64-gnu/
+mkdir -p node_modules/.pnpm/lightningcss-linux-riscv64-gnu@1.30.2/node_modules/lightningcss-linux-riscv64-gnu
+cp ../lightningcss/lightningcss node_modules/.pnpm/lightningcss@1.30.2/node_modules/lightningcss-linux-riscv64-gnu/lightningcss.linux-riscv64-gnu.node
+cp ../lightningcss/lightningcss node_modules/.pnpm/lightningcss-linux-riscv64-gnu@1.30.2/node_modules/lightningcss-linux-riscv64-gnu/lightningcss.linux-riscv64-gnu.node
+```
+
+Now we can build the application!
+
+```bash
+pnpm build
+pnpm build:app:dir
+```
+
+Now we have a FreeLens for RISC-V
+
 ## add DNS to your /etc/hosts
 
 I want to test the ingress of my cluster, so I added a line to my /etc/hosts to simulate that the DNS is working :)
