@@ -126,7 +126,7 @@ STATUS: 2 (fail)
 
 I am missing `CONFIG_NETFILTER_XT_MATCH_COMMENT` and `CONFIG_NETFILTER_XT_MATCH_STATISTIC`. So i need to build my own kernel with that options enabled!
 
-I already have done a howto compiling a kernel for the `StarFive VisionFive 2 Lite` [here](LiteUBootKernel.md). But almost everything is already in the kernel 6.19-rc1 (latest kernel when I was making this), Only a patch for the [PCIe is missing](https://patchwork.kernel.org/project/linux-pci/patch/20251204064956.118747-1-hal.feng@starfivetech.com/).
+I already have done a howto compiling a kernel for the `StarFive VisionFive 2 Lite` [here](../2025-12-03-lite-uboot-kernel). But almost everything is already in the kernel 6.19-rc1 (latest kernel when I was making this), Only a patch for the [PCIe is missing](https://patchwork.kernel.org/project/linux-pci/patch/20251204064956.118747-1-hal.feng@starfivetech.com/).
 
 So I compiled my own kernel 6.19-rc1 with the patch and all the options needed.
 
