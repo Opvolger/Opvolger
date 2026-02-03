@@ -12,7 +12,9 @@ for more information see:
 - [xash3d-fwgs](https://github.com/FWGS/xash3d-fwgs)
 - [hlsdk-portable](https://github.com/FWGS/hlsdk-portable)
 
-I have a StarFive VisionFive 2 with an AMD GPU (m2 -> PCI-e). This is running Ubuntu 24.10 with own build kernel 6.13.0. (default RISC-V + AMDGPU drivers). How i maked the kernel see [OpenSUSEATIRadeonR9_290_mainline.md](OpenSUSEATIRadeonR9_290_mainline.md). How my build is running [video](https://www.youtube.com/watch?v=Jp0ZPA4IQGw).
+I have a StarFive VisionFive 2 with an AMD GPU (m2 -> PCI-e). This is running Ubuntu 24.10 with own build kernel 6.13.0. (default RISC-V + AMDGPU drivers). How i maked the kernel see [OpenSUSEATIRadeonR9_290_mainline.md](../2024-09-02-opensuse-ati-radeon-r9_290_mainline/). How my build is running [video](https://www.youtube.com/watch?v=Jp0ZPA4IQGw).
+
+{{< youtube "Jp0ZPA4IQGw" >}}
 
 ## Compile Half-Life
 
