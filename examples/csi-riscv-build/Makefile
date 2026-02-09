@@ -8,6 +8,11 @@ CSI_DRIVER_ISCSI_BRANCH ?= master
 CSI_DRIVER_ISCSI_REPO ?= https://github.com/kubernetes-csi/csi-driver-iscsi.git
 CSI_DRIVER_ISCSI_PATCHES ?= patches/csi-driver-iscsi
 
+# livenessprobe
+LIVENESSPROBE_BRANCH ?= release-2.17
+LIVENESSPROBE_REPO ?= https://github.com/kubernetes-csi/livenessprobe.git
+LIVENESSPROBE_PATCHES ?= patches/livenessprobe
+
 DOCKER_REGISTRY_NAME ?= opvolger
 BUILD_PLATFORMS ?= "linux amd64 amd64; linux riscv64 riscv64 -riscv64; linux arm64 arm64 -arm64"
 
@@ -30,10 +35,13 @@ define build_docker_images
 	$(MAKE) -C $(BUILD_ROOT)/${$@_DIR} push-multiarch PULL_BASE_REF=${$@_BRANCH} REGISTRY_NAME=$(DOCKER_REGISTRY_NAME) BUILD_PLATFORMS=$(BUILD_PLATFORMS)
 endef
 
-docker: docker_node_driver_registrar docker_csi_driver_iscsi
+docker_images: docker_node_driver_registrar docker_csi_driver_iscsi docker_livenessprobe
 
 docker_node_driver_registrar:
 	@$(call build_docker_images,"node-driver-registrar",${NODE_DRIVER_REGISTRAR_REPO},${NODE_DRIVER_REGISTRAR_BRANCH},${NODE_DRIVER_REGISTRAR_PATCHES})
 
 docker_csi_driver_iscsi:
 	@$(call build_docker_images,"csi-driver-iscsi",${CSI_DRIVER_ISCSI_REPO},${CSI_DRIVER_ISCSI_BRANCH},${CSI_DRIVER_ISCSI_PATCHES})
+
+docker_livenessprobe:
+	@$(call build_docker_images,"livenessprobe",${LIVENESSPROBE_REPO},${LIVENESSPROBE_BRANCH},${LIVENESSPROBE_PATCHES})
