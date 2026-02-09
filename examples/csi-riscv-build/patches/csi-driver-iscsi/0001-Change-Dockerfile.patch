@@ -1,0 +1,22 @@
+diff --git a/Dockerfile b/Dockerfile
+index 2fb3ca0a..ac1ec190 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -12,7 +12,16 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
+-FROM registry.k8s.io/build-image/debian-base:bookworm-v1.0.6
++ARG DEFAULT_BASEIMAGE=registry.k8s.io/build-image/debian-base:bookworm-v1.0.6 \
++    RISCV_BASEIMAGE=debian:trixie \
++    ARCH
++
++FROM $DEFAULT_BASEIMAGE AS final-amd64
++FROM $DEFAULT_BASEIMAGE AS final-arm64
++FROM $DEFAULT_BASEIMAGE AS final-arm
++FROM $RISCV_BASEIMAGE   AS final-riscv64
++
++FROM final-$ARCH
+ 
+ RUN apt update && apt upgrade -y && apt-mark unhold libcap2
+ RUN clean-install util-linux e2fsprogs mount ca-certificates udev xfsprogs btrfs-progs open-iscsi
