@@ -1,0 +1,43 @@
+diff --git a/cmd/smbplugin/Dockerfile b/cmd/smbplugin/Dockerfile
+index 4c4f2f049..a86b45ef9 100644
+--- a/cmd/smbplugin/Dockerfile
++++ b/cmd/smbplugin/Dockerfile
+@@ -12,9 +12,36 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
+-FROM registry.k8s.io/build-image/debian-base:bookworm-v1.0.7
+ 
+-RUN apt update && apt upgrade -y && apt-mark unhold libcap2 && clean-install ca-certificates cifs-utils util-linux e2fsprogs mount udev xfsprogs
++ARG DEFAULT_BASEIMAGE=registry.k8s.io/build-image/debian-base:bookworm-v1.0.7 \
++    RISCV_BASEIMAGE=debian:trixie \
++    ARCH \
++    DOCKER_ARCH
++
++FROM $DEFAULT_BASEIMAGE AS final-amd64
++FROM $DEFAULT_BASEIMAGE AS final-arm64
++FROM $DEFAULT_BASEIMAGE AS final-armv7
++FROM $DEFAULT_BASEIMAGE AS final-ppc64le
++FROM $RISCV_BASEIMAGE   AS final-riscv64
++
++# makes from arm/v7 armv7
++FROM final-${DOCKER_ARCH}
++
++RUN apt update && apt upgrade -y && apt-mark unhold libcap2 
++
++# https://github.com/kubernetes-retired/driver-registrar/blob/master/vendor/k8s.io/kubernetes/build/debian-base/clean-install
++RUN if [ "$(uname -m)" = "riscv64" ]; then \
++    # install curl
++    apt install curl -y && \
++    # download clean-install
++    curl --output /usr/local/bin/clean-install "https://raw.githubusercontent.com/kubernetes-retired/driver-registrar/refs/heads/master/vendor/k8s.io/kubernetes/build/debian-base/clean-install" && \
++    chmod +x /usr/local/bin/clean-install && \
++    # remove curl and other installed stuff
++    apt remove openssl bash-completion curl -y && \
++    apt autoremove -y; \
++    fi
++
++RUN clean-install ca-certificates cifs-utils util-linux e2fsprogs mount udev xfsprogs
+ 
+ LABEL maintainers="andyzhangx"
+ LABEL description="SMB CSI Driver"

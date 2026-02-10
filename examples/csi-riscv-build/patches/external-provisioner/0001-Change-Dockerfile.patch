@@ -1,0 +1,20 @@
+diff --git a/Dockerfile b/Dockerfile
+index 8afb867b3..35121293f 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -1,4 +1,14 @@
+-FROM gcr.io/distroless/static:latest
++ARG DEFAULT_BASEIMAGE=gcr.io/distroless/static \
++    RISCV_BASEIMAGE=ghcr.io/go-riscv/distroless/static-unstable:latest \
++    ARCH
++
++FROM $DEFAULT_BASEIMAGE AS final-amd64
++FROM $DEFAULT_BASEIMAGE AS final-arm64
++FROM $DEFAULT_BASEIMAGE AS final-arm
++FROM $RISCV_BASEIMAGE   AS final-riscv64
++
++FROM final-$ARCH
++
+ LABEL maintainers="Kubernetes Authors"
+ LABEL description="CSI External Provisioner"
+ ARG binary=./bin/csi-provisioner
