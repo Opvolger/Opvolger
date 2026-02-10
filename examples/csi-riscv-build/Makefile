@@ -47,7 +47,7 @@ define checkout_code_add_patches
 	fi
 	echo ${$@_BRANCH}
 	cd $(BUILD_ROOT)/${$@_DIR} && git clean -fd && git reset --hard
-	cd $(BUILD_ROOT)/${$@_DIR} && git apply ../../${$@_PATCHES}/*.patch
+	cd $(BUILD_ROOT)/${$@_DIR} && git apply --ignore-whitespace --whitespace=fix ../../${$@_PATCHES}/*.patch
 endef
 
 docker_images: docker_csi_node_driver_registrar docker_csi_driver_iscsi docker_livenessprobe docker_csi_driver_smb docker_csi_provisioner docker_csi_resizer

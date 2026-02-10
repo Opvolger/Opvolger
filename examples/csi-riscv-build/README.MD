@@ -1,4 +1,10 @@
-# Build of K8s CSI for amd64/arm64 and riscv64
+# RISCV64 SMB CSI
+
+I wanted to install a CSI provider on my k0s riscv64 cluster. This wasn't possible because Kubernetes doesn't officially support riscv64 yet. With minimal changes to the Docker files, I managed to compile the SMB and ISCSI riscv64.
+
+Ultimately, I opted to run my cluster with an SMB share and didn't test the ISCSI.
+
+## Build of K8s CSI for amd64/arm64 and riscv64
 
 First fix running qemu for multi arch docker builds [multi arch docker](https://github.com/tonistiigi/binfmt)
 
@@ -16,14 +22,6 @@ Build the images
 
 ```bash
 make docker_images
-```
-
-## Al the build can be build with this line
-
-We need to patch some Dockerfile, most images are based on debian-bookworm and that has no riscv64 arch.
-
-```bash
-make push-multiarch PULL_BASE_REF=master REGISTRY_NAME=opvolger BUILD_PLATFORMS="linux amd64 amd64; linux arm64 arm64 -arm64; linux riscv64 riscv64 -riscv64"
 ```
 
 ## Deploy CSI SMB
@@ -69,7 +67,9 @@ helm repo add csi-driver-smb https://raw.githubusercontent.com/kubernetes-csi/cs
 helm install csi-driver-smb csi-driver-smb/csi-driver-smb --namespace kube-system --version 1.20.0 --values values.yaml
 ```
 
-## Deploy CSI iscsi
+## Deploy CSI ISCSI
+
+UNTESTED!
 
 See [install-driver.sh](https://github.com/kubernetes-csi/csi-driver-iscsi/blob/master/deploy/install-driver.sh)
 
