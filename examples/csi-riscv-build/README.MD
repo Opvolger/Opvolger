@@ -38,20 +38,20 @@ image:
     tag: v1.20.0
     pullPolicy: IfNotPresent
   csiProvisioner:
-    repository: /csi-provisioner # todo
-    tag: v6.0.0
+    repository: /csi-provisioner # done
+    tag: v6.1-canary
     pullPolicy: IfNotPresent
   csiResizer:
-    repository: /csi-resizer # todo
-    tag: v2.0.0
+    repository: /csi-resizer # done
+    tag: 2.0-canary
     pullPolicy: IfNotPresent
   livenessProbe:
     repository: /livenessprobe # done
-    tag: v2.17.0
+    tag: 2.17-canary
     pullPolicy: IfNotPresent
   nodeDriverRegistrar:
     repository: /csi-node-driver-registrar  # done
-    tag: v2.15.0
+    tag: 2.15.canary
     pullPolicy: IfNotPresent
   csiproxy:
     repository: ghcr.io/kubernetes-sigs/sig-windows/csi-proxy  # not needed only windows

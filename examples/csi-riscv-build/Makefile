@@ -29,7 +29,8 @@ CSI_RESIZER_REPO ?= https://github.com/kubernetes-csi/external-resizer.git
 CSI_RESIZER_PATCHES ?= patches/external-resizer
 
 DOCKER_REGISTRY_NAME ?= opvolger
-BUILD_PLATFORMS ?= "linux amd64 amd64; linux riscv64 riscv64 -riscv64; linux arm64 arm64 -arm64"
+BUILD_PLATFORMS_LINUX_ONLY ?= "linux amd64 amd64; linux riscv64 riscv64 -riscv64; linux arm64 arm64 -arm64"
+BUILD_PLATFORMS ?= "linux amd64 amd64; linux riscv64 riscv64 -riscv64; linux arm64 arm64 -arm64; windows amd64 amd64 .exe nanoserver:1809 servercore:ltsc2019; windows amd64 amd64 .exe nanoserver:ltsc2022 servercore:ltsc2022"
 
 BUILD_ROOT ?= build/
 
@@ -49,15 +50,15 @@ define checkout_code_add_patches
 	cd $(BUILD_ROOT)/${$@_DIR} && git apply ../../${$@_PATCHES}/*.patch
 endef
 
-docker_images: docker_node_driver_registrar docker_csi_driver_iscsi docker_livenessprobe docker_csi_driver_smb docker_csi_provisioner docker_csi_resizer
+docker_images: docker_csi_node_driver_registrar docker_csi_driver_iscsi docker_livenessprobe docker_csi_driver_smb docker_csi_provisioner docker_csi_resizer
 
-docker_node_driver_registrar:
+docker_csi_node_driver_registrar:
 	@$(call checkout_code_add_patches,"node-driver-registrar",${NODE_DRIVER_REGISTRAR_REPO},${NODE_DRIVER_REGISTRAR_BRANCH},${NODE_DRIVER_REGISTRAR_PATCHES})
 	$(MAKE) -C $(BUILD_ROOT)/${$@_DIR} push-multiarch PULL_BASE_REF=${$@_BRANCH} REGISTRY_NAME=$(DOCKER_REGISTRY_NAME) BUILD_PLATFORMS=$(BUILD_PLATFORMS)
 
 docker_csi_driver_iscsi:
 	@$(call checkout_code_add_patches,"csi-driver-iscsi",${CSI_DRIVER_ISCSI_REPO},${CSI_DRIVER_ISCSI_BRANCH},${CSI_DRIVER_ISCSI_PATCHES})
-	$(MAKE) -C $(BUILD_ROOT)/${$@_DIR} push-multiarch PULL_BASE_REF=${$@_BRANCH} REGISTRY_NAME=$(DOCKER_REGISTRY_NAME) BUILD_PLATFORMS=$(BUILD_PLATFORMS)
+	$(MAKE) -C $(BUILD_ROOT)/${$@_DIR} push-multiarch PULL_BASE_REF=${$@_BRANCH} REGISTRY_NAME=$(DOCKER_REGISTRY_NAME) BUILD_PLATFORMS=$(BUILD_PLATFORMS_LINUX_ONLY)
 
 docker_livenessprobe:
 	@$(call checkout_code_add_patches,"livenessprobe",${LIVENESSPROBE_REPO},${LIVENESSPROBE_BRANCH},${LIVENESSPROBE_PATCHES})
@@ -70,8 +71,8 @@ docker_csi_driver_smb:
 
 docker_csi_provisioner:
 	@$(call checkout_code_add_patches,"external-provisioner",${CSI_PROVISIONER_REPO},${CSI_PROVISIONER_BRANCH},${CSI_PROVISIONER_PATCHES})
-	$(MAKE) -C $(BUILD_ROOT)/${$@_DIR} push-multiarch PULL_BASE_REF=${$@_BRANCH} REGISTRY_NAME=$(DOCKER_REGISTRY_NAME) BUILD_PLATFORMS=$(BUILD_PLATFORMS)
+	$(MAKE) -C $(BUILD_ROOT)/${$@_DIR} push-multiarch PULL_BASE_REF=${$@_BRANCH} REGISTRY_NAME=$(DOCKER_REGISTRY_NAME) BUILD_PLATFORMS=$(BUILD_PLATFORMS_LINUX_ONLY)
 
 docker_csi_resizer:
 	@$(call checkout_code_add_patches,"external-resizer",${CSI_RESIZER_REPO},${CSI_RESIZER_BRANCH},${CSI_RESIZER_PATCHES})
-	$(MAKE) -C $(BUILD_ROOT)/${$@_DIR} push-multiarch PULL_BASE_REF=${$@_BRANCH} REGISTRY_NAME=$(DOCKER_REGISTRY_NAME) BUILD_PLATFORMS=$(BUILD_PLATFORMS)
+	$(MAKE) -C $(BUILD_ROOT)/${$@_DIR} push-multiarch PULL_BASE_REF=${$@_BRANCH} REGISTRY_NAME=$(DOCKER_REGISTRY_NAME) BUILD_PLATFORMS=$(BUILD_PLATFORMS_LINUX_ONLY)
