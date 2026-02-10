@@ -1,14 +1,14 @@
 diff --git a/Dockerfile b/Dockerfile
-index 2fb3ca0a..ac1ec190 100644
+index 2fb3ca0a..d78353ce 100644
 --- a/Dockerfile
 +++ b/Dockerfile
-@@ -12,7 +12,16 @@
+@@ -12,9 +12,30 @@
  # See the License for the specific language governing permissions and
  # limitations under the License.
  
 -FROM registry.k8s.io/build-image/debian-base:bookworm-v1.0.6
 +ARG DEFAULT_BASEIMAGE=registry.k8s.io/build-image/debian-base:bookworm-v1.0.6 \
-+    RISCV_BASEIMAGE=debian:trixie \
++    RISCV_BASEIMAGE=debian:forky \
 +    ARCH
 +
 +FROM $DEFAULT_BASEIMAGE AS final-amd64
@@ -19,4 +19,18 @@ index 2fb3ca0a..ac1ec190 100644
 +FROM final-$ARCH
  
  RUN apt update && apt upgrade -y && apt-mark unhold libcap2
++# https://github.com/kubernetes-retired/driver-registrar/blob/master/vendor/k8s.io/kubernetes/build/debian-base/clean-install
++RUN if [ "$(uname -m)" = "riscv64" ]; then \
++    # install curl
++    apt install curl -y && \
++    # download clean-install
++    curl --output /usr/local/bin/clean-install "https://raw.githubusercontent.com/kubernetes-retired/driver-registrar/refs/heads/master/vendor/k8s.io/kubernetes/build/debian-base/clean-install" && \
++    chmod +x /usr/local/bin/clean-install && \
++    # remove curl and other installed stuff
++    apt remove openssl bash-completion ca-certificates curl -y && \
++    apt autoremove -y; \
++    fi
++
  RUN clean-install util-linux e2fsprogs mount ca-certificates udev xfsprogs btrfs-progs open-iscsi
+ 
+ CMD service iscsid start
