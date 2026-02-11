@@ -64,3 +64,9 @@ opvolger@sfvf2lite:~$ [   47.494639] kube-bridge: port 1(vethdc1c21c8) entered b
 ```
 
 🥳
+
+## Youtube demo
+
+[SMB-Share used in RISC-V Kubernetes cluster](https://youtu.be/WERPNNyzqqs)
+
+{{< youtube "WERPNNyzqqs" >}}
