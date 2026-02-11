@@ -14,7 +14,7 @@ We launched Babelvis in 2025. If your IT department needs support in CI/CD, secu
 
 |   year  | company | work  |
 |-----|---------|---------------|
-| 2007 - 2011 | Ceasar Groep (secondment agency) | Oracle Database developer |
-| 2007 - 2011 | Centraal Boekhuis                | Oracle Database developer  |
-| 2011 - 2025 | Topicus                          | C#/App/Frontend developer (7 y), now: Puppet VMs Ansible Azure k8s helm  == DevOps engineer |
 | 2025 - now  | Babelvis                | Co-founder  |
+| 2011 - 2025 | Topicus                          | C#/App/Frontend developer (7 y), now: Puppet VMs Ansible Azure k8s helm  == DevOps engineer |
+| 2007 - 2011 | Centraal Boekhuis                | Oracle Database developer  |
+| 2007 - 2011 | Ceasar Groep (secondment agency) | Oracle Database developer |
