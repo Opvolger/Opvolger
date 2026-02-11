@@ -49,6 +49,11 @@
  weight = 30
 
 [[main]]
+ name = "Kubernetes"
+ pageRef = "tags/kubernetes"
+ weight = 40
+
+[[main]]
  name = "RISC-V"
  pageRef = "tags/RISC-V"
  weight = 20

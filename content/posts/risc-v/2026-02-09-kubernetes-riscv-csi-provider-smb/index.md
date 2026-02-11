@@ -2,13 +2,13 @@
 date: 2026-02-09
 author: Bas Magré
 categories: ["RISC-V"]
-tags: ["kubernetes", "RISC-V"]
+tags: ["kubernetes", "RISC-V", "k0s"]
 title: StarFive VisionFive 2 Lite - Kubernetes cluster
 draft: false
 ---
 ## Intro
 
-On FOSDEM 2026 I say a presentation from `Tom Wieczorek` on RISC-V support for k0s. k0s is the simple, solid & certified Kubernetes distribution that works on any infrastructure: bare-metal, on-premises, edge, IoT, public & private clouds. It's 100% open source & free. You can now compile and run it for RISC-V 😃, it has no binaries yet on the release files (no RISC-V runners on github 😐 ). K0s is very empty after the default setup. k3s has default a csi provider for local storage, but k0s doesn't. So I thought, how hard can it be, creating the csi provider for RISC-V nodes.
+On `FOSDEM 2026` I say a presentation from `Tom Wieczorek` on RISC-V support for `k0s`. k0s is the simple, solid & certified Kubernetes distribution that works on any infrastructure: bare-metal, on-premises, edge, IoT, public & private clouds. It's 100% open source & free. You can now compile and run it for RISC-V 😃, it has no binaries yet on the release files (no RISC-V runners on github 😐 ). K0s is very empty after the default setup. k3s has default a csi provider for local storage, but k0s doesn't. So I thought, how hard can it be, creating the csi provider for RISC-V nodes.
 
 ## Choice SMB of ISCSI
 
