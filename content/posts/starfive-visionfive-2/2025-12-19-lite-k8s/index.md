@@ -2,7 +2,7 @@
 date: 2025-12-19
 author: Bas Magré
 categories: ["RISC-V"]
-tags: ["starfive-visionfive-2", "RISC-V"]
+tags: ["starfive-visionfive-2", "RISC-V", "kubernetes"]
 title: StarFive VisionFive 2 Lite - Kubernetes cluster
 draft: false
 ---
