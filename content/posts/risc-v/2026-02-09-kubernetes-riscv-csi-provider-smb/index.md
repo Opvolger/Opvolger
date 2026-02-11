@@ -3,7 +3,7 @@ date: 2026-02-09
 author: Bas Magré
 categories: ["RISC-V"]
 tags: ["kubernetes", "RISC-V", "k0s"]
-title: CSI provider SMB for RISC-V Kubernetes cluster
+title: Building RISC-V Docker images for CSI provider (SMB)
 draft: false
 ---
 ## Intro
