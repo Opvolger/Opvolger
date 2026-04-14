@@ -13,15 +13,15 @@ Helaas werkt deze niet meer omdat begin 2024 er geen nieuwe video's meer geplaat
 
 ## Waarom
 
-Zie [Uitzendinggemist (NPO)](../kodi-npo)
+Zie [Uitzendinggemist (NPO)](../npo)
 
 ## Oplossing
 
-Zie [Uitzendinggemist (NPO)](../kodi-npo)
+Zie [Uitzendinggemist (NPO)](../npo)
 
 ## Uitwerking
 
-Zie [Uitzendinggemist (NPO)](../kodi-npo)
+Zie [Uitzendinggemist (NPO)](../npo)
 
 ## Tegenslag / Stoppen publieke addon
 
