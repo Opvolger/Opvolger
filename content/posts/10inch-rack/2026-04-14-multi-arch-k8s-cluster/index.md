@@ -156,7 +156,7 @@ In short:
 - Install `netplan.io` and other stuff.
 - Add some firewalld rules on all the nodes for the cluster (you can also disable the firewall)
 - Create a netplan yaml file for static ip and apply this setting for all the nodes.
-- Set ARP kernel settings on all the nodes, so virtual IP-adres can be set. `sysctl -w net.ipv4.conf.all.arp_announce=2` and `sysctl -w net.ipv4.conf.all.arp_ignore=1`
+- Set ARP kernel settings on all the nodes, so virtual IP-address can be set. `sysctl -w net.ipv4.conf.all.arp_announce=2` and `sysctl -w net.ipv4.conf.all.arp_ignore=1`
 - Download k0sctl from k0sproject, this can setup a cluster.
 - Generate k0sctl.yaml for the cluster
 - Run `k0sctl apply --config k0sctl.yaml`.
@@ -208,17 +208,6 @@ spec:
       metadata:
         name: k0s
       spec:
-        # images:
-        #   calico:
-        #     cni:
-        #       image: quay.io/k0sproject/calico-cni
-        #       version: v3.29.7-1
-        #     node:
-        #       image: quay.io/k0sproject/calico-node
-        #       version: v3.29.7-1
-        #     kubecontrollers:
-        #       image: quay.io/k0sproject/calico-kube-controllers
-        #       version: v3.29.7-1
         api:
           externalAddress: 192.168.8.1
           k0sApiPort: 9443
@@ -242,12 +231,6 @@ spec:
             - name: csi-driver-smb
               url: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
             charts:
-            # docker buildx build --platform linux/amd64,linux/arm64,linux/riscv64 --tag opvolger/metallb-controller:v0.15.3  --push --file controller/Dockerfile .
-            # docker buildx build --platform linux/amd64,linux/arm64,linux/riscv64 --tag opvolger/metallb-speaker:v0.15.3  --push --file speaker/Dockerfile .
-            # helm install metallb metallb/metallb --values templates/metallb.yaml -n metallb-system
-            # helm uninstall metallb -n metallb-system
-            # kubectl apply -f templates/ip-pool.yaml -n metallb-system
-            # https://oneuptime.com/blog/post/2026-02-09-kube-proxy-strict-arp-metallb/view
             - name: metallb
               chartname: metallb/metallb
               version: 0.15.3
@@ -265,9 +248,6 @@ spec:
                     # pullPolicy: Always
                     repository: opvolger/metallb-speaker
                     tag: v0.15.3
-            # helm install traefik traefik/traefik --values templates/traefik.yaml -n traefik-system --version 39.0.7
-            # helm uninstall traefik -n traefik-system
-            # https://oneuptime.com/blog/post/2026-01-07-metallb-traefik-ingress/view
             - name: traefik
               chartname: traefik/traefik
               version: 39.0.7
