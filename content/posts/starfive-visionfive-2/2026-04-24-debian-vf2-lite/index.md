@@ -109,7 +109,7 @@ So put the SD card in the VisionFive 2 Lite and connect to the board with the co
 sudo screen -L /dev/ttyUSB0 115200
 ```
 
-## First boot (Debian Install) (UART/desktop)
+## 1st Boot (Debian Install) (UART/desktop)
 
 If the VisionFive 2 Lite is turned on, you will see text on the screen application, if not, check your connections (RX <-> TX and TX <-> RX and Ground to Ground).
 
@@ -139,7 +139,7 @@ The setup will be started in the screen application.
 - Continue without boot loader -> Continue
 - Finish the installation -> Continue
 
-## 1ste boot after installer (UART/desktop)
+## Boot after installer (UART/desktop)
 
 ```bash
 load mmc 0:3 ${kernel_addr_r} /linux
@@ -151,7 +151,7 @@ booti $kernel_addr_r $ramdisk_addr_r:$filesize $fdt_addr_r
 
 Login to your board with username and password given in the setup, and get the ip-address of the board with `ip a` or something else.
 
-## After 1ste boot (desktop)
+## After boot (desktop)
 
 We need to copy the downloaded kernels to the board, we can do that with scp (if the SSH server was enabled with the installer)
 
@@ -161,7 +161,7 @@ scp linux-* [username]@[ip]:/home/[username]
 scp linux-* opvolger@192.168.2.30:/home/opvolger
 ```
 
-## 1ste boot (UART/desktop)
+## Setup auto boot (UART/desktop)
 
 Add the `non-free-firmware` on your board
 
