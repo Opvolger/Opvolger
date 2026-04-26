@@ -60,8 +60,9 @@ This kernel can work for k0s/k3s (Kubernetes) and/or with an AMDGPU (with an ada
 # (rootfs) for setup Debian Trixie
 wget https://deb.debian.org/debian/dists/trixie/main/installer-riscv64/current/images/netboot/debian-installer/riscv64/initrd.gz
 # packages for kernel 6.19 with patch PCI-e
-wget https://github.com/Opvolger/multi-arch-cluster/releases/download/0.1/linux-image-6.19.13-opvolger_6.19.13-1_riscv64.deb
-wget https://github.com/Opvolger/multi-arch-cluster/releases/download/0.1/linux-libc-dev_6.19.13-1_riscv64.deb
+wget https://github.com/Opvolger/multi-arch-cluster/releases/download/0.2/linux-headers-6.19.13-opvolger_6.19.13-2_riscv64.deb
+wget https://github.com/Opvolger/multi-arch-cluster/releases/download/0.2/linux-image-6.19.13-opvolger_6.19.13-2_riscv64.deb
+wget https://github.com/Opvolger/multi-arch-cluster/releases/download/0.2/linux-libc-dev_6.19.13-2_riscv64.deb
 ```
 
 ## Create SD card (desktop)
