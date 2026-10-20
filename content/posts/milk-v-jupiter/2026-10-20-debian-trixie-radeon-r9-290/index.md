@@ -71,3 +71,5 @@ I will test some games with Box64 and FEX?
 Try Steam with the new 64 bit application?
 
 I will see!
+
+Maybe let `claude` create a pipeline that gives a trixie setup for Milk-V Jupiter with an AMDGPU? So everybody can do this easily?
