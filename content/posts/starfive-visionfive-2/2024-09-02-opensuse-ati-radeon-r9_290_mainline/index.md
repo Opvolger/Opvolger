@@ -2,7 +2,7 @@
 date: 2024-09-02
 author: Bas Magré
 categories: ["RISC-V"]
-tags: ["starfive-visionfive-2", "RISC-V"]
+tags: ["starfive-visionfive-2", "RISC-V", "AMDGPU"]
 title: StarFive VisionFive 2 - 6.11-rc6 with external GPU
 ---
 ## Intro

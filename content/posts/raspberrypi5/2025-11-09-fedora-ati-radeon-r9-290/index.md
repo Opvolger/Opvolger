@@ -2,7 +2,7 @@
 date: 2025-11-09
 author: Bas Magré
 categories: ["ARM"]
-tags: ["raspberry-pi", "raspberry-pi-5", "ARM"]
+tags: ["raspberry-pi", "raspberry-pi-5", "ARM", "AMDGPU"]
 title: Raspberry Pi 5 - Fedora with AMDGPU and Halflife 2
 ---
 ## Intro

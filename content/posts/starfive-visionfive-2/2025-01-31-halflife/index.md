@@ -2,7 +2,7 @@
 date: 2025-01-31
 author: Bas Magré
 categories: ["RISC-V"]
-tags: ["starfive-visionfive-2", "RISC-V"]
+tags: ["starfive-visionfive-2", "RISC-V", "AMDGPU"]
 title: RISC-V - Compile halflife on RISC-V
 ---
 ## Intro

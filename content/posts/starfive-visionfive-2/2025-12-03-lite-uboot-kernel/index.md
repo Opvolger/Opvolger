@@ -2,7 +2,7 @@
 date: 2025-12-03
 author: Bas Magré
 categories: ["RISC-V"]
-tags: ["starfive-visionfive-2", "RISC-V"]
+tags: ["starfive-visionfive-2", "RISC-V", "AMDGPU"]
 title: StarFive VisionFive 2 Lite - U-boot and Kernel with external GPU ATI Radeon R9 290
 ---
 ## Intro

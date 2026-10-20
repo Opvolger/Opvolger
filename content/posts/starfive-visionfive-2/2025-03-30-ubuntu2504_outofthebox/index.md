@@ -2,7 +2,7 @@
 date: 2025-03-30
 author: Bas Magré
 categories: ["RISC-V"]
-tags: ["starfive-visionfive-2", "RISC-V"]
+tags: ["starfive-visionfive-2", "RISC-V", "AMDGPU"]
 title: StarFive VisionFive 2 - Ubuntu 25.04 (beta) AMDGPU
 ---
 ## Intro

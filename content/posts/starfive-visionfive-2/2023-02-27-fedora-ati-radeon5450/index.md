@@ -2,7 +2,7 @@
 date: 2023-02-27
 author: Bas Magré
 categories: ["RISC-V"]
-tags: ["starfive-visionfive-2", "RISC-V"]
+tags: ["starfive-visionfive-2", "RISC-V", "AMDGPU"]
 title: StarFive VisionFive 2 - Fedora 37 external GPU ATI Radeon 5450 running Quake2
 ---
 ## Intro

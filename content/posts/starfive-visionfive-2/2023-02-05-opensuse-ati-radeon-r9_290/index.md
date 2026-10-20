@@ -2,7 +2,7 @@
 date: 2023-02-05
 author: Bas Magré
 categories: ["RISC-V"]
-tags: ["starfive-visionfive-2", "RISC-V"]
+tags: ["starfive-visionfive-2", "RISC-V", "AMDGPU"]
 title: StarFive VisionFive 2 - OpenSUSE Tumbleweed with external GPU ATI Radeon R9 290
 ---
 ## Intro

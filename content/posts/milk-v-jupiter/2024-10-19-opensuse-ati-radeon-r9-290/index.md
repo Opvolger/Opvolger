@@ -2,7 +2,7 @@
 date: 2024-10-19
 author: Bas Magré
 categories: ["RISC-V"]
-tags: ["milk-v-jupiter", "RISC-V"]
+tags: ["milk-v-jupiter", "RISC-V", "AMDGPU"]
 title: "Milk-V Jupiter - OpenSUSE Tumbleweed with external GPU ATI Radeon R9 290"
 ---
 ## Software

@@ -2,7 +2,7 @@
 date: 2023-04-05
 author: Bas Magré
 categories: ["RISC-V"]
-tags: ["starfive-visionfive-2", "RISC-V"]
+tags: ["starfive-visionfive-2", "RISC-V", "AMDGPU"]
 title: StarFive VisionFive 2 - Ubuntu 22.04 external GPU ATI Radeon R9 290
 ---
 ## Intro

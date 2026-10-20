@@ -2,7 +2,7 @@
 date: 2026-04-24
 author: Bas Magré
 categories: ["RISC-V"]
-tags: ["starfive-visionfive-2", "RISC-V"]
+tags: ["starfive-visionfive-2", "RISC-V", "AMDGPU"]
 title: StarFive VisionFive 2 Lite - Debian Trixie
 ---
 

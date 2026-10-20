@@ -2,7 +2,7 @@
 date: 2024-11-20
 author: Bas Magré
 categories: ["RISC-V"]
-tags: ["milk-v-jupiter", "RISC-V"]
+tags: ["milk-v-jupiter", "RISC-V", "AMDGPU"]
 title: "Milk-V Jupiter - OpenSUSE Tumbleweed with dedicated GPU ATI Radeon HD 5850"
 ---
 ## Software

@@ -2,7 +2,7 @@
 date: 2025-06-09
 author: Bas Magré
 categories: ["RISC-V"]
-tags: ["starfive-visionfive-2", "RISC-V"]
+tags: ["starfive-visionfive-2", "RISC-V", "AMDGPU"]
 title: "StarFive VisionFive 2 - Debian Trixie with external AMDGPU"
 description: "Debian (Trixie) has now officially support RISC-V. At the time of writing it is still in beta / first release candidate."
 ---
