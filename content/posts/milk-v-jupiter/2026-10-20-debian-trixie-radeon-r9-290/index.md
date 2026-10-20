@@ -11,7 +11,7 @@ More than 2 years ago with a lot of searching/patching/searching/patching etc., 
 
 But I didn't save my changes/patches and wiped the directory. I still had some in my [git repo](https://github.com/Opvolger/spacemit-k1-linux-6.6) and tried to get it working again... but gave up.
 
-Now it is 2 years later, and the mainline Linux has support for a lot of the board and the PCI-e controller, so I did give it a try. Too bad, AMDGPU was not working. So I asked `claude` what is missing and how it can be fixed. I don’t expect a real answer. But he gave me one. Here it started!
+Now it is 2 years later, and the mainline Linux kernel (7.2, and now 7.3) has support for a lot of the board and the PCI-e controller, so I did give it a try. Too bad, AMDGPU was not working. So I asked `claude` what is missing and how it can be fixed. I don’t expect a real answer. But he gave me one. Here it started!
 
 ## Setup
 
@@ -34,11 +34,11 @@ setenv serverip 192.168.2.34
 setenv fdt_addr_r 0x31000000          # fdt_addr_r does not exist in the env
 tftpboot ${fdt_addr_r} ${serverip}:arch/riscv/boot/dts/spacemit/k1-milkv-jupiter.dtb
 tftpboot ${kernel_addr_r} ${serverip}:arch/riscv/boot/Image.gz   # ~20 MiB/s
-setenv bootargs 'root=/dev/mmcblk0p1 rw swiotlb=131072 console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0'
+setenv bootargs 'root=/dev/mmcblk0p1 rw swiotlb=131072 console=tty0 console=ttyS0,115200 earlycon rootwait stmmaceth=chain_mode:1 selinux=0 radeon.cik_support=0 amdgpu.cik_support=1'
 booti ${kernel_addr_r} - ${fdt_addr_r}
 ```
 
-And it failed! So I wrote down how `claude` can control all of this, and watched some TV.
+It booted to the login, but no GPU! PCI-e failed with `failed to parse root port`. So I wrote down how `claude` can control all of this, and watched some TV.
 
 When I was back, there was a working AMDGPU! I had a console! Logged in and installed KDE Plasma! Rebooted and logged in. Artifacts!!!
 
@@ -52,7 +52,7 @@ After a night of trial and error, Claude found the problem: `performance-governo
 
 ## Kernel with PCI-e support
 
-So I now have a kernel with AMDGPU support (for my GPU, maybe more). In the future I will test my other (AMD) GPUs.
+So I now have a mainline kernel (7.2 and 7.3) with AMDGPU support (for my GPU, maybe more). In the future I will test my other (AMD) GPUs.
 
 What isn't working is my NVMe disk :(
 
