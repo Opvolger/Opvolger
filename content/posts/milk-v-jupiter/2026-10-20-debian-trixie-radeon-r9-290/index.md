@@ -63,3 +63,11 @@ Claude also can create a pipeline in 5 minutes, so here are the kernels: [releas
 To not lose all the patches this time, i created a repo (with claude's help) [linux-kernel-jupiter-k1](https://github.com/Opvolger/linux-kernel-jupiter-1). 
 
 Here you can see all the commands and try-and-errors runs.
+
+## So now what?
+
+I will test some games with Box64 and FEX?
+
+Try Steam with the new 64 bit application?
+
+I will see!
